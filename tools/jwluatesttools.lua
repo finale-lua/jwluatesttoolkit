@@ -1,6 +1,14 @@
 -- Core test tool functions for the JW Lua Test cases
 -- Used by the test scripts
 
+-- Use accessor variable for reflections, since recent LuaBridge makes them harder to access
+
+local __parent = "__parent"
+local __class = "__class"
+local __propget = "__propget"
+local __propset = "__propset"
+
+
 local NoOfTests = 0
 local NoOfTestErrors = 0
 
@@ -114,9 +122,9 @@ function AssureKeyInTable(t, keyname, indexname, testtext)
     for k, v in pairs(testtable) do
         if k == keyname then return true end        
     end
-    if t["__parent"] then
+    if t[__parent] then
         -- Test parent  class info (one parent level only)
-        if (TestKeyInParentTable(t["__parent"], keyname, indexname)) then
+        if (TestKeyInParentTable(t[__parent], keyname, indexname)) then
            return true
         end
     end
@@ -128,17 +136,17 @@ end
 function TestPropertyName(classname, propertyname, testsetter)
     TestIncrease()
     for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+        if k == classname and v[__class] then
             -- Class name found
-            if not AssureNonNil(v.__class.__propget,  "Internal error: __propget wasn't found for class " .. classname) then return end
-            if not AssureNonNil(v.__class.__propset, "Internal error: __propset wasn't found for class " .. classname) then return false end
-            AssureKeyInTable(v.__class, propertyname, "__propget", "Getter property not found for class " .. classname .. ": ")
+            if not AssureNonNil(v[__class][__propget],  "Internal error: __propget wasn't found for class " .. classname) then return end
+            if not AssureNonNil(v[__class][__propset], "Internal error: __propset wasn't found for class " .. classname) then return false end
+            AssureKeyInTable(v[__class], propertyname, "__propget", "Getter property not found for class " .. classname .. ": ")
             local methodname = "Get" .. propertyname
-            AssureKeyInTable(v.__class, methodname, "", "Getter method not found for class " .. classname .. ": ")
+            AssureKeyInTable(v[__class], methodname, "", "Getter method not found for class " .. classname .. ": ")
             if testsetter then
-                AssureKeyInTable(v.__class, propertyname, "__propset", "Setter property not found for " .. classname .. ": ")
+                AssureKeyInTable(v[__class], propertyname, __propset, "Setter property not found for " .. classname .. ": ")
                 methodname = "Set" .. propertyname
-                AssureKeyInTable(v.__class, methodname, "", "Setter method not found for " .. classname .. ": ")
+                AssureKeyInTable(v[__class], methodname, "", "Setter method not found for " .. classname .. ": ")
             end
             return
         end
@@ -150,9 +158,9 @@ end
 function TestFunctionName(classname, functionname)
     TestIncrease()
     for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+        if k == classname and v[__class] then
             -- Class name found
-            AssureKeyInTable(v.__class, functionname, "", "Function not found for class " .. classname .. ": ")
+            AssureKeyInTable(v[__class], functionname, "", "Function not found for class " .. classname .. ": ")
             return
         end
     end
@@ -168,7 +176,7 @@ function TestClassName(obj, classname)
     end
     TestIncrease()
     for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+        if k == classname and v[__class] then
             -- Class name found - test the Class name method in the object
             TestIncrease()
             if obj:ClassName() ~= classname then
