@@ -67,8 +67,6 @@ The following scripts each provide a report as described.
 |`jwlua_unlinktests.lua`|Contains the tasks to check whether properties unlink.|
 |`jwlua_testall.lua`|Runs all tests at once.|
 
-===
-
 ## To Create a New Test
 
 
