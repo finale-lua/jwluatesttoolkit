@@ -21,7 +21,11 @@ function Is2014BOrAbove()
 end
 
 function Is26_2OrAbove()    
-    return finenv.RawFinaleVersion >= 0x1a020000
+    return finenv.RawFinaleVersion >= 0x1a200000
+end
+
+function Is27_3OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1b300000
 end
 
 -- A help method to assure a usable string value

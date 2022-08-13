@@ -1,6 +1,8 @@
 function FCGeneralPrefs_PropertyTests(obj)
    BoolPropertyTest(obj, "FCGeneralPrefs", "AutomaticUpdateLayout")
-   BoolPropertyTest(obj, "FCGeneralPrefs", "DottedRestsAreLegalInCompoundMeter")
+   if finenv.FinaleVersion > 10025 then
+      BoolPropertyTest(obj, "FCGeneralPrefs", "DottedRestsAreLegalInCompoundMeter") -- weirdly, Finale 25 can't handle this BoolPropertyTest
+   end
    BoolPropertyTest(obj, "FCGeneralPrefs", "DottedRestsAreLegalInSimpleMeter")
    BoolPropertyTest(obj, "FCGeneralPrefs", "IncludeMIDITempoChanges")
    BoolPropertyTest(obj, "FCGeneralPrefs", "IncludeMIDIContinuousData")
