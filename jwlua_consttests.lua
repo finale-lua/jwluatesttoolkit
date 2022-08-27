@@ -44,5 +44,8 @@ require("constanttests/consttest_fctieprefs")
 require("constanttests/consttest_fctiemod")
 require("constanttests/consttest_fctuplet")
 
+require("constanttests/consttest_finenv")
+
+
 -- Output the results from the tests:
 PrintTestResult()
