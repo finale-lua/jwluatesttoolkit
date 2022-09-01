@@ -22,4 +22,6 @@ function FCCellClefChange_Test_Unlinkable(measure, staff)
 end
 
 -- Call:
-FCCellClefChange_Test_Unlinkable(6, 2)
+if false then
+    FCCellClefChange_Test_Unlinkable(6, 2)
+end

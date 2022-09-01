@@ -10,14 +10,22 @@ function FCSeparatePlacement_Test_Unlinkable(rpt, measure, partnumber)
             for separate in each(separates) do
                 UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "HorizontalOffset1", "Reload", nil, 24, partnumber, skip_finale_version)
                 UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset1", "Reload", nil, -24, partnumber, skip_finale_version)
-                UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "HorizontalOffset2", "Reload", nil, 24, partnumber, skip_finale_version)
-                UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset2", "Reload", nil, -24, partnumber, skip_finale_version)
+                if AssureNonNil(separate.Mode, "FCSeparatePlacement.Mode") then
+                    if separate.Mode ~= finale.SEPARMODE_TEXTREPEAT and separate.Mode ~= finale.SEPARMODE_ENDINGREPEATTEXT then
+                        UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "HorizontalOffset2", "Reload", nil, 24, partnumber, skip_finale_version)
+                    end
+                    if separate.Mode == finale.SEPARMODE_TEXTREPEAT then -- text repeat has a flag instead
+                    else
+                        UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset2", "Reload", nil, -24, partnumber, skip_finale_version)
+                    end
+                end
             end
         end
     end
 end
 
 -- Call:
+
 FCSeparatePlacement_Test_Unlinkable(finale.FCEndingRepeat(), 4, staff_to_part[1])
 FCSeparatePlacement_Test_Unlinkable(finale.FCTextRepeat(), 3, staff_to_part[2])
 FCSeparatePlacement_Test_Unlinkable(finale.FCEndingRepeat(), 6, staff_to_part[1])
