@@ -18,6 +18,7 @@ if not CheckForOfficialTestTemplate() then return end
 -- Load and execute the unit tests for the classes:
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fccategorydef")
+require("classtests/jwluatest_fccellclefchange")
 require("classtests/jwluatest_fccellmetrics")
 require("classtests/jwluatest_fccelltext")
 require("classtests/jwluatest_fcchordprefs")

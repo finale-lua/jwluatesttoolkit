@@ -40,10 +40,10 @@ function FCGeneralPrefs_PropertyTests(obj)
 
     if Is27_3OrAbove()  then
         BoolPropertyTest(obj, "FCGeneralPrefs", "AutomaticMusicSpacing")
-        NumberPropertyTest(obj, "FCGeneralPrefs", "CustomZoom1", {-12, 75, 123, 249})
+        NumberPropertyTest(obj, "FCGeneralPrefs", "CustomZoom1", {0, 75, 123, 249})
         NumberPropertyTest(obj, "FCGeneralPrefs", "CustomZoom2", {0, 75, 123, 249})
         NumberPropertyTest(obj, "FCGeneralPrefs", "CustomZoom3", {0, 75, 123, 249})
-        NumberPropertyTest(obj, "FCGeneralPrefs", "HiddenObjectShading", {-12, 0, 12, 47, 113})
+        NumberPropertyTest(obj, "FCGeneralPrefs", "HiddenObjectShading", {0, 12, 47, 100})
         BoolPropertyTest(obj, "FCGeneralPrefs", "QuantizationMinimizeRests")
         NumberPropertyTest(obj, "FCGeneralPrefs", "QuantizationSmallestNoteValueToRemove", {0, 13, 27})
         BoolPropertyTest(obj, "FCGeneralPrefs", "QuantizationUseSensitivityLevel")
