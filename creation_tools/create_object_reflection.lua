@@ -5,7 +5,7 @@ function plugindef()
    finaleplugin.NoStore = true
    finaleplugin.Author = "Robert Patterson"
    finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
-   return "Create Object Reflection", "Create Object Reflection", "Reflect selected class(es) to the clipboard in refl-cpp format."
+   return "Create Object Reflection...", "Create Object Reflection", "Reflect selected class(es) to the clipboard in refl-cpp format."
 end
 
 if finenv.IsRGPLua then -- if new lua
@@ -116,9 +116,9 @@ function ProcessClass(classname, classtable)
 --            print ("found property get" .. kstr)
         end
     end
-    local __propget = __prop_table(classtable,"__propset")
-    if __propget then
-        for k, _ in pairs(__propget) do
+    local __propset = __prop_table(classtable,"__propset")
+    if __propset then
+        for k, _ in pairs(__propset) do
             local kstr = tostring(k)
             proptable["Set" .. kstr] = false
 --            print ("found property set" .. kstr)
@@ -146,30 +146,40 @@ function ProcessClass(classname, classtable)
             num_methods = num_methods + 1
         end
     end
+    local search_sequence = {}
     for k, v in pairs(classtable.__class) do
         local kstr = tostring(k)
---        print (type(v) .. " method " .. tostring(v) .. " [" .. classname .. ":" .. kstr .. "]")
         if (finenv.MinorVersion > 54 or type(v) == "function") and kstr:find("_") ~= 1 and kstr ~= "ClassName" then
-            if use_auto_syntax then
-                refl_output = refl_output .. "\n   func(" .. kstr
+            if proptable[kstr] ~= nil then
+                local prop_prefix = kstr:sub(1,3)
+                local prop_name = kstr:sub(4)
+                search_sequence[prop_name..prop_prefix] = kstr
             else
-                refl_output = refl_output .. "   REFL_FUNC(" .. kstr
+                search_sequence[kstr] = kstr
             end
-            if kstr:find("Create") == 1 and classname ~= "FCCustomWindow" then
-                refl_output = refl_output .. '_GC, special_name("' .. kstr .. '")'
-            end
-            if nil ~= proptable[k] then
-                refl_output = refl_output .. ", property()"
-                proptable[k] = true
-            end
-            refl_output = refl_output .. ")"
-            if use_auto_syntax then
-                refl_output = refl_output .. ","
-            else
-                refl_output = refl_output .. "\n"
-            end
-            num_methods = num_methods + 1
         end
+    end
+    for k, v in pairsbykeys(search_sequence) do
+        local funcname = tostring(v)
+        if use_auto_syntax then
+            refl_output = refl_output .. "\n   func(" .. funcname
+        else
+            refl_output = refl_output .. "   REFL_FUNC(" .. funcname
+        end
+        if funcname:find("Create") == 1 and classname ~= "FCCustomWindow" then
+            refl_output = refl_output .. '_GC, special_name("' .. funcname .. '")'
+        end
+        if nil ~= proptable[funcname] then
+            refl_output = refl_output .. ", property()"
+            proptable[funcname] = true
+        end
+        refl_output = refl_output .. ")"
+        if use_auto_syntax then
+            refl_output = refl_output .. ","
+        else
+            refl_output = refl_output .. "\n"
+        end
+        num_methods = num_methods + 1
     end
     if use_auto_syntax then
         refl_output = refl_output:sub(1, -2) -- remove final comma
