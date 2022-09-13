@@ -1,0 +1,9 @@
+function TestConstants_SEPARMODE_()
+   NumberConstantTest(finale.SEPARMODE_BACKWARDREPEAT, "SEPARMODE_BACKWARDREPEAT", 0)
+   NumberConstantTest(finale.SEPARMODE_TEXTREPEAT, "SEPARMODE_TEXTREPEAT", 1)
+   NumberConstantTest(finale.SEPARMODE_ENDINGREPEAT, "SEPARMODE_ENDINGREPEAT", 2)
+   NumberConstantTest(finale.SEPARMODE_ENDINGREPEATTEXT, "SEPARMODE_ENDINGREPEATTEXT", 3)
+end
+
+-- Test the constants:
+TestConstants_SEPARMODE_()

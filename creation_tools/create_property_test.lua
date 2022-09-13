@@ -1,5 +1,9 @@
 function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   finaleplugin.Author = "Jari Williamsson"   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"   return "Create Property Test", "Create Property Test", "Create a test for the properties found for a class."end
 
+if finenv.IsRGPLua then -- if new lua
+    --require('mobdebug').start()
+end
+
 -- Show dialog
 if not finenv.IsRGPLua then
     local dialog = finenv.UserValueInput()    dialog.Title = "Create Property Test"    dialog:SetTypes("String", "String")    dialog:SetDescriptions("Class name:", "Passed argument name to function:")
@@ -9,8 +13,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCLuaScriptItem"
-    PassedArgument = "obj"
+    ClassNameToFind = "FCMusicCharacterPrefs"
+    PassedArgument = "mcharprefs"
     --require("mobdebug").start()
 end
 
@@ -25,21 +29,34 @@ function FindInTable(t, keyname)
     return false
 end
 
-function AddToTestOutput(propertyname, readonly)
+function AddToTestOutput(instance, propertyname, readonly)
+    local testname = "PropertyTest"
+    local args = ""
     if readonly then
-        TestOutput = TestOutput .. "   PropertyTest_RO("  .. PassedArgument .. ', "' .. ClassNameToFind .. '", "' .. propertyname .. '")\n' 
-    else
-        TestOutput = TestOutput .. "   PropertyTest("  .. PassedArgument .. ', "' .. ClassNameToFind .. '", "' .. propertyname .. '")\n' 
+        testname = testname .. "_RO"
     end
+    if instance then
+        if type(instance[propertyname]) == "boolean" then
+            testname = "Bool" .. testname
+        elseif type(instance[propertyname]) == "number" then
+            testname = "Number" .. testname
+            args = ", {-144, 0, 144}" -- this is a placeholder and should be manually customized per property
+        end
+    end
+    TestOutput = TestOutput .. "   " .. testname .. "("  .. PassedArgument .. ', "' .. ClassNameToFind .. '", "' .. propertyname .. '"' .. args .. ")\n"
     TestOutputCount = TestOutputCount + 1
 end
 
-function DumpClassTable(t)
+function DumpClassTable(classname, t)
     if not t.__propget then return false end
     if not t.__propset then return false end
+    local success, instance = pcall(finale[classname])
+    if not success then
+        instance = nil
+    end
     for k, v in pairsbykeys(t.__propget) do
         local readonly = not FindInTable(t.__propset, k)
-        AddToTestOutput(k, readonly)
+        AddToTestOutput(instance, k, readonly)
     end
     return true
 end
@@ -50,12 +67,12 @@ for k,v in pairs(_G.finale) do
     if k == ClassNameToFind then  
         if not finenv.IsRGPLua then
             if v.__class then
-                if DumpClassTable(v.__class) then processed = true end
+                if DumpClassTable(k, v.__class) then processed = true end
             end
         else
-            if DumpClassTable(v) then processed = true end
+            if DumpClassTable(k, v) then processed = true end
         end
-        if DumpClassTable(v.__class) then processed = true end       
+        if DumpClassTable(k, v.__class) then processed = true end       
     end
 end
 if processed then

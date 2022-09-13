@@ -5,7 +5,7 @@ function plugindef()
    finaleplugin.NoStore = true
    finaleplugin.Author = "Robert Patterson"
    finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
-   return "Create Object Reflection", "Create Object Reflection", "Reflect selected class(es) to the clipboard in refl-cpp format."
+   return "Create Object Reflection...", "Create Object Reflection", "Reflect selected class(es) to the clipboard in refl-cpp format."
 end
 
 if finenv.IsRGPLua then -- if new lua
@@ -13,7 +13,7 @@ if finenv.IsRGPLua then -- if new lua
 end
 
 local refl_output = ""
-local classname = ""
+local user_selected_classname = ""
 
 -- Show dialog
 local dialog = function()
@@ -45,7 +45,8 @@ end
 
 local num_methods = 0
 local num_classes = 0
-local refl_auto_max = 98 -- maximum number before REFL_AUTO crashes and burns
+local refl_auto_max = 80 -- maximum number to use with REFL_AUTO (cannot be larger than 98)
+local property_include_min = -1 -- (disable filtering) -- include any class with at least this many properties
 
 function __static_table(classtable)
     if finenv.MinorVersion <= 54 then
@@ -108,23 +109,27 @@ function ProcessClass(classname, classtable)
         refl_output = refl_output .. "// This script cannot detect static functions when run with OG JW Lua (0.54 and earlier).\n\n"
     end
     local proptable = {}
+    local num_properties = 0
     local __propget = __prop_table(classtable,"__propget")
     if __propget then
         for k, _ in pairs(__propget) do
             local kstr = tostring(k)
             proptable["Get" .. kstr] = false
---            print ("found property get" .. kstr)
+            num_properties = num_properties + 1
         end
     end
-    local __propget = __prop_table(classtable,"__propset")
-    if __propget then
-        for k, _ in pairs(__propget) do
+    local __propset = __prop_table(classtable,"__propset")
+    if __propset then
+        for k, _ in pairs(__propset) do
             local kstr = tostring(k)
             proptable["Set" .. kstr] = false
 --            print ("found property set" .. kstr)
         end
     end
     local method_count = CountMethods(classtable)
+    if user_selected_classname == "" and num_properties < property_include_min and method_count < refl_auto_max then
+        return
+    end
     local use_auto_syntax = method_count < refl_auto_max
     if use_auto_syntax then
         refl_output = refl_output .. "REFL_AUTO\n(\n   type(" .. classname .. "),"
@@ -134,7 +139,7 @@ function ProcessClass(classname, classtable)
         refl_output = refl_output .. "   REFL_FUNC(ClassName)\n"
     end
     -- this search for static functions does not work in jw lua 0.54 even though it seems like it should
-    for k, v in pairs(__static_table(classtable)) do
+    for k, v in pairsbykeys(__static_table(classtable)) do
         local kstr = tostring(k)
 --        print ("type(v) static " .. type(v) .. " [" .. classname .. ":" .. kstr .. "]")
         if finenv.MinorVersion > 54 or type(v) == "function" then
@@ -146,30 +151,46 @@ function ProcessClass(classname, classtable)
             num_methods = num_methods + 1
         end
     end
+    local search_sequence = {}
     for k, v in pairs(classtable.__class) do
         local kstr = tostring(k)
---        print (type(v) .. " method " .. tostring(v) .. " [" .. classname .. ":" .. kstr .. "]")
         if (finenv.MinorVersion > 54 or type(v) == "function") and kstr:find("_") ~= 1 and kstr ~= "ClassName" then
-            if use_auto_syntax then
-                refl_output = refl_output .. "\n   func(" .. kstr
+            if proptable[kstr] ~= nil then
+                local prop_prefix = kstr:sub(1,3)
+                local prop_name = kstr:sub(4)
+                search_sequence[prop_name.." "..prop_prefix] = kstr
             else
-                refl_output = refl_output .. "   REFL_FUNC(" .. kstr
+                search_sequence[kstr] = kstr
             end
-            if kstr:find("Create") == 1 and classname ~= "FCCustomWindow" then
-                refl_output = refl_output .. '_GC, special_name("' .. kstr .. '")'
-            end
-            if nil ~= proptable[k] then
-                refl_output = refl_output .. ", property()"
-                proptable[k] = true
-            end
-            refl_output = refl_output .. ")"
-            if use_auto_syntax then
-                refl_output = refl_output .. ","
-            else
-                refl_output = refl_output .. "\n"
-            end
-            num_methods = num_methods + 1
         end
+    end
+    for k, v in pairsbykeys(search_sequence) do
+        local funcname = tostring(v)
+        if use_auto_syntax then
+            refl_output = refl_output .. "\n   func(" .. funcname
+        else
+            refl_output = refl_output .. "   REFL_FUNC(" .. funcname
+        end
+        if funcname:find("Create") == 1 and classname ~= "FCCustomWindow" then
+            refl_output = refl_output .. '_GC, special_name("' .. funcname .. '")'
+        end
+        if nil ~= proptable[funcname] then
+            refl_output = refl_output .. ", property()"
+            proptable[funcname] = true
+            if funcname:find("Get") == 1 then
+                local setter_key = "Set" .. funcname:sub(4)
+                if proptable[setter_key] ~= nil then
+                    refl_output = refl_output .. ", setter_is_next()"
+                end
+            end
+        end
+        refl_output = refl_output .. ")"
+        if use_auto_syntax then
+            refl_output = refl_output .. ","
+        else
+            refl_output = refl_output .. "\n"
+        end
+        num_methods = num_methods + 1
     end
     if use_auto_syntax then
         refl_output = refl_output:sub(1, -2) -- remove final comma
@@ -189,25 +210,30 @@ end
 if dialog ~= nil then
     local success, str = dialog()
     if not success then return end
-    classname = str.LuaString
+    user_selected_classname = str.LuaString
 end
 
+local class_sequence = {}
 for k, v in pairs(_G.finale) do
     local kstr = tostring(k)
     if kstr:find("FC") == 1  or kstr:find("__FC") == 1 then
         if v.__class then
-            if kstr == classname or classname == "" then
-                ProcessClass(k, v)
+            if kstr == user_selected_classname or user_selected_classname == "" then
+                class_sequence[kstr] = v
             end
         end
     end
+end
+
+for k, v in pairsbykeys(class_sequence) do
+    ProcessClass(k, v)
 end
 
 if num_classes > 0 then
     refl_output = refl_output .. "\n// Be sure to check the constructor signatures.\n"
     refl_output = refl_output .. "// This script can detect the presence of constructors but not their signatures.\n"
     refl_output = refl_output .. "// (The c++ compiler will refuse to compile if a constructor signature is wrong.)\n\n"
-    for k, v in pairs(classes_found) do
+    for k, v in pairsbykeys(classes_found) do
         if v.parent_name then
             refl_output = refl_output .. "AddDerivedClass<" .. k .. ", " .. v.parent_name
         else
@@ -220,11 +246,11 @@ if num_classes > 0 then
     end
 end
 
-if classname == "" then  classname = "All Classes" end
-print ("Found " .. tostring(num_methods) .. " methods in " .. tostring(num_classes) .. " classes. (" .. classname .. ")")
+if user_selected_classname == "" then  user_selected_classname = "All Classes" end
+print ("Found " .. tostring(num_methods) .. " methods in " .. tostring(num_classes) .. " classes. (" .. user_selected_classname .. ")")
 
 if num_classes <= 0 then
-    finenv.UI():AlertInfo("Class " .. classname .. " not found. Nothing has been copied to the clipboard.", "Code Not Created")
+    finenv.UI():AlertInfo("Class " .. user_selected_classname .. " not found. Nothing has been copied to the clipboard.", "Code Not Created")
     return
 end
 
