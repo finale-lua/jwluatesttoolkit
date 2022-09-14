@@ -13,8 +13,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCMusicCharacterPrefs"
-    PassedArgument = "mcharprefs"
+    ClassNameToFind = "FCSlurContourPrefs"
+    PassedArgument = "prefs"
     --require("mobdebug").start()
 end
 

@@ -146,18 +146,7 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local sep_num = finale.FCSeparateMeasureNumber()
-sep_num:ConnectCell(finale.FCCell(13, 2))
-local measnum_region = finale.FCMeasureNumberRegion()
-measnum_region:Load(1)
--- Due to complications in how SaveNew works, we have to create it here before calling UnlinkableNumberPropertyTest
-local loaded_here = sep_num:LoadFirst()
-if not loaded_here then
-    sep_num = finale.FCSeparateMeasureNumber()
-    sep_num:ConnectCell(finale.FCCell(13, 2))
-    sep_num:AssignMeasureNumberRegion(measnum_region)
-    sep_num:SaveNew()
-end
-
-ProcessObject(sep_num, "sep_num")
+local prefs = finale.FCSlurContourPrefs()
+prefs:Load(1)
+ProcessObject(prefs, "prefs")
 

@@ -53,6 +53,7 @@ require("classtests/jwluatest_fcplaybackprefs") -- FCPlaybackPrefs crashes Final
 require("classtests/jwluatest_fcrepeatprefs")
 require("classtests/jwluatest_fcseparatemeasurenumber")
 require("classtests/jwluatest_fcsizeprefs")
+require("classtests/jwluatest_fcslurcontourprefs")
 require("classtests/jwluatest_fcsmartshapeprefs")
 require("classtests/jwluatest_fcstaff")
 require("classtests/jwluatest_fcstaffnameposition")
