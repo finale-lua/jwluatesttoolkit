@@ -46,6 +46,7 @@ end
 -- Test the constants:
 TestConstants_SMARTSHAPE_()
 
+
 function TestConstants_SS_()
    NumberConstantTest(finale.SS_AUTOSTATE, "SS_AUTOSTATE", 2)
    NumberConstantTest(finale.SS_OFFSTATE, "SS_OFFSTATE", 0)
@@ -54,3 +55,14 @@ end
 
 -- Test the constants:
 TestConstants_SS_()
+
+
+function TestConstants_SSENTCNCTSTYLETYPE_()
+   NumberConstantTest(finale.SSENTCNCTSTYLETYPE_SLURS, "SSENTCNCTSTYLETYPE_SLURS", 1)
+   NumberConstantTest(finale.SSENTCNCTSTYLETYPE_TAB_SLIDES, "SSENTCNCTSTYLETYPE_TAB_SLIDES", 2)
+   NumberConstantTest(finale.SSENTCNCTSTYLETYPE_GLISSANDOS, "SSENTCNCTSTYLETYPE_GLISSANDOS", 3)
+   NumberConstantTest(finale.SSENTCNCTSTYLETYPE_BEND_CURVES, "SSENTCNCTSTYLETYPE_BEND_CURVES", 4)
+end
+
+-- Test the constants:
+TestConstants_SSENTCNCTSTYLETYPE_()

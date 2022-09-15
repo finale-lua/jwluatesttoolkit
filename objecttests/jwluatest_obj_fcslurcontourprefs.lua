@@ -16,6 +16,9 @@ end
 
 -- Call:
 local smartshape_prefs = finale.FCSmartShapePrefs()
+if not AssureNonNil(smartshape_prefs.CreateSlurContourPrefs, "FCSmartShapePrefs.CreateSlurContourPrefs") then
+    return
+end
 AssureTrue(smartshape_prefs:Load(1), "FCSmartShapePrefs:Load(1)")
 local slur_prefs = smartshape_prefs:CreateSlurContourPrefs()
 FCSlurContourPrefs_ValueTests_ItemNo1(slur_prefs)
