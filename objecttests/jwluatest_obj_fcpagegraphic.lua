@@ -1,4 +1,5 @@
 function FCPageGraphic_ValueTests_ItemNo0_0(graphics1)
+   AssureTrue(graphics1:IsEmbedded(), "FCPageGraphic_0_0 IsEmbedded")
    NumberValuePropertyTest(graphics1, "FCPageGraphic", "FirstPage", 2)
    BoolValuePropertyTest(graphics1, "FCPageGraphic", "FixedPercent", false)
    NumberValuePropertyTest(graphics1, "FCPageGraphic", "Height", 69)
@@ -26,6 +27,7 @@ FCPageGraphic_ValueTests_ItemNo0_0(graphics1)
 
 
 function FCPageGraphic_ValueTests_ItemNo1_0(graphics2)
+   AssureTrue(graphics2:IsEmbedded(), "FCPageGraphic_1_0 IsEmbedded")
    NumberValuePropertyTest(graphics2, "FCPageGraphic", "FirstPage", 1)
    BoolValuePropertyTest(graphics2, "FCPageGraphic", "FixedPercent", true)
    NumberValuePropertyTest(graphics2, "FCPageGraphic", "Height", 288)
