@@ -154,12 +154,12 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
---[[
-local prefs = finale.FCSlurContourPrefs()
-prefs:Load(1)
-ProcessObject(prefs, "prefs")
-]]
+local coll = finale.FCCellGraphics()
+coll:LoadAllInCell(finale.FCCell(11, 2))
+local obj = coll:GetItemAt(1)
+ProcessObject(obj, "obj")
 
+--[[
 local smartshape_prefs = finale.FCSmartShapePrefs()
 smartshape_prefs:Load(1)
 for _, style_type in pairs({finale.SSENTCNCTSTYLETYPE_SLURS, finale.SSENTCNCTSTYLETYPE_TAB_SLIDES, finale.SSENTCNCTSTYLETYPE_GLISSANDOS, finale.SSENTCNCTSTYLETYPE_BEND_CURVES}) do
@@ -173,4 +173,4 @@ if finenv.UI():TextToClipboard(TestOutput) then
     --print (TestOutput)
     finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
 end
-
+]]

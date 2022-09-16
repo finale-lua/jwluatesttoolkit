@@ -13,7 +13,7 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCSmartShapeEntryConnectStyle"
+    ClassNameToFind = "FCCellGraphic"
     PassedArgument = "prefs"
     --require("mobdebug").start()
 end
