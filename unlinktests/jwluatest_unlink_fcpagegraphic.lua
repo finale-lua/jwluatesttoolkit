@@ -2,7 +2,6 @@
 function FCPageGraphic_Test_Unlinkable(page, inci, partnumber)
     local pagegraphic = finale.FCPageGraphic()
     if AssureTrue(pagegraphic:Load(page,inci), "FCPageGraphic_Test_Unlinkable: FCPageGraphic:Load()") then
-        UnlinkableNumberPropertyTest(pagegraphic, "FCPageGraphic", "FixedPercent", "Reload", nil, -12, partnumber, skip_finale_version)
         UnlinkableNumberPropertyTest(pagegraphic, "FCPageGraphic", "Height", "Reload", nil, -12, partnumber, skip_finale_version)
         UnlinkableNumberPropertyTest(pagegraphic, "FCPageGraphic", "HorizontalPos", "Reload", nil, -12, partnumber, skip_finale_version)
         UnlinkableNumberPropertyTest(pagegraphic, "FCPageGraphic", "VerticalPos", "Reload", nil, 12, partnumber, skip_finale_version)

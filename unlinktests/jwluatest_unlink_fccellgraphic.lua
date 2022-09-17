@@ -15,4 +15,3 @@ end
 
 -- Call:
 FCCellGraphic_Test_Unlinkable(11, 2, 2)
-FCCellGraphic_Test_Unlinkable(11, 2, 3)
