@@ -1,4 +1,6 @@
 function FCSlurContourPrefs_ValueTests_ItemNo1(prefs)
+    AssureEqual(prefs:CalcHeight(1234), 82, "FCSlurContourPrefs:CalcHeight")
+    AssureEqual(prefs:CalcInset(522), 471, "FCSlurContourPrefs:CalcInset")
     NumberValuePropertyTest(prefs, "FCSlurContourPrefs", "ExtraLongHeight", 80)
     NumberValuePropertyTest(prefs, "FCSlurContourPrefs", "ExtraLongInset", 369)
     NumberValuePropertyTest(prefs, "FCSlurContourPrefs", "ExtraLongSpan", 1152)

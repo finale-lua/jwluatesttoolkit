@@ -10,6 +10,9 @@ end
 
 
 -- Call:
+if not AssureNonNil(finale.FCCellGraphic, "finale.FCCellGraphic") then
+    return
+end
 local obj = finale.FCCellGraphic()
 obj:ConnectCell(finale.FCCell(11, 2))
 AssureTrue(obj:LoadFirst(), "FCCellGraphic:LoadFirst()")

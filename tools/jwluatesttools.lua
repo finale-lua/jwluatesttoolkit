@@ -98,6 +98,15 @@ function AssureNil(value, testtext)
     return false
 end
 
+
+function AssureEqual(value1, value2, testtext)
+    TestIncrease()
+    if value1 == value2 then return true end
+    TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
+    return false
+end
+
+
 -- Tests if the key name exists in the parent table.
 -- Test only one level back.
 function TestKeyInParentTable(t, keyname, indexname)
