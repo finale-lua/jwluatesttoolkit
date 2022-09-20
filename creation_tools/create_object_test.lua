@@ -154,10 +154,12 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
+--[[
 local coll = finale.FCCellGraphics()
 coll:LoadAllInCell(finale.FCCell(11, 2))
 local obj = coll:GetItemAt(1)
 ProcessObject(obj, "obj")
+]]
 
 --[[
 local smartshape_prefs = finale.FCSmartShapePrefs()
@@ -174,3 +176,21 @@ if finenv.UI():TextToClipboard(TestOutput) then
     finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
 end
 ]]
+
+function FCSeparatePlacement_Process(rpt, measure)
+    rpt:Load(measure, 0)
+    for _, separates in pairs({rpt:CreateSeparatePlacements(), rpt.CreateTextSeparatePlacements and rpt:CreateTextSeparatePlacements()}) do
+        for sep in each(separates) do
+            ProcessObject(sep, "sep", true, measure, sep.Mode)
+        end
+    end
+end
+
+FCSeparatePlacement_Process(finale.FCTextRepeat(), 3)
+FCSeparatePlacement_Process(finale.FCEndingRepeat(), 6)
+FCSeparatePlacement_Process(finale.FCBackwardRepeat(), 8)
+
+if finenv.UI():TextToClipboard(TestOutput) then
+    --print (TestOutput)
+    finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
+end
