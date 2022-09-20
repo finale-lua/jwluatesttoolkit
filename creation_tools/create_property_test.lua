@@ -13,8 +13,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCCellGraphic"
-    PassedArgument = "prefs"
+    ClassNameToFind = "FCSeparatePlacement"
+    PassedArgument = "sep"
     --require("mobdebug").start()
 end
 

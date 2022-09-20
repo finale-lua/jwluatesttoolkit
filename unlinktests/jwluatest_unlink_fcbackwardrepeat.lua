@@ -5,6 +5,7 @@ function FCBackwardRepeat_Test_Unlinkable(measure, partnumber)
     UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "BottomBracketPosition", "Load", measure, -24, partnumber)
     UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "LeftBracketPosition", "Load", measure, 24, partnumber)
     UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "RightBracketPosition", "Load", measure, -24, partnumber)
+    UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "Visible", "Load", measure, -24, partnumber)
 end
 
 -- Call:

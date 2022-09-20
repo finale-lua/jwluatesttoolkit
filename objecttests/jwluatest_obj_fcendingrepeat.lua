@@ -1,28 +1,3 @@
-function FCEndingRepeat_PropertyTests(endingrepeat)
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "TargetTrigger",  {finale.REPTARGET_NEXTENDING,
-            finale.REPTARGET_MEASURENUM, finale.REPTARGET_FORWARDS, finale.REPTARGET_NEVERSKIPENDING})
-   BoolPropertyTest(endingrepeat, "FCEndingRepeat", "IndividualPositioning")
-   NumberPropertyTest_RO(endingrepeat, "FCEndingRepeat", "PassNumbersCount")
-    NumberPropertyTest(endingrepeat, "FCEndingRepeat", "ShowMode", 
-            {finale.REPSHOW_ALL, finale.REPSHOW_TOPSTAFF, finale.REPSHOW_STAFFLIST})       
-   BoolPropertyTest(endingrepeat, "FCEndingRepeat", "SkipOnIgnore")
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "StaffListID", {0, 2, 8})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "TargetMeasure", {-5, -1, 0, 1, 10})   
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "VerticalLeftBracketPosition", {-345, 0, 456})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "VerticalRightBracketPosition", {-346, 0, 457})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTextPosition", {-347, 0, 458})   
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTopBracketPosition", {-348, 0, 459})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "HorizontalLeftBracketPosition", {-342, 0, 453})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "HorizontalRightBracketPosition", {-343, 0, 454})
-   NumberPropertyTest(endingrepeat, "FCEndingRepeat", "HorizontalTextPosition", {-344, 0, 455})
-end
-
--- Call:
-local endingrepeat = finale.FCEndingRepeat()
-AssureTrue(endingrepeat:Load(4))
-FCEndingRepeat_PropertyTests(endingrepeat)
-
-
 
 function FCEndingRepeat_ValueTests_ItemNo4(endingrepeat)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "HorizontalLeftBracketPosition", 0)
@@ -39,6 +14,7 @@ function FCEndingRepeat_ValueTests_ItemNo4(endingrepeat)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalRightBracketPosition", 0)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTextPosition", 24)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTopBracketPosition", 0)
+   BoolValuePropertyTest(endingrepeat, "FCEndingRepeat", "Visible", true)
 end
 
 
@@ -64,6 +40,7 @@ function FCEndingRepeat_ValueTests_ItemNo5(endingrepeat)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalRightBracketPosition", -37)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTextPosition", 32)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTopBracketPosition", 0)
+   BoolValuePropertyTest(endingrepeat, "FCEndingRepeat", "Visible", false)
 end
 
 
@@ -89,6 +66,7 @@ function FCEndingRepeat_ValueTests_ItemNo6(endingrepeat)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalRightBracketPosition", 0)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTextPosition", 24)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTopBracketPosition", 0)
+   BoolValuePropertyTest(endingrepeat, "FCEndingRepeat", "Visible", true)
 end
 
 
@@ -114,6 +92,7 @@ function FCEndingRepeat_ValueTests_ItemNo7(endingrepeat)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalRightBracketPosition", 0)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTextPosition", 24)
    NumberValuePropertyTest(endingrepeat, "FCEndingRepeat", "VerticalTopBracketPosition", 0)
+   BoolValuePropertyTest(endingrepeat, "FCEndingRepeat", "Visible", true)
 end
 
 
