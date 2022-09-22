@@ -154,12 +154,10 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
---[[
-local coll = finale.FCCellGraphics()
-coll:LoadAllInCell(finale.FCCell(11, 2))
-local obj = coll:GetItemAt(1)
-ProcessObject(obj, "obj")
-]]
+local exprdef = finale.FCTextExpressionDef()
+exprdef:Load(75)
+ProcessObject(exprdef, "exprdef")
+
 
 --[[
 local smartshape_prefs = finale.FCSmartShapePrefs()
@@ -177,6 +175,7 @@ if finenv.UI():TextToClipboard(TestOutput) then
 end
 ]]
 
+--[[
 function FCSeparatePlacement_Process(rpt, measure)
     rpt:Load(measure, 0)
     for _, separates in pairs({rpt:CreateSeparatePlacements(), rpt.CreateTextSeparatePlacements and rpt:CreateTextSeparatePlacements()}) do
@@ -194,3 +193,4 @@ if finenv.UI():TextToClipboard(TestOutput) then
     --print (TestOutput)
     finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
 end
+]]

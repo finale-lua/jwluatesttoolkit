@@ -11,6 +11,14 @@ function FCTextExpressionDef_PropertyTests(exprdef)
             finale.ALIGNHORIZ_CENTERBETWEENBARLINES, finale.ALIGNHORIZ_CENTEROVERUNDERMUSIC, finale.ALIGNHORIZ_RIGHTBARLINE})
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "HorizontalJustification", {finale.EXPRJUSTIFY_LEFT, finale.EXPRJUSTIFY_CENTER, finale.EXPRJUSTIFY_RIGHT})
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "HorizontalOffset", {-100, 0, 100})
+   NumberPropertyTest(exprdef, "FCTextExpressionDef", "PlaybackPass", {0, 1, 2, 3, 5})
+   NumberPropertyTest(exprdef, "FCTextExpressionDef", "PlaybackType", {finale.EXPPLAYTYPE_NONE,
+            finale.EXPPLAYTYPE_KEYVELOCITY, finale.EXPPLAYTYPE_TEMPO, finale.EXPPLAYTYPE_CONTROLLER,
+            finale.EXPPLAYTYPE_TRANSPOSE, finale.EXPPLAYTYPE_MIDIDUMP, finale.EXPPLAYTYPE_MIDICHANNEL,
+            finale.EXPPLAYTYPE_RESTRIKEKEYS, finale.EXPPLAYTYPE_PLAYTEMPOTOOL, finale.EXPPLAYTYPE_IGNORETEMPOTOOL,
+            finale.EXPPLAYTYPE_PATCHCHANGE, finale.EXPPLAYTYPE_CHANNELPRESSURE, finale.EXPPLAYTYPE_PITCHWHEEL,
+            finale.EXPPLAYTYPE_PERCUSSIONMAP, finale.EXPPLAYTYPE_SWING, finale.EXPPLAYTYPE_HUMANPLAYBACKON,
+            finale.EXPPLAYTYPE_HUMANPLAYBACKOFF}) -- EXPPLAYTYPE_UNKNOWN intentionally omitted because it can't be set
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "RehearsalMarkStyle", {finale.REHMARKSTYLE_MANUAL, finale.REHMARKSTYLE_LETTER,
             finale.REHMARKSTYLE_LETNUM, finale.REHMARKSTYLE_LETTER_LC,
             finale.REHMARKSTYLE_LETNUM_LC, finale.REHMARKSTYLE_NUMBER, finale.REHMARKSTYLE_MEASNUM })
@@ -31,6 +39,6 @@ end
 
 
 -- Call:
- local exprdef = finale.FCTextExpressionDef()
+local exprdef = finale.FCTextExpressionDef()
 AssureTrue(exprdef:Load(1))
 FCTextExpressionDef_PropertyTests(exprdef)
