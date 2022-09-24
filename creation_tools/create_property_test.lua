@@ -13,7 +13,7 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCTextExpressionDef"
+    ClassNameToFind = "FCTupletPrefs"
     PassedArgument = "sep"
     --require("mobdebug").start()
 end

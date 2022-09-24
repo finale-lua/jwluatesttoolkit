@@ -154,9 +154,9 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local exprdef = finale.FCTextExpressionDef()
-exprdef:Load(75)
-ProcessObject(exprdef, "exprdef")
+local prefs = finale.FCTupletPrefs()
+prefs:Load(1)
+ProcessObject(prefs, "prefs")
 
 
 --[[

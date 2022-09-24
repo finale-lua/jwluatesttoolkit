@@ -66,6 +66,7 @@ require("objecttests/jwluatest_obj_fctextrepeat")
 require("objecttests/jwluatest_obj_fctextrepeatdef")
 require("objecttests/jwluatest_obj_fctiemod")
 require("objecttests/jwluatest_obj_fctieprefs")
+require("objecttests/jwluatest_obj_fctupletprefs")
 
 -- Output the results from the tests:
 PrintTestResult()
