@@ -287,6 +287,7 @@ end
 
 -- Test for number properties
 function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction)
+    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
     -- Test to set each number in the number table
@@ -406,7 +407,7 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
             end
         end
         if obj[gettername](obj, index) ~= v then
-            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. v .. " with index " .. index .. " (received ".. obj[gettername](obj, index) .. ")" )
+            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. tostring(v) .. " with index " .. tostring(index) .. " (received ".. tostring(obj[gettername](obj, index)) .. ")" )
         end        
     end
     -- Restore the previous value, if reloadfunction didn't kill it

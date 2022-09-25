@@ -23,4 +23,6 @@ if not AssureNonNil(smartshape_prefs.CreateSlurContourPrefs, "FCSmartShapePrefs.
 end
 AssureTrue(smartshape_prefs:Load(1), "FCSmartShapePrefs:Load(1)")
 local slur_prefs = smartshape_prefs:CreateSlurContourPrefs()
-FCSlurContourPrefs_ValueTests_ItemNo1(slur_prefs)
+if AssureNonNil(slur_prefs, "FCSmartShapePrefs.CreateSlurContourPrefs") then
+    FCSlurContourPrefs_ValueTests_ItemNo1(slur_prefs)
+end
