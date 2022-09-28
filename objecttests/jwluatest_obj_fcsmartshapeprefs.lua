@@ -1,4 +1,7 @@
 function FCSmartShapePrefs_ValueTests_ItemNo1(ssprefs)
+   if Is26_2OrAbove() then
+      NumberValuePropertyTest(ssprefs, "FCSmartShapePrefs", "ArticulationAvoidSlursBy", 11)
+   end
    NumberValuePropertyTest(ssprefs, "FCSmartShapePrefs", "CustomLineDefID", 8)
    NumberValuePropertyTest(ssprefs, "FCSmartShapePrefs", "EngraverSlurAccidentalSpace", 3)
    BoolValuePropertyTest(ssprefs, "FCSmartShapePrefs", "EngraverSlurAvoidAccidentals", true)

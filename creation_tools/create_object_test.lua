@@ -1,6 +1,5 @@
 function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   finaleplugin.Author = "Jari Williamsson"   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"   return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."end
 
-
 local TestOutput = ""
 local TestOutputCount = 0
 
@@ -53,12 +52,18 @@ function DumpClassTable(t, ClassNameToFind, PassedArgument, obj)
 end
 
 
-function CreateCode(obj, ClassNameToFind, PassedArgument)
+function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) -- id1 and id2 may be omitted
     local processed = false
     
     local funcsuffix = ""
     local loadinfo = ""
-    if obj.ItemNo then 
+    if id1 then
+        funcsuffix = "_ItemNo" .. id1
+        if id2 then
+            funcsuffix  = funcsuffix .. "_" .. id2
+        end
+        loadinfo = id1 -- (won't be used in the final script)
+    elseif obj.ItemNo then 
         funcsuffix = "_ItemNo" .. obj.ItemNo
         loadinfo = obj.ItemNo
     elseif obj.ItemCmper then
@@ -81,7 +86,7 @@ function CreateCode(obj, ClassNameToFind, PassedArgument)
     end
 
     -- Create the function skeleton
-    TestOutput = "function " .. ClassNameToFind .. "_ValueTests" .. funcsuffix .. "(" .. PassedArgument .. ")\n"
+    TestOutput = TestOutput .. "function " .. ClassNameToFind .. "_ValueTests" .. funcsuffix .. "(" .. PassedArgument .. ")\n"
     for k,v in pairs(_G.finale) do
         if k == ClassNameToFind then
             if not finenv.IsRGPLua then
@@ -96,15 +101,18 @@ function CreateCode(obj, ClassNameToFind, PassedArgument)
     -- Create the function call
     if processed then
         if TestOutputCount > 0 then
-            TestOutput = TestOutput .. "end\n\n\n-- Call:\nlocal " .. PassedArgument .. " = finale." .. 
-                    ClassNameToFind .. "()\nAssureTrue(" .. 
-                    PassedArgument .. ":Load(" .. loadinfo .. "), \"" .. ClassNameToFind .. ":Load(" ..
-                    loadinfo .. ")\")\n" .. 
-                    ClassNameToFind .. "_ValueTests" .. funcsuffix .. "(" .. 
-                    PassedArgument .. ")\n"
-            if finenv.UI():TextToClipboard(TestOutput) then
-                --print (TestOutput)
-                finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
+            TestOutput = TestOutput .. "end\n\n\n"
+            if not continuing then
+                TestOutput = TestOutput .. "-- Call:\nlocal " .. PassedArgument .. " = finale." .. 
+                        ClassNameToFind .. "()\nAssureTrue(" .. 
+                        PassedArgument .. ":Load(" .. loadinfo .. "), \"" .. ClassNameToFind .. ":Load(" ..
+                        loadinfo .. ")\")\n" .. 
+                        ClassNameToFind .. "_ValueTests" .. funcsuffix .. "(" .. 
+                        PassedArgument .. ")\n"
+                if finenv.UI():TextToClipboard(TestOutput) then
+                    --print (TestOutput)
+                    finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
+                end
             end
         else
             print("No properties found for class", ClassNameToFind)
@@ -114,8 +122,8 @@ function CreateCode(obj, ClassNameToFind, PassedArgument)
     end
 end
 
-function ProcessObject(obj, passedname)
-    CreateCode(obj, obj:ClassName(), passedname)
+function ProcessObject(obj, passedname, continuing, id1, id2) -- continuing, id1, and id2 may be omitted
+    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2)
 end
 
 -- Tries to find a specific note entry in the file
@@ -146,18 +154,43 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local sep_num = finale.FCSeparateMeasureNumber()
-sep_num:ConnectCell(finale.FCCell(13, 2))
-local measnum_region = finale.FCMeasureNumberRegion()
-measnum_region:Load(1)
--- Due to complications in how SaveNew works, we have to create it here before calling UnlinkableNumberPropertyTest
-local loaded_here = sep_num:LoadFirst()
-if not loaded_here then
-    sep_num = finale.FCSeparateMeasureNumber()
-    sep_num:ConnectCell(finale.FCCell(13, 2))
-    sep_num:AssignMeasureNumberRegion(measnum_region)
-    sep_num:SaveNew()
+local prefs = finale.FCTupletPrefs()
+prefs:Load(1)
+ProcessObject(prefs, "prefs")
+
+
+--[[
+local smartshape_prefs = finale.FCSmartShapePrefs()
+smartshape_prefs:Load(1)
+for _, style_type in pairs({finale.SSENTCNCTSTYLETYPE_SLURS, finale.SSENTCNCTSTYLETYPE_TAB_SLIDES, finale.SSENTCNCTSTYLETYPE_GLISSANDOS, finale.SSENTCNCTSTYLETYPE_BEND_CURVES}) do
+    for index = 0, smartshape_prefs:GetEntryConnectStyleCount(style_type) - 1 do
+        local prefs = smartshape_prefs:CreateEntryConnectStyle(style_type, index)
+        ProcessObject(prefs, "prefs", true, style_type, index)
+    end
 end
 
-ProcessObject(sep_num, "sep_num")
+if finenv.UI():TextToClipboard(TestOutput) then
+    --print (TestOutput)
+    finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
+end
+]]
 
+--[[
+function FCSeparatePlacement_Process(rpt, measure)
+    rpt:Load(measure, 0)
+    for _, separates in pairs({rpt:CreateSeparatePlacements(), rpt.CreateTextSeparatePlacements and rpt:CreateTextSeparatePlacements()}) do
+        for sep in each(separates) do
+            ProcessObject(sep, "sep", true, measure, sep.Mode)
+        end
+    end
+end
+
+FCSeparatePlacement_Process(finale.FCTextRepeat(), 3)
+FCSeparatePlacement_Process(finale.FCEndingRepeat(), 6)
+FCSeparatePlacement_Process(finale.FCBackwardRepeat(), 8)
+
+if finenv.UI():TextToClipboard(TestOutput) then
+    --print (TestOutput)
+    finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
+end
+]]

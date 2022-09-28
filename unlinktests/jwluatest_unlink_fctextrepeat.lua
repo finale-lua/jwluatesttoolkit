@@ -4,6 +4,7 @@ function FCTextRepeat_Test_Unlinkable(measure, partnumber)
     local loadfunc = function() return obj:Load(measure, 0) end
     UnlinkableNumberPropertyTest(obj, "FCTextRepeat", "HorizontalPos", loadfunc, nil, 24, partnumber)
     UnlinkableNumberPropertyTest(obj, "FCTextRepeat", "VerticalPos", loadfunc, nil, -24, partnumber)
+    UnlinkableNumberPropertyTest(obj, "FCTextRepeat", "Visible", loadfunc, nil, -24, partnumber)
 end
 
 -- Call:

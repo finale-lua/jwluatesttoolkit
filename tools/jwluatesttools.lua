@@ -98,6 +98,15 @@ function AssureNil(value, testtext)
     return false
 end
 
+
+function AssureEqual(value1, value2, testtext)
+    TestIncrease()
+    if value1 == value2 then return true end
+    TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
+    return false
+end
+
+
 -- Tests if the key name exists in the parent table.
 -- Test only one level back.
 function TestKeyInParentTable(t, keyname, indexname)
@@ -277,7 +286,8 @@ function BoolPropertyTest_RO(obj, classname, propertyname)
 end
 
 -- Test for number properties
-function NumberPropertyTest(obj, classname, propertyname, numbertable)
+function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction)
+    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
     -- Test to set each number in the number table
@@ -286,15 +296,27 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable)
         TestError("Internal error - Number test table for property " .. classname .. "." .. propertyname .. " test is nil.")
         return
     end
+    
+    savefunction = savefunction or obj["Save"]
+    local reload_replaces_obj = (reloadfunction ~= nil)
+    reloadfunction = reloadfunction or obj["Reload"]
+    
 
     local oldvalue = obj[propertyname]    
     for k, v in pairs(numbertable) do        
         obj[propertyname] = v        
         TestIncrease()
-        if obj["Save"] and obj["Reload"] then    
-            AssureTrue(obj:Save(), classname .. "::Save()")
+        if savefunction and reloadfunction then  
+            AssureTrue(savefunction(obj), classname .. "::Save()")
             obj[propertyname] = oldvalue
-            AssureTrue(obj:Reload(), classname .. "::Reload()")
+            if reload_replaces_obj then
+                local new_obj = reloadfunction(obj)
+                if AssureNonNil(new_obj, classname .. " reloadfunction") then
+                    obj = new_obj
+                end
+            else
+                AssureTrue(reloadfunction(obj), classname .. "::Reload()")
+            end
         end
         if obj[propertyname] ~= v then
             TestError("Number test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. v .. " (received ".. obj[propertyname] .. ")" )
@@ -302,7 +324,7 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable)
     end
     -- Restore the previous value
     obj[propertyname] = oldvalue
-    if obj["Save"] then AssureTrue(obj:Save(), classname .. "::Save()") end
+    if savefunction then AssureTrue(savefunction(obj), classname .. "::Save()") end
 end
 
 -- Test for indexed function pairs
@@ -385,7 +407,7 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
             end
         end
         if obj[gettername](obj, index) ~= v then
-            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. v .. " with index " .. index .. " (received ".. obj[gettername](obj, index) .. ")" )
+            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. tostring(v) .. " with index " .. tostring(index) .. " (received ".. tostring(obj[gettername](obj, index)) .. ")" )
         end        
     end
     -- Restore the previous value, if reloadfunction didn't kill it

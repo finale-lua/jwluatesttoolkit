@@ -13,15 +13,10 @@ function FCSeparatePlacement_Test_Unlinkable(rpt, measure, partnumber)
                 if AssureNonNil(separate.Mode, "FCSeparatePlacement.Mode") then
                     if separate.Mode ~= finale.SEPARMODE_TEXTREPEAT and separate.Mode ~= finale.SEPARMODE_ENDINGREPEATTEXT then
                         UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "HorizontalOffset2", "Reload", nil, 24, partnumber, skip_finale_version)
-                    end
-                    if separate.Mode == finale.SEPARMODE_TEXTREPEAT then -- text repeat has a flag instead
-                        -- temp test until we can implement a propert Hidden property (which will be a separate git branch)
-                        if separate.VerticalOffset2 == 0 then
-                            UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset2", "Reload", nil, 1, partnumber, skip_finale_version)
-                        elseif separate.VerticalOffset2 == 1 then
-                            UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset2", "Reload", nil, -1, partnumber, skip_finale_version)                        end
-                    else
                         UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "VerticalOffset2", "Reload", nil, -24, partnumber, skip_finale_version)
+                    end
+                    if separate.Mode ~= finale.SEPARMODE_ENDINGREPEATTEXT then
+                        UnlinkableNumberPropertyTest(separate, "FCSeparatePlacement", "Visible", "Reload", nil, 1, partnumber, skip_finale_version)
                     end
                 end
             end
@@ -34,3 +29,4 @@ end
 FCSeparatePlacement_Test_Unlinkable(finale.FCEndingRepeat(), 4, staff_to_part[1])
 FCSeparatePlacement_Test_Unlinkable(finale.FCTextRepeat(), 3, staff_to_part[2])
 FCSeparatePlacement_Test_Unlinkable(finale.FCEndingRepeat(), 6, staff_to_part[1])
+FCSeparatePlacement_Test_Unlinkable(finale.FCBackwardRepeat(), 8, staff_to_part[3])
