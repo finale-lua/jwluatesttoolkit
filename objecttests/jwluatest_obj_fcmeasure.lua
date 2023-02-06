@@ -1,3 +1,29 @@
+function FCTimeSignature_ValueTests_ItemNo1(time_sig)
+   BoolValuePropertyTest(time_sig, "FCTimeSignature", "Abbreviate", false)
+   NumberValuePropertyTest(time_sig, "FCTimeSignature", "BeatDuration", 1024)
+   NumberValuePropertyTest(time_sig, "FCTimeSignature", "Beats", 4)
+   BoolValuePropertyTest_RO(time_sig, "FCTimeSignature", "CompositeBottom", false)
+   BoolValuePropertyTest_RO(time_sig, "FCTimeSignature", "CompositeTop", false)
+end
+
+
+function FCTimeSignature_ForDisplay_ValueTests_ItemNo1(time_sig_disp)
+   BoolValuePropertyTest(time_sig_disp, "FCTimeSignature", "Abbreviate", true)
+   NumberValuePropertyTest(time_sig_disp, "FCTimeSignature", "BeatDuration", 1024)
+   NumberValuePropertyTest(time_sig_disp, "FCTimeSignature", "Beats", 4)
+   BoolValuePropertyTest_RO(time_sig_disp, "FCTimeSignature", "CompositeBottom", false)
+   BoolValuePropertyTest_RO(time_sig_disp, "FCTimeSignature", "CompositeTop", false)
+end
+
+
+function FCKeySignature_ValueTests_ItemNo1(key_sig)
+   NumberValuePropertyTest_RO(key_sig, "FCKeySignature", "Alteration", 0)
+   NumberValuePropertyTest_RO(key_sig, "FCKeySignature", "ID", 0)
+   NumberValuePropertyTest_RO(key_sig, "FCKeySignature", "IDWithTransposition", 0)
+   NumberValuePropertyTest(key_sig, "FCKeySignature", "TransposeAlteration", 0)
+   BoolValuePropertyTest(key_sig, "FCKeySignature", "TransposeSimplify", false)
+end
+
 function FCMeasure_ValueTests_ItemNo1(meas)
    BoolValuePropertyTest(meas, "FCMeasure", "AllowHorizontalSplit", true)
    BoolValuePropertyTest(meas, "FCMeasure", "BackwardRepeat", false)
@@ -31,9 +57,13 @@ function FCMeasure_ValueTests_ItemNo1(meas)
    BoolValuePropertyTest(meas, "FCMeasure", "TextFlag", false)
    BoolValuePropertyTest(meas, "FCMeasure", "TextRepeatFlag", false)
    ObjectPropertyTest_RO(meas, "FCMeasure", "TimeSignature", "FCTimeSignature")
-   AssureNil(meas.TimeSignatureForDisplay)
-   BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
+   ObjectPropertyTest_RO(meas, "FCMeasure", "TimeSignatureForDisplay", "FCTimeSignature")
+   BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", true)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 684)
+
+   FCTimeSignature_ValueTests_ItemNo1(meas.TimeSignature)
+   FCTimeSignature_ForDisplay_ValueTests_ItemNo1(meas.TimeSignatureForDisplay)
+   FCKeySignature_ValueTests_ItemNo1(meas.KeySignature)
 end
 
 

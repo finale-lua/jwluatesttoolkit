@@ -154,10 +154,11 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local prefs = finale.FCTupletPrefs()
-prefs:Load(1)
-ProcessObject(prefs, "prefs")
-
+local meas = finale.FCMeasure()
+meas:Load(1)
+ProcessObject(meas.TimeSignature, "time_sig", true, 1)
+ProcessObject(meas.TimeSignatureForDisplay, "time_sig_disp", true, 2)
+ProcessObject(meas.KeySignature, "key_sig", false, 3)
 
 --[[
 local smartshape_prefs = finale.FCSmartShapePrefs()
