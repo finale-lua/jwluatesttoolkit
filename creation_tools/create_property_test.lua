@@ -13,8 +13,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCAllotment"
-    PassedArgument = "obj"
+    ClassNameToFind = "FCBeatChartElement"
+    PassedArgument = "element"
     --require("mobdebug").start()
 end
 

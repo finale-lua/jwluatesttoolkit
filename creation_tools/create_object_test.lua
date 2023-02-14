@@ -154,11 +154,11 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local allots = finale.FCAllotments()
-allots:LoadAll()
-ProcessObject(allots:GetItemAt(0), "allotment", true)
-ProcessObject(allots:GetItemAt(11), "allotment", true)
-ProcessObject(allots:GetItemAt(22), "allotment", false)
+local elts = finale.FCBeatChartElements()
+elts:LoadAllForItem(16)
+ProcessObject(elts:GetItemAt(0), "header", true)
+ProcessObject(elts:GetItemAt(7), "element", true)
+ProcessObject(elts:GetItemAt(13), "element", false)
 
 --[[
 local meas = finale.FCMeasure()

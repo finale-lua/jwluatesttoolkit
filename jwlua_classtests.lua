@@ -19,6 +19,7 @@ if not CheckForOfficialTestTemplate() then return end
 require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")
+require("classtests/jwluatest_fcbeatchartelement")
 require("classtests/jwluatest_fccategorydef")
 require("classtests/jwluatest_fccellclefchange")
 require("classtests/jwluatest_fccellgraphic")
