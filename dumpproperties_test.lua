@@ -1,11 +1,11 @@
-if finenv.MinorVersion > 54 then -- if new lua
+if finenv.IsRGPLua then -- if new lua
     require('mobdebug').start()
 end
 
 local function view_properties(o)
     local ret = dumpproperties(o)
     print (o:ClassName() .. " returned " .. type(ret))
-    for k, v in pairs(ret) do
+    for k, v in pairsbykeys(ret) do
         print(tostring(k) .. ": " .. tostring(v))
     end
     print("")
@@ -17,6 +17,6 @@ if not region:Load(1) then
 end
 view_properties(region)
 
-local x = finale.FCString()
-x.LuaString = "This is a test"
+local x = finale.FCGeneralPrefs()
+x:Load(1)
 view_properties(x)
