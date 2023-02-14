@@ -13,8 +13,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCTimeSignature"
-    PassedArgument = "sep"
+    ClassNameToFind = "FCAllotment"
+    PassedArgument = "obj"
     --require("mobdebug").start()
 end
 

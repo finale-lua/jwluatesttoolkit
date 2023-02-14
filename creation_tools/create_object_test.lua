@@ -154,11 +154,19 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
+local allots = finale.FCAllotments()
+allots:LoadAll()
+ProcessObject(allots:GetItemAt(0), "allotment", true)
+ProcessObject(allots:GetItemAt(11), "allotment", true)
+ProcessObject(allots:GetItemAt(22), "allotment", false)
+
+--[[
 local meas = finale.FCMeasure()
 meas:Load(1)
 ProcessObject(meas.TimeSignature, "time_sig", true, 1)
 ProcessObject(meas.TimeSignatureForDisplay, "time_sig_disp", true, 2)
 ProcessObject(meas.KeySignature, "key_sig", false, 3)
+]]
 
 --[[
 local smartshape_prefs = finale.FCSmartShapePrefs()

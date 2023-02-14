@@ -16,6 +16,7 @@ require("tools/jwluatesttools")
 if not CheckForOfficialTestTemplate() then return end
 
 -- Load and execute the unit tests for the classes:
+require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")
 require("classtests/jwluatest_fccategorydef")
