@@ -143,6 +143,10 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
+local def = finale.FCArticulationDef()
+def:Load(63)
+ProcessObject(def, "obj")
+
 --[[
 for entry in eachentry(finenv.Region()) do
     for note in each(entry) do
@@ -154,11 +158,13 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
+--[[
 local elts = finale.FCBeatChartElements()
 elts:LoadAllForItem(16)
 ProcessObject(elts:GetItemAt(0), "header", true)
 ProcessObject(elts:GetItemAt(7), "element", true)
 ProcessObject(elts:GetItemAt(13), "element", false)
+]]
 
 --[[
 local meas = finale.FCMeasure()
