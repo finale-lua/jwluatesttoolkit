@@ -20,6 +20,10 @@ function Is2014BOrAbove()
     return finenv.RawFinaleVersion >= 0x12020000
 end
 
+function Is26OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1a000000
+end
+
 function Is26_2OrAbove()    
     return finenv.RawFinaleVersion >= 0x1a200000
 end
@@ -92,6 +96,7 @@ end
 
 -- Tests that the value is nil
 function AssureNil(value, testtext)
+    testtext = testtext or "AssureNil"
     TestIncrease()
     if value == nil then return true end
     TestError(testtext .. " (Value is non-nil.)")

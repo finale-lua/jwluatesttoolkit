@@ -71,3 +71,34 @@ local entry3, notecell3 = LoadMeasureEntryLocal(28, 1, 266)
 FCNoteEntry_Scenario_FindNote_Test(entry1, entry2)
 FCNoteEntry_Scenario_FindNote_Test(entry2, entry3)
 
+local entry4, notecell4 = LoadMeasureEntryLocal(32, 1, 304)
+if AssureNonNil(entry4, "FCNoteEntry_Scenario_IsOnLedgerLine entry4") then
+    for index = 0, entry4.Count-1 do
+        local note = entry4:GetItemAt(index)
+        local note_string = finale.FCString()
+        note:GetString(note_string, nil, false, false)
+        if index == 0 or index == (entry4.Count - 1) then
+            AssureTrue(note:CalcOnLedgerLine(), "FCNoteEntry_Scenario_IsOnLedgerLine: "..note_string.LuaString)
+        else
+            AssureFalse(note:CalcOnLedgerLine(), "FCNoteEntry_Scenario_IsOnLedgerLine: "..note_string.LuaString)
+        end
+        local number_of_ledger_lines = 0
+        if index == 0 then
+            number_of_ledger_lines = -3
+        elseif index == 1 then
+            number_of_ledger_lines = -2
+        elseif index == 2 then
+            number_of_ledger_lines = 0
+        elseif index == 3 then
+            number_of_ledger_lines = 2
+        elseif index == 4 then
+            number_of_ledger_lines = 3
+        end
+        if AssureNonNil(note.CalcNumberOfLedgerLines, "FCNoteEntry_Scenario_NumberOfLedgerLines: FCNote.CalcNumberOfLedgerLines") then
+            AssureValue(note:CalcNumberOfLedgerLines(), number_of_ledger_lines, "FCNoteEntry_Scenario_NumebrOfLedgerLine: "..note_string.LuaString)
+        end
+    end
+end
+
+
+

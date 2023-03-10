@@ -72,10 +72,10 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
     elseif obj.Measure and obj.Staff then
         funcsuffix = "_Cell" .. obj.Measure .. "_" .. obj.Staff
         loadinfo = "" .. obj.Measure  .. ", " .. obj.Staff
-    elseif obj.ItemEntnum then
+    elseif obj.ItemEntryNumber then
         -- Note entry
-        funcsuffix = "_Entry" .. obj:GetNoteEntry().Measure .. "_" .. obj:GetNoteEntry().Staff .. "_" .. obj.ItemEntnum
-        loadinfo = "" .. obj:GetNoteEntry().Measure  .. ", " .. obj:GetNoteEntry().Staff .. ", " .. obj.ItemEntnum
+        funcsuffix = "_Entry" .. obj:GetNoteEntry().Measure .. "_" .. obj:GetNoteEntry().Staff .. "_" .. obj.ItemEntryNumber
+        loadinfo = "" .. obj:GetNoteEntry().Measure  .. ", " .. obj:GetNoteEntry().Staff .. ", " .. obj.ItemEntryNumber
     elseif obj.NoteID then
         -- Note
         funcsuffix = "_Note" .. obj:GetEntry().Measure .. "_" .. obj:GetEntry().Staff .. "_" .. obj:GetEntry().EntryNumber .. "_" .. obj.NoteID
@@ -131,7 +131,8 @@ function LoadMeasureEntry(measureno, staffno, entryid)
     local notecell = finale.FCNoteEntryCell(measureno, staffno)
     notecell:Load()
     for e in each (notecell) do
-        if e.ENTNUM == entryid then return e end
+        local entnum = e.entnum
+        if e.EntryNumber == entryid then return e end
     end
     return nil
 end
@@ -142,6 +143,14 @@ end
 if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
+
+local noteheadmod = finale.FCNoteheadMod()
+require('mobdebug').start()
+local entry = LoadMeasureEntry(6, 2, 130)
+    noteheadmod:SetNoteEntry(entry)
+    local note = entry:GetItemAt(0)
+    noteheadmod:LoadAt(note)
+ProcessObject(noteheadmod, "noteheadmod")
 
 --[[
 for entry in eachentry(finenv.Region()) do
@@ -154,10 +163,21 @@ for entry in eachentry(finenv.Region()) do
 end
 ]]
 
-local prefs = finale.FCTupletPrefs()
-prefs:Load(1)
-ProcessObject(prefs, "prefs")
+--[[
+local elts = finale.FCBeatChartElements()
+elts:LoadAllForItem(16)
+ProcessObject(elts:GetItemAt(0), "header", true)
+ProcessObject(elts:GetItemAt(7), "element", true)
+ProcessObject(elts:GetItemAt(13), "element", false)
+]]
 
+--[[
+local meas = finale.FCMeasure()
+meas:Load(1)
+ProcessObject(meas.TimeSignature, "time_sig", true, 1)
+ProcessObject(meas.TimeSignatureForDisplay, "time_sig_disp", true, 2)
+ProcessObject(meas.KeySignature, "key_sig", false, 3)
+]]
 
 --[[
 local smartshape_prefs = finale.FCSmartShapePrefs()

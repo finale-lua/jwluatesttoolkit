@@ -16,8 +16,10 @@ require("tools/jwluatesttools")
 if not CheckForOfficialTestTemplate() then return end
 
 -- Load and execute the unit tests for the classes:
+require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")
+require("classtests/jwluatest_fcbeatchartelement")
 require("classtests/jwluatest_fccategorydef")
 require("classtests/jwluatest_fccellclefchange")
 require("classtests/jwluatest_fccellgraphic")
@@ -43,6 +45,7 @@ require("classtests/jwluatest_fcmultimeasurerestprefs")
 require("classtests/jwluatest_fcmusiccharacterprefs")
 require("classtests/jwluatest_fcmusicspacingprefs")
 require("classtests/jwluatest_fcnamepositionprefs")
+require("classtests/jwluatest_fcnoteheadmod")
 require("classtests/jwluatest_fcnumber")
 require("classtests/jwluatest_fcpage")
 require("classtests/jwluatest_fcpageformatprefs")
