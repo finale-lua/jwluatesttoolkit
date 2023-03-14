@@ -6,10 +6,10 @@
 function InternalConversion_TestNumberToInt(num)
     local number = finale.FCNumber(0)
     local success, message = pcall(function() number.Int = num end)
-    AssureTrue(success, "Assign 5.1 to Int: "..tostring(message))
+    AssureTrue(success, "Assign "..num.." to Int: "..tostring(message))
     AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from int")
     success, message = pcall(function() number.Float = num end)
-    AssureTrue(success, "Assign 5.1 to Float: "..tostring(message))
+    AssureTrue(success, "Assign "..num.." to Float: "..tostring(message))
     AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from float")
 end
 
