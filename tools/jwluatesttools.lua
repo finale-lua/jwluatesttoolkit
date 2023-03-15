@@ -702,3 +702,12 @@ function CheckForOfficialTestTemplate()
     end
     return true
 end
+
+function GetRunningFolderPath()
+    if finenv.RunningLuaFolderPath then
+        return finenv.RunningLuaFolderPath()
+    end
+    local str = finale.FCString()
+    str:SetRunningLuaFolderPath()
+    return str.LuaString
+end
