@@ -144,13 +144,20 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
+local entry = LoadMeasureEntry(29, 2, 307)
+local obj = finale.FCTuplet()
+obj:SetNoteEntry(entry)
+obj:LoadFirst()
+ProcessObject(obj, "tuplet")
+
+--[[
 local coll = finale.FCChords()
 coll:LoadAllInCell(finale.FCCell(46,1))
 for i = 0, coll.Count-1 do
     local chord = coll:GetItemAt(i)
     ProcessObject(chord, "chord", i < coll.Count - 1)
 end
-
+]]
 
 --[[
 local noteheadmod = finale.FCNoteheadMod()

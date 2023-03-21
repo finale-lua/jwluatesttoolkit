@@ -42,6 +42,7 @@ require("unlinktests/jwluatest_unlink_fcstaffnameposition")
 require("unlinktests/jwluatest_unlink_fcstemmod")
 require("unlinktests/jwluatest_unlink_fctextrepeat")
 require("unlinktests/jwluatest_unlink_fctiemod")
+require("unlinktests/jwluatest_unlink_fctuplet")
 
 -- Output the results from the tests:
 PrintTestResult()
