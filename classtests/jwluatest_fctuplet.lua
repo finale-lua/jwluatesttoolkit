@@ -39,7 +39,6 @@ local entry = LoadMeasureEntry(29, 2, 307)
 if AssureNonNil(entry, "FCTuplet_PropertyTests load entry") then
     local obj = finale.FCTuplet()
     obj:SetNoteEntry(entry)
-    FCTuplet_PropertyTests(obj)
     if AssureTrue(obj:LoadFirst(), "FCTuplet_PropertyTests: LoadFirst") then
         FCTuplet_PropertyTests(obj)
     end
