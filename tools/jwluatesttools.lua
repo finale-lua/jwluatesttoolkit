@@ -423,6 +423,66 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
     return obj
 end
 
+-- This function is used to icertain records because a particular property is supposed to unlink but doesn't.
+-- This allows the test scripts to pre-unlink the records so that the test can run without errors.
+-- It can be changed to do nothing so that we can discover which properties still need to be fixed.
+function UnlinkWithProperty(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+    if finenv.RawFinaleVersion > 0x1b300000 then -- 27.3 is the top version number we check for this
+        return
+    end
+    skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
+    if finenv.RawFinaleVersion <= skipfinaleversion then return end
+    if not AssureNonNil(obj, "nil passed to UnlinkWithProperty for " .. classname .. "." .. tostring(updater) .. " partnumber " .. partnumber) then return end
+        local updater_is_function = type(updater) == "function"
+    if not updater_is_function then
+        if not AssureTrue(type(updater) == "string", "UnlinkWithProperty updater is string. ("..classname..")") then return end
+        PropertyTest(obj, classname, updater)
+        if not AssureNonNil(obj[updater], "UnlinkWithProperty "..classname.."."..updater..".") then return end
+    end
+    if not AssureTrue(increment ~= 0, "UnlinkWithProperty Internal error: zero passed for increment. ("..classname..")") then return end
+    if not AssureTrue(partnumber ~= finale.PARTID_SCORE, "UnlinkWithProperty Internal error: score passed instead of part. ("..classname..")") then return end
+    local part = finale.FCPart(partnumber)
+    if not AssureTrue(part:Load(partnumber), "UnlinkWithProperty Internal error: load partnumber. ("..classname..")") then return end
+    
+    local loadfunction_is_function = type(loadfunction) == "function"
+    local obj_load = function()
+        if loadfunction_is_function then
+            return loadfunction()
+        end
+        return obj[loadfunction](obj, loadargument)
+    end
+    if not loadfunction_is_function then
+        if not AssureNonNil(obj[loadfunction], classname.."."..loadfunction.." does not exist.") then return end
+    end
+    local loaded_in_score = obj_load()
+    
+    if not AssureNonNil(obj.Reload, classname..".".."Reload".." does not exist.") then return end
+    if not AssureNonNil(obj.Save, classname..".".."Save".." does not exist.") then return end
+    
+    local obj_updater = function(value)
+        if updater_is_function then return updater(value) end
+        if value ~= nil then
+            obj[updater] = value
+        end
+        return obj[updater]
+    end
+    
+    local score_value = obj_updater()
+    part:SwitchTo()
+    local loaded_in_part = obj_load()
+    local new_value
+    if type(score_value) == "boolean" then
+        new_value = not score_value
+    else
+        new_value = score_value + increment
+    end
+    obj_updater(new_value)
+    AssureTrue(loaded_in_part and obj:Save() or obj.SaveNew and obj:SaveNew(), "UnlinkableNumberPropertyTest Internal error: save new value in part. ("..classname..")")
+    obj_updater(score_value)
+    AssureTrue(loaded_in_part and obj:Save() or obj.SaveNew and obj:SaveNew(), "UnlinkableNumberPropertyTest Internal error: restore old value in part. ("..classname..")")
+    part:SwitchBack()
+end    
+
 -- Test for unlinkable property; assumes score in view to begin with
 -- The updater parameter is either a function that is passed the increment or nil or a writable property name.
 -- The load function is either a function or the name of a load method.
@@ -456,9 +516,21 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     
     if not AssureNonNil(obj.Reload, classname..".".."Reload".." does not exist.") then return end
     if not AssureNonNil(obj.Save, classname..".".."Save".." does not exist.") then return end
+    if not AssureNonNil(obj.RelinkToCurrentView, classname..".".."RelinkToCurrentView".." does not exist.") then return end
+    if not AssureNonNil(obj.RelinkToScore, classname..".".."RelinkToScore".." does not exist.") then return end
     if not loaded_in_score then
         if not AssureNonNil(obj.SaveNew, classname..".".."SaveNew".." does not exist.") then return end
         if not AssureNonNil(obj.DeleteData, classname..".".."DeleteData".." does not exist.") then return end
+    end
+    if loadfunction == "LoadAt" then
+        if not AssureNonNil(obj.SaveAt, classname..".".."SaveAt".." does not exist.") then return end
+    end
+    
+    local obj_save = function(loaded)
+        if loadfunction == "LoadAt" then
+            return obj:SaveAt(loadargument)
+        end
+        return loaded and obj:Save() or obj.SaveNew and obj:SaveNew()
     end
     
     local obj_updater = function(value)
@@ -467,6 +539,13 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
             obj[updater] = value
         end
         return obj[updater]
+    end
+    
+    local get_loadargument = function()
+        if type(loadargument) == "userdata" and loadargument.NoteID then
+            return "NoteID "..tostring(loadargument.NoteID)
+        end
+        return tostring(loadargument)
     end
     
     local score_value = obj_updater()
@@ -479,12 +558,21 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
         new_value = score_value + increment
     end
     obj_updater(new_value)
-    AssureTrue(loaded_in_part and obj:Save() or obj.SaveNew and obj:SaveNew(), "UnlinkableNumberPropertyTest Internal error: save in part. ("..classname..")")
+    AssureTrue(obj_save(loaded_in_part), "UnlinkableNumberPropertyTest Internal error: save in part. ("..classname..")")
     AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part. ("..classname..")")
     AssureTrue(obj_updater() == new_value, "UnlinkableNumberPropertyTest Internal error: value for "..tostring(updater).." not retained in part after reload. ("..classname..")")
     part:SwitchBack()
     AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in score. ("..classname..")")
-    AssureTrue(obj_updater() == score_value, classname.."."..tostring(updater).." is unlinkable.")
+    local is_unlinkable = AssureTrue(obj_updater() == score_value, classname.."."..tostring(updater).." is unlinkable with load argument "..get_loadargument()..".")
+    if is_unlinkable then
+        part:SwitchTo()
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part for relink. ("..classname..")")
+        AssureTrue(obj_updater() == new_value, classname.."."..tostring(updater).." did not retain value after switch-to-part.")
+        AssureTrue(obj:RelinkToCurrentView(), "UnlinkableNumberPropertyTest Internal error: relink to current view. ("..classname..")")
+        part:SwitchBack()
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in score for relink. ("..classname..")")
+        AssureTrue(obj_updater() == new_value, classname.."."..tostring(updater).." was relinked.")
+    end
     if not loaded_in_score then
         obj:DeleteData()
     else
