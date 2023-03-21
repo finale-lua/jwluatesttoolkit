@@ -41,6 +41,7 @@ require("unlinktests/jwluatest_unlink_fcsmartshape")
 require("unlinktests/jwluatest_unlink_fcstaffnameposition")
 require("unlinktests/jwluatest_unlink_fcstemmod")
 require("unlinktests/jwluatest_unlink_fcsyllablebase")
+require("unlinktests/jwluatest_unlink_fcsyllableentrymod") -- not currently unlinkable
 require("unlinktests/jwluatest_unlink_fctextrepeat")
 require("unlinktests/jwluatest_unlink_fctiemod")
 require("unlinktests/jwluatest_unlink_fctuplet")
