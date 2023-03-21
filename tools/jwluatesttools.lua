@@ -486,7 +486,14 @@ end
 -- Test for unlinkable property; assumes score in view to begin with
 -- The updater parameter is either a function that is passed the increment or nil or a writable property name.
 -- The load function is either a function or the name of a load method.
-function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+-- The unlinkproperty parameter is used to pre-unlink the property. It is only non-nil in rare bug cases,
+-- and the bugs get flagged again with each new Finale version. (See UnlinkWithProperty function above.)
+-- Here is a list of known tests that use the unlinkproperty to work around a bug:
+--              jwluatest_unlink_fcbackwardrepeat
+function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion, unlinkproperty)
+    if unlinkproperty then
+        UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+    end
     skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
     if finenv.RawFinaleVersion <= skipfinaleversion then return end
     if not AssureNonNil(obj, "nil passed to UnlinkableNumberPropertyTest for " .. classname .. "." .. tostring(updater) .. " partnumber " .. partnumber) then return end
@@ -565,6 +572,7 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in score. ("..classname..")")
     local is_unlinkable = AssureTrue(obj_updater() == score_value, classname.."."..tostring(updater).." is unlinkable with load argument "..get_loadargument()..".")
     if is_unlinkable then
+        --
         part:SwitchTo()
         AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part for relink. ("..classname..")")
         AssureTrue(obj_updater() == new_value, classname.."."..tostring(updater).." did not retain value after switch-to-part.")
@@ -572,6 +580,25 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
         part:SwitchBack()
         AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in score for relink. ("..classname..")")
         AssureTrue(obj_updater() == new_value, classname.."."..tostring(updater).." was relinked.")
+        obj_updater(score_value)
+        AssureTrue(obj_save(loaded_in_part), "UnlinkableNumberPropertyTest Internal error: save for reverting score value after relink to current. ("..classname..")")
+        --
+        if unlinkproperty then
+            UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+        else
+            part:SwitchTo()
+            AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part for relink to score 1. ("..classname..")")
+            obj_updater(new_value)
+            AssureTrue(obj_save(loaded_in_part), "UnlinkableNumberPropertyTest Internal error: save for relink to score. ("..classname..")")
+            part:SwitchBack()
+        end
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in score for relink to score. ("..classname..")")
+        AssureTrue(obj_updater() == score_value, classname.."."..tostring(updater).." was unlinked for relink to score.")
+        part:SwitchTo()
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part for relink to score 2. ("..classname..")")
+        AssureTrue(obj:RelinkToScore(), "UnlinkableNumberPropertyTest Internal error: relink to score. ("..classname..")")
+        AssureTrue(obj_updater() == score_value, classname.."."..tostring(updater).." was relinked for relink to score.")
+        part:SwitchBack()
     end
     if not loaded_in_score then
         obj:DeleteData()

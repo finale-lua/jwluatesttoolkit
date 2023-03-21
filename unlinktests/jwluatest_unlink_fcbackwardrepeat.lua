@@ -9,10 +9,8 @@ function FCBackwardRepeat_Test_Unlinkable(measure, partnumber)
     -- LeftBracketPosition appears not always to unlink, so allow it to short-circuit the unlink test through the latest Finale version
     -- The Finale version must be updated in UnlinkWithProperty each time a new version of Finale comes out.
     -- This allows us to identify any that MakeMusic might have fixed.
-    if measure == 8 then
-        UnlinkWithProperty(obj, "FCBackwardRepeat", "TopBracketPosition", "Load", measure, 24, partnumber)
-    end
-    UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "LeftBracketPosition", "Load", measure, 24, partnumber) -- keep this item first
+    local unlink_property = (measure == 8) and "TopBracketPosition" or nil
+    UnlinkableNumberPropertyTest(obj, "FCBackwardRepeat", "LeftBracketPosition", "Load", measure, 24, partnumber, nil, unlink_property)
 end
 
 -- Call:
