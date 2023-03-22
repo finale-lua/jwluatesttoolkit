@@ -144,6 +144,22 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
+local entry = LoadMeasureEntry(30, 3, 312)
+local obj = finale.FCSyllableEntryMod()
+obj:SetNoteEntry(entry)
+obj:LoadFirst()
+ProcessObject(obj, "obj")
+
+--[[
+local coll = finale.FCChords()
+coll:LoadAllInCell(finale.FCCell(46,1))
+for i = 0, coll.Count-1 do
+    local chord = coll:GetItemAt(i)
+    ProcessObject(chord, "chord", i < coll.Count - 1)
+end
+]]
+
+--[[
 local noteheadmod = finale.FCNoteheadMod()
 require('mobdebug').start()
 local entry = LoadMeasureEntry(6, 2, 130)
@@ -151,6 +167,7 @@ local entry = LoadMeasureEntry(6, 2, 130)
     local note = entry:GetItemAt(0)
     noteheadmod:LoadAt(note)
 ProcessObject(noteheadmod, "noteheadmod")
+]]
 
 --[[
 for entry in eachentry(finenv.Region()) do

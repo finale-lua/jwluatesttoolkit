@@ -3,7 +3,7 @@ function FCCellGraphic_Test_Unlinkable(meas, staff, partnumber)
     if AssureNonNil(finale.FCCellGraphics, "finale.FCCellGraphics") then
         local coll = finale.FCCellGraphics()
         coll:LoadAllInCell(finale.FCCell(meas, staff)) -- return count loaded
-        for graphic in each(coll) do
+        for graphic in eachbackwards(coll) do -- going backwards accounts for inci shuffling caused by Relink functions
             UnlinkableNumberPropertyTest(graphic, "FCCellGraphic", "HorizontalPos", "Reload", nil, -12, partnumber, skip_finale_version)
             UnlinkableNumberPropertyTest(graphic, "FCCellGraphic", "VerticalPos", "Reload", nil, 12, partnumber, skip_finale_version)
             UnlinkableNumberPropertyTest(graphic, "FCCellGraphic", "Visible", "Reload", nil, -12, partnumber, skip_finale_version)

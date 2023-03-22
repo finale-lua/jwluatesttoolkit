@@ -1,0 +1,76 @@
+function FCChord_ValueTests_Cell46_1_0(chord)
+   NumberValuePropertyTest(chord, "FCChord", "Alteration", 0)
+   NumberValuePropertyTest(chord, "FCChord", "AlternateBassAlteration", 0)
+   NumberValuePropertyTest(chord, "FCChord", "AlternateBassScaleNumber", 0)
+   NumberValuePropertyTest(chord, "FCChord", "Capo", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassLowercase", false)
+   NumberValuePropertyTest(chord, "FCChord", "ChordAlternateBassPlacement", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassPlayback", false)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassVisible", false)
+   NumberValuePropertyTest(chord, "FCChord", "ChordHorizontalPos", 12)
+   NumberValuePropertyTest(chord, "FCChord", "ChordResize", 100)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootLowercase", false)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootPlayback", true)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "ChordSuffixID", 67)
+   BoolValuePropertyTest(chord, "FCChord", "ChordSuffixPlayback", true)
+   BoolValuePropertyTest(chord, "FCChord", "ChordSuffixVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "ChordVerticalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardHorizontalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardPlayback", false)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardResize", 100)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardStyleID", 2)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardUseFont", false)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardVerticalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "MeasurePos", 0)
+   NumberValuePropertyTest(chord, "FCChord", "ScaleNumber", 2)
+   BoolValuePropertyTest(chord, "FCChord", "UseCapo", false)
+end
+
+
+function FCChord_ValueTests_Cell46_1_1(chord)
+   NumberValuePropertyTest(chord, "FCChord", "Alteration", 0)
+   NumberValuePropertyTest(chord, "FCChord", "AlternateBassAlteration", 0)
+   NumberValuePropertyTest(chord, "FCChord", "AlternateBassScaleNumber", 0)
+   NumberValuePropertyTest(chord, "FCChord", "Capo", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassLowercase", false)
+   NumberValuePropertyTest(chord, "FCChord", "ChordAlternateBassPlacement", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassPlayback", false)
+   BoolValuePropertyTest(chord, "FCChord", "ChordAlternateBassVisible", false)
+   NumberValuePropertyTest(chord, "FCChord", "ChordHorizontalPos", 12)
+   NumberValuePropertyTest(chord, "FCChord", "ChordResize", 100)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootLowercase", false)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootPlayback", true)
+   BoolValuePropertyTest(chord, "FCChord", "ChordRootVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "ChordSuffixID", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordSuffixPlayback", true)
+   BoolValuePropertyTest(chord, "FCChord", "ChordSuffixVisible", false)
+   NumberValuePropertyTest(chord, "FCChord", "ChordVerticalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "ChordVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardHorizontalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardPlayback", false)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardResize", 100)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardStyleID", 2)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardUseFont", false)
+   NumberValuePropertyTest(chord, "FCChord", "FretboardVerticalPos", 0)
+   BoolValuePropertyTest(chord, "FCChord", "FretboardVisible", true)
+   NumberValuePropertyTest(chord, "FCChord", "MeasurePos", 2048)
+   NumberValuePropertyTest(chord, "FCChord", "ScaleNumber", 4)
+   BoolValuePropertyTest(chord, "FCChord", "UseCapo", false)
+end
+
+-- Setup:
+
+local chords = finale.FCChords()
+if not AssureEqual(chords:LoadAllInCell(finale.FCCell(46,1)), 2, "FCChord_ValueTests load cell 46, 1 got 2 items") then
+    return
+end
+
+-- Call:
+for i = 0, chords.Count-1 do
+    local chord = chords:GetItemAt(i)
+    local function_name = "FCChord_ValueTests_Cell46_1_"..tonumber(i)
+    _G[function_name](chord)
+end

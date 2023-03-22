@@ -13,7 +13,7 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCNoteheadMod"
+    ClassNameToFind = "FCSyllableEntryMod"
     PassedArgument = "obj"
     --require("mobdebug").start()
 end
@@ -86,10 +86,10 @@ if processed then
             finenv.UI():AlertInfo("Code has been copied to the clipboard.", "Test Created")
         end
     else
-        print("No properties found for class", ClassNameToFind)
+        finenv.UI():AlertInfo("No properties found for class"..ClassNameToFind, "Test Not Created")
     end
 else
-    print("Error: No ", ClassNameToFind, "class found.")
+    finenv.UI():AlertInfo("Error: No "..ClassNameToFind.." class found.", "Test Not Created")
 end
 
 -- Present sorted result:
