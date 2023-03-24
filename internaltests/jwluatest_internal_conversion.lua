@@ -7,10 +7,10 @@ function InternalConversion_TestNumberToInt(num)
     local number = finale.FCNumber(0)
     local success, message = pcall(function() number.Int = num end)
     AssureTrue(success, "Assign "..num.." to Int: "..tostring(message))
-    AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from int")
+    AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from int. (Check Lua compilation flag LUA_FLOORN2I=F2Ifloor")
     success, message = pcall(function() number.Float = num end)
     AssureTrue(success, "Assign "..num.." to Float: "..tostring(message))
-    AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from float")
+    AssureEqual(number.Int, math.floor(num), "InternalConversion_TestNumberToInt from float.")
 end
 
 InternalConversion_TestNumberToInt(1.0)

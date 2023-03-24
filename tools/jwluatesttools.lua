@@ -842,3 +842,21 @@ function GetRunningFolderPath()
     str:SetRunningLuaFolderPath()
     return str.LuaString
 end
+
+function WinMac(winval, macval)
+    if finenv.UI():IsOnWindows() then
+        return winval
+    else
+        return macval
+    end
+end
+
+function DoRequire(str)
+    -- this function allows for require to fail gracefully with a test error
+    local success, lib = pcall(function() return require(str) end)
+    if not AssureTrue(success, "require('"..str.."'): "..tostring(lib)) then
+        return nil
+    end
+    return lib
+end
+
