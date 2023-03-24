@@ -2,7 +2,7 @@ function plugindef()
    -- This function and the 'finaleplugin' namespace
    -- are both reserved for the plug-in definition.
    finaleplugin.NoStore = true
-   finaleplugin.LoadLuaOSUtils = truen
+   finaleplugin.LoadLuaOSUtils = true
    return "Finale Lua Internal Tests", "Internal Tests", "Test internal Lua features."
 end
 

@@ -682,10 +682,18 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     local headers = {
         ["Content-Type"] = "application/json"
     }
+    
+    local test_data = "This is a test"
 
-    local success, data = internet.post_sync("https://httpbin.org/post", "This is a test", 5, headers)
+    local success, data = internet.post_sync("https://httpbin.org/post", test_data, 5, headers)
     if AssureTrue(success, "internet.post_sync: "..data) then
-        -- ToDo: compare that we got our message back: requires JSON
+        local cjson = DoRequire("cjson.safe")
+        if cjson then
+            local response, errmsg = cjson.decode(data)
+            if AssureNonNil(response, "cjson.decode: "..tostring(errmsg)) then
+                AssureEqual(response.data, test_data, "internet.post_sync got expected reply: "..response.data)
+            end
+        end
     end
 end
 
