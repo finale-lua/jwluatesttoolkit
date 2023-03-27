@@ -183,10 +183,11 @@ function GetPropTable(classtable, key)
 end
 
 -- Tests that the property name exists
-function TestPropertyName(classname, propertyname, testsetter)
+function TestPropertyName(classname, propertyname, testsetter, namespace)
+    namespace = namespace or "finale"
     TestIncrease()
-    for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+    for k,v in pairs(_G[namespace]) do
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
             if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return end
             if not AssureNonNil(GetPropTable(v, "__propset"), "Internal error: __propset wasn't found for class " .. classname) then return false end
@@ -204,11 +205,15 @@ function TestPropertyName(classname, propertyname, testsetter)
     TestError("Class name not found: " .. classname)
 end
 
+function TestKVIsClass(namespace, classstable)
+    return (namespace == "finale") and classstable.__class or true
+end
+
 -- Tests that the function name exists
 function TestFunctionName(classname, functionname)
     TestIncrease()
     for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
             AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
             return true
@@ -219,15 +224,16 @@ function TestFunctionName(classname, functionname)
 end
 
 -- Test the availability of the class and that the ClassName() method returns the correct string
-function TestClassName(obj, classname)
+function TestClassName(obj, classname, namespace)
+    namespace = namespace or "finale"
     TestIncrease()
     if (obj == nil) then
         TestError("'obj' is nil in TestClassName() when testing for classname " .. classname)
         return false
     end
     TestIncrease()
-    for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+    for k,v in pairs(_G[namespace]) do
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found - test the Class name method in the object
             TestIncrease()
             if obj:ClassName() ~= classname then
@@ -241,15 +247,15 @@ function TestClassName(obj, classname)
 end
 
 -- Read-only test for properties
-function PropertyTest_RO(obj, classname, propertyname)
-    if not TestClassName(obj, classname) then return end
-    TestPropertyName(classname, propertyname, false)
+function PropertyTest_RO(obj, classname, propertyname, namespace)
+    if not TestClassName(obj, classname, namespace) then return end
+    TestPropertyName(classname, propertyname, false, namespace)
 end
 
 -- Test for read/write properties
-function PropertyTest(obj, classname, propertyname)
-    if not TestClassName(obj, classname) then return end
-    TestPropertyName(classname, propertyname, true)
+function PropertyTest(obj, classname, propertyname, namespace)
+    if not TestClassName(obj, classname, namespace) then return end
+    TestPropertyName(classname, propertyname, true, namespace)
 end
 
 -- Test for class methods
