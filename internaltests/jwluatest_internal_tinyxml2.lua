@@ -62,7 +62,6 @@ local function TestTinyXML2_Classes()
     if not AssureNonNil(tinyxml2.XMLDocument, "tinyxml2.XMLDocument") then return end
     local xml = tinyxml2.XMLDocument()
     if not TestClassName(xml, "XMLDocument", "tinyxml2") then return end
-    --[[
     TestClassName(xml:NewText("XMLText"), "XMLText", "tinyxml2")
     TestClassName(xml:NewComment("XMLComment"), "XMLComment", "tinyxml2")
     TestClassName(xml:NewDeclaration("XMLDeclaration"), "XMLDeclaration", "tinyxml2")
@@ -70,7 +69,6 @@ local function TestTinyXML2_Classes()
     TestClassName(xml:NewElement("XMLElement"), "XMLElement", "tinyxml2")
     TestClassName(tinyxml2.XMLHandle(xml), "XMLHandle", "tinyxml2")
     TestClassName(xml:InsertFirstChild(xml:NewText("XMLTextForXMLNode")), "XMLNode", "tinyxml2")
-    ]]
     local element = xml:NewElement("ElementForAttribute")
     if not AssureNonNil(element, "xml:NewElement(\"ElementForAttribute\")") then return end
     element:SetAttribute("testattribute", "true")
@@ -87,6 +85,51 @@ local function TestTinyXML2_Properties()
                     {tinyxml2.PRESERVE_WHITESPACE, tinyxml2.COLLAPSE_WHITESPACE})
 end
 
+local function TestTinyXML2_WithFile()
+    local xml = tinyxml2.XMLDocument()
+    AssureNonNil(xml, "TestTinyXML2_WithFile tinyxml2.XMLDocument()")
+    AssureEqual(tinyxml2.XML_SUCCESS, xml:LoadFile(GetRunningFolderPath() .. "/tools/breakfast_menu.xml"), "TestTinyXML2_WithFile LoadFile")
+    local menu = xml:FirstChildElement("breakfast_menu")
+    if AssureNonNil(menu, "TestTinyXML2_WithFile xml:FirstChildElement(\"breakfast_menu\")") then
+        local function checkItem(element, name, price, description, calories)
+            if not AssureNonNil(element, "TestTinyXML2_WithFile: element for "..name..".") then
+                return nil
+            end
+            local function getText(element_name)
+                local subelement = element:FirstChildElement(element_name)
+                if not AssureNonNil(subelement, "TestTinyXML2_WithFile: element for "..name.."->"..element_name..".") then
+                    return nil
+                end
+                return subelement:GetText()
+            end
+            local function getInt(element_name)
+                local subelement = element:FirstChildElement(element_name)
+                if not AssureNonNil(subelement, "TestTinyXML2_WithFile: element for "..name.."->"..element_name..".") then
+                    return nil
+                end
+                return subelement:IntText(-1)
+            end
+            AssureEqual(price, getText("price"), "TestTinyXML2_WithFile: element for "..price..".")
+            AssureEqual(name, getText("name"), "TestTinyXML2_WithFile: element for "..name..".")
+            AssureEqual(description, getText("description"), "TestTinyXML2_WithFile: element for "..description..".")
+            AssureEqual(calories, getInt("calories"), "TestTinyXML2_WithFile: element for "..calories..".")
+            return tinyxml2.XMLHandle(element):NextSibling():ToElement()
+        end
+        local element = menu:FirstChildElement("food")
+        element = checkItem(element, "Belgian Waffles", "$5.95",
+                                "Two of our famous Belgian Waffles with plenty of real maple syrup", 650)
+        element = checkItem(element, "Strawberry Belgian Waffles", "$7.95",
+                                "Light Belgian waffles covered with strawberries and whipped cream", 900)
+        element = checkItem(element, "Berry-Berry Belgian Waffles", "$8.95",
+                                "Light Belgian waffles covered with an assortment of fresh berries and whipped cream", 900)
+        element = checkItem(element, "French Toast", "$4.50",
+                                "Thick slices made from our homemade sourdough bread", 600)
+        element = checkItem(element, "Homestyle Breakfast", "$6.95",
+                                "Two eggs, bacon or sausage, toast, and our ever-popular hash browns", 950)
+        AssureNil(element, "TestTinyXML2_WithFile: element at end of menu")
+    end
+end
+
 TestTinyXML2_Classes()
 TestTinyXML2_Properties()
-
+TestTinyXML2_WithFile()
