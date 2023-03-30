@@ -685,7 +685,7 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     
     local test_data = "This is a test"
 
-    local success, data = internet.post_sync("https://httpbin.org/post", test_data, 5, headers)
+    local success, data = internet.post_sync("https://httpbin.org/post", test_data, 10, headers)
     if AssureTrue(success, "internet.post_sync: "..data) then
         local cjson = DoRequire("cjson.safe")
         if cjson then

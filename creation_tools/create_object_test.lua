@@ -58,6 +58,12 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
     local funcsuffix = ""
     local loadinfo = ""
     if id1 then
+        if type(id1) ~= "string" then
+            id1 = tostring(id1):gsub("-", "n")
+        end
+        if id2 and type(id2) ~= "string" then
+            id2 = tostring(id2):gsub("-", "n")
+        end
         funcsuffix = "_ItemNo" .. id1
         if id2 then
             funcsuffix  = funcsuffix .. "_" .. id2
@@ -144,11 +150,32 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
+local key = finale.FCCell(1,1):GetKeySignature()
+local transposer = finale.FCTransposer(1, -2, key)
+transposer:ChromaticTranspose(2, -1)
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:DiatonicTranspose(-3)
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:DefaultEnharmonicTranspose()
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:EnharmonicTranspose(1)
+transposer:EnharmonicTranspose(1)
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:SimplifySpelling(1)
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:EDOStepTranspose(17)
+ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
+transposer:OctaveTranspose(1)
+ProcessObject(transposer, "transposer", false, transposer.Displacement, transposer.RaiseLower)
+
+
+--[[
 local entry = LoadMeasureEntry(30, 3, 312)
 local obj = finale.FCSyllableEntryMod()
 obj:SetNoteEntry(entry)
 obj:LoadFirst()
 ProcessObject(obj, "obj")
+]]
 
 --[[
 local coll = finale.FCChords()
