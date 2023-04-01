@@ -2,12 +2,15 @@
 
 local success, result -- for using pcall
 
-local num = finale.FCNumber(1/0)
-local expected = num.Int == 0x7fffffff or num.Int == -2147483648
-AssureTrue(expected, "Math num.Int == 0x7fffffff or num.Int == -2147483648.")
-AssureEqual(num.Float, 1/0, "Math num.Float == 1/0. (Float may be defined as 'float' instead of 'double' in the PDK Framework.)") -- Float returned "nil" before 0.67
-success, result = pcall(function() num.Int = 1/0 return num.Int end) -- this does not fail in Lua 5.2
-AssureFalse(success, "Math num.Int = 1/0 returned "..tostring(result).." but should have been a runtime error.")
+local success, num = pcall(function() return finale.FCNumber(1/0) end) -- this errors out on LuaBridge3
+if AssureTrue(success, "Assigning 1/0 to FCNumber: "..num) then
+    local num = finale.FCNumber(1/0)
+    local expected = num.Int == 0x7fffffff or num.Int == -2147483648
+    AssureTrue(expected, "Math num.Int == 0x7fffffff or num.Int == -2147483648.")
+    AssureEqual(num.Float, 1/0, "Math num.Float == 1/0. (Float may be defined as 'float' instead of 'double' in the PDK Framework.)") -- Float returned "nil" before 0.67
+    success, result = pcall(function() num.Int = 1/0 return num.Int end) -- this does not fail in Lua 5.2
+    AssureFalse(success, "Math num.Int = 1/0 returned "..tostring(result).." but should have been a runtime error.")
+end
 
 AssureNonNil(string.find(tostring(0/0), "nan"), "Math 0/0 == nan")
 AssureNonNil(string.find(tostring(1/0), "inf"), "Math 1/0 == inf")
