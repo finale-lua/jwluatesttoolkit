@@ -18,6 +18,6 @@ end
 
 
 -- Call:
- local ssystem = finale.FCStaffSystem()
+local ssystem = finale.FCStaffSystem()
 AssureTrue(ssystem:Load(1))
 FCStaffSystem_PropertyTests(ssystem)
