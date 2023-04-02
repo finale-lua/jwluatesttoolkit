@@ -19,5 +19,8 @@ end
 
 -- Call:
 local ssystem = finale.FCStaffSystem()
-AssureTrue(ssystem:Load(1))
-FCStaffSystem_PropertyTests(ssystem)
+local success, loadrslt = pcall(ssystem.Load, ssystem, 1) -- LuaBridge 3 is croaking on this, so let's get past it for more tests.
+if AssureTrue(success, "FCStaffSystem.Load got runtime error: "..tostring(loadrslt)) then
+    AssureTrue(loadrslt, "FCStaffSystem loaded successfully.")
+    FCStaffSystem_PropertyTests(ssystem)
+end
