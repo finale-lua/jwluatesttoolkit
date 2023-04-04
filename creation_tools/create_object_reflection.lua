@@ -45,7 +45,7 @@ end
 
 local num_methods = 0
 local num_classes = 0
-local refl_auto_max = 80 -- maximum number to use with REFL_AUTO (cannot be larger than 98)
+local refl_auto_max = 0 -- maximum number to use with REFL_AUTO (cannot be larger than 98)
 local property_include_min = -1 -- (disable filtering) -- include any class with at least this many properties
 
 function __static_table(classtable)
