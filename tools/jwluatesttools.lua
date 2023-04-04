@@ -446,7 +446,7 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
     return obj
 end
 
--- This function is used to icertain records because a particular property is supposed to unlink but doesn't.
+-- This function is used to with certain records because a particular property is supposed to unlink but doesn't.
 -- This allows the test scripts to pre-unlink the records so that the test can run without errors.
 -- It can be changed to do nothing so that we can discover which properties still need to be fixed.
 function UnlinkWithProperty(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)

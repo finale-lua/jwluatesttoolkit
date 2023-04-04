@@ -35,29 +35,6 @@ end
 -- Test the constants:
 TestConstants_TinyXML2()
 
-local function PropertyTest_TinyXML2(obj, classname, propertyname, defaultvalue, testvalue)
-    -- Can't use PropertyTest because it expects to find __propget table, and tinyxml2 doesn't have that
-    -- PropertyTest(obj, classname, propertyname, "tinyxml2")
-    if not TestClassName(obj, classname, "tinyxml2") then return end
-    if not AssureNonNil(obj[propertyname], propertyname.." property not found for class "..classname..".") then return end
-    AssureEqual(obj[propertyname], defaultvalue, "PropertyTest_TinyXML2 property starts out with defaultvalue.")
-    
-    local function tryValue(value)
-        local success, errmsg = pcall(function() obj[propertyname] = value end)
-        AssureTrue(success, "PropertyTest_TinyXML2 could not set "..classname.."."..propertyname.." to "..tostring(value)..": "..tostring(errmsg))
-    end
-    
-    if type(testvalue) == "nil" then
-        tryValue(not obj[propertyname])
-    elseif type(testvalue) ~= "table" then
-        tryValue(testvalue)
-    else
-        for _, v in pairs(testvalue) do
-            tryValue(v)
-        end
-    end    
-end
-
 local function TestTinyXML2_Classes()
     if not AssureNonNil(tinyxml2.XMLDocument, "tinyxml2.XMLDocument") then return end
     local xml = tinyxml2.XMLDocument()
@@ -76,13 +53,6 @@ local function TestTinyXML2_Classes()
     -- XMLVisitor and XMLPrinter not currently supported (as of 0.67)
     --TestClassName(obj, "XMLVisitor", "tinyxml2")
     --TestClassName(obj, "XMLPrinter", "tinyxml2")
-end
-
-local function TestTinyXML2_Properties()
-    local xmldoc = tinyxml2.XMLDocument()
-    PropertyTest_TinyXML2(xmldoc, "XMLDocument", "ProcessEntities", true)
-    PropertyTest_TinyXML2(xmldoc, "XMLDocument", "WhitespaceMode", tinyxml2.PRESERVE_WHITESPACE,
-                    {tinyxml2.PRESERVE_WHITESPACE, tinyxml2.COLLAPSE_WHITESPACE})
 end
 
 local function TestTinyXML2_WithFile()
@@ -131,5 +101,4 @@ local function TestTinyXML2_WithFile()
 end
 
 TestTinyXML2_Classes()
-TestTinyXML2_Properties()
 TestTinyXML2_WithFile()

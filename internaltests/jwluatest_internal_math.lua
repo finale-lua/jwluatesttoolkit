@@ -2,8 +2,9 @@
 
 local success, result -- for using pcall
 
-local success, num = pcall(function() return finale.FCNumber(1/0) end) -- this errors out on LuaBridge3
-if AssureTrue(success, "Assigning 1/0 to FCNumber: "..tostring(num)) then
+success, result = pcall(function() return finale.FCNumber(1/0) end) -- this errors out on LuaBridge3
+if AssureTrue(success, "Assigning 1/0 to FCNumber: "..tostring(result)) then
+    local num = result
     local expected = num.Int == 0x7fffffff or num.Int == -2147483648
     AssureTrue(expected, "Math num.Int == 0x7fffffff or num.Int == -2147483648.")
     AssureEqual(num.Float, 1/0, "Math num.Float == 1/0. (Float may be defined as 'float' instead of 'double' in the PDK Framework.)") -- Float returned "nil" before 0.67
