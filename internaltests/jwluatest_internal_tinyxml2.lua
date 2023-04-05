@@ -85,11 +85,37 @@ local function TestTinyXML2_WithFile()
             AssureEqual(calories, getInt("calories"), "TestTinyXML2_WithFile: element for "..calories..".")
             return tinyxml2.XMLHandle(element):NextSibling():ToElement()
         end
-        -- call FirstChildElement explicitly with nil to verify that it works.
-        local success, element = pcall(function() return menu:FirstChildElement(nil) end)
-        if not AssureTrue(success, "TestTinyXML2_WithFile: calling FirstChildElement with nil: "..tostring(element)) then return end
-        if not AssureNonNil(element, "TestTinyXML2_WithFile: calling FirstChildElement with nil") then return end
-        AssureEqual(element:Name(), "food", "TestTinyXML2_WithFile: calling FirstChildElement with nil got \"food\" element.")
+        -- exercize various calling options to make sure they work and return expected values     
+        local success, result
+        success, element = pcall(function() return menu:Attribute() end)
+        AssureFalse(success, "TestTinyXML2_WithFile: calling Attribute with no arguments")
+        success, element = pcall(function() return menu:Attribute("test") end)
+        if AssureTrue(success, "TestTinyXML2_WithFile: calling Attribute with 1 argument: "..tostring(element)) then
+            AssureNil(element, "TestTinyXML2_WithFile: calling Attribute with 1 argument")
+        end
+        success, element = pcall(function() return menu:Attribute("test", nil) end)
+        if AssureTrue(success, "TestTinyXML2_WithFile: calling Attribute with 2nd argument nil: "..tostring(element)) then
+            AssureNil(element, "TestTinyXML2_WithFile: calling Attribute with 2nd argument nil")
+        end
+        success, element = pcall(function() return menu:Attribute("test", "test") end)
+        if AssureTrue(success, "TestTinyXML2_WithFile: calling Attribute with 2nd argument non-nil: "..tostring(element)) then
+            AssureNil(element, "TestTinyXML2_WithFile: calling Attribute with 2nd argument non-nil")
+        end
+        success, element = pcall(function() return menu:FirstChildElement(nil) end)
+        if AssureTrue(success, "TestTinyXML2_WithFile: calling FirstChildElement with nil: "..tostring(element)) then
+            if AssureNonNil(element, "TestTinyXML2_WithFile: calling FirstChildElement with nil") then
+                AssureEqual(element:Name(), "food", "TestTinyXML2_WithFile: calling FirstChildElement with nil got \"food\" element.")
+            end
+        end
+        success, element = pcall(function() return menu:FirstChildElement() end)
+        if AssureTrue(success, "TestTinyXML2_WithFile: calling FirstChildElement with no arguments: "..tostring(element)) then
+            if AssureNonNil(element, "TestTinyXML2_WithFile: calling FirstChildElement with no arguments") then
+                AssureEqual(element:Name(), "food", "TestTinyXML2_WithFile: calling FirstChildElement with no arguments got \"food\" element.")
+            end
+        end
+        success, element = pcall(function() return menu:FirstChildElement("food") end)
+        if not AssureTrue(success, "TestTinyXML2_WithFile: calling FirstChildElement with \"food\": "..tostring(element)) then return end
+        if not AssureNonNil(element, "TestTinyXML2_WithFile: calling FirstChildElement with \"food\"") then return end
         element = checkItem(element, "Belgian Waffles", "$5.95",
                                 "Two of our famous Belgian Waffles with plenty of real maple syrup", 650)
         element = checkItem(element, "Strawberry Belgian Waffles", "$7.95",
