@@ -85,7 +85,11 @@ local function TestTinyXML2_WithFile()
             AssureEqual(calories, getInt("calories"), "TestTinyXML2_WithFile: element for "..calories..".")
             return tinyxml2.XMLHandle(element):NextSibling():ToElement()
         end
-        local element = menu:FirstChildElement("food")
+        -- call FirstChildElement explicitly with nil to verify that it works.
+        local success, element = pcall(function() return menu:FirstChildElement(nil) end)
+        if not AssureTrue(success, "TestTinyXML2_WithFile: calling FirstChildElement with nil: "..tostring(element)) then return end
+        if not AssureNonNil(element, "TestTinyXML2_WithFile: calling FirstChildElement with nil") then return end
+        AssureEqual(element:Name(), "food", "TestTinyXML2_WithFile: calling FirstChildElement with nil got \"food\" element.")
         element = checkItem(element, "Belgian Waffles", "$5.95",
                                 "Two of our famous Belgian Waffles with plenty of real maple syrup", 650)
         element = checkItem(element, "Strawberry Belgian Waffles", "$7.95",
