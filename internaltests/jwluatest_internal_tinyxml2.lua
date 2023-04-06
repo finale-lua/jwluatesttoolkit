@@ -32,9 +32,6 @@ local function TestConstants_TinyXML2()
    NumberConstantTest(tinyxml2.XML_WRONG_ATTRIBUTE_TYPE, "XML_WRONG_ATTRIBUTE_TYPE", 2)
 end
 
--- Test the constants:
-TestConstants_TinyXML2()
-
 local function TestTinyXML2_Classes()
     if not AssureNonNil(tinyxml2.XMLDocument, "tinyxml2.XMLDocument") then return end
     local xml = tinyxml2.XMLDocument()
@@ -130,5 +127,49 @@ local function TestTinyXML2_WithFile()
     end
 end
 
+local function TestTinyXML2_WithPrinter()
+    local xmlstring = [[
+<bookstore>
+    <book category="children" largeprint="false">
+        <title>The Cat in the Hat</title>
+        <author>Dr. Seuss</author>
+        <signed>true</signed>
+    </book>
+    <book category="web" largeprint="true">
+        <title>Learning Lua</title>
+        <author>Roberto Ierusalimschy</author>
+        <author>Lua.org</author>
+        <signed>false</signed>
+    </book>
+</bookstore>
+]]
+    
+    local xml1 = tinyxml2.XMLDocument()
+    local ptr1 = tinyxml2.XMLPrinter()
+    AssureEqual(xml1:Parse(xmlstring), tinyxml2.XML_SUCCESS, "TestTinyXML2_WithPrinter: Call to parse xmlstring.")
+    xml1:Print(ptr1)
+    AssureEqualStrings(ptr1:CStr(), xmlstring, "TestTinyXML2_WithPrinter: printed xml and original xml are equal.")
+    
+    local xmlstring2 = "\xEF\xBB\xBF".. [[
+<?xml version="1.0"?>
+<test foo="bar" double="1.5">
+    <test-child>John Q. Public</test-child>
+</test>
+]]
+
+    local ptr2 = tinyxml2.XMLPrinter()
+    ptr2:PushHeader(true, true)
+    ptr2:OpenElement("test")
+        ptr2:PushAttribute("foo", "bar")
+        ptr2:PushDoubleAttribute("double", 1.5)
+        ptr2:OpenElement("test-child")
+            ptr2:PushText("John Q. Public")
+        ptr2:CloseElement()
+    ptr2:CloseElement()
+    AssureEqualStrings(ptr2:CStr(), xmlstring2, "TestTinyXML2_WithPrinter: adhoc xml and original xml are equal.")
+end
+
+TestConstants_TinyXML2()
 TestTinyXML2_Classes()
 TestTinyXML2_WithFile()
+TestTinyXML2_WithPrinter()

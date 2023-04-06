@@ -66,7 +66,7 @@ end
 
 -- Report test error and increase error counter:
 function TestError(errorstring)
-    print("TEST ERROR: ", errorstring)
+    print("TEST ERROR: "..errorstring)
     NoOfTestErrors = NoOfTestErrors + 1
 end
 
@@ -128,6 +128,38 @@ function AssureEqual(value1, value2, testtext)
     return false
 end
 
+function AssureEqualStrings(str1, str2, testtext)
+    if not AssureEqual(type(str1), "string", testtext.." (str1 is not a string)") then return false end
+    if not AssureEqual(type(str2), "string", testtext.." (str2 is not a string)") then return false end
+    TestIncrease()
+    local len1, len2 = #str1, #str2
+    local len = math.min(len1, len2)
+    local diffPos = nil
+
+    for i = 1, len do
+    local ch1 = str1:sub(i,i)
+    local ch2 = str2:sub(i,i)
+    if str1:sub(i,i) ~= str2:sub(i,i) then
+        diffPos = i
+        break
+    end
+    end
+
+    if not diffPos and len1 == len2 then
+        return true
+    end
+
+    if not diffPos then
+        diffPos = len + 1
+    end
+
+    local str1Remainder = str1:sub(diffPos)
+    local str2Remainder = str2:sub(diffPos)
+
+    TestError(testtext.." (first difference is at position " .. diffPos .. ")")
+    TestError("    str1: " .. str1Remainder)
+    TestError("    str2: " .. str2Remainder)
+end
 
 -- Tests if the key name exists in the parent table.
 -- Test only one level back.
