@@ -12,7 +12,8 @@ local minor_version = bit32.band(finenv.RawFinaleVersion, 0x00f00000)
 if minor_version ~= 0 then
     fin_version = fin_version .. "." .. tostring(bit32.rshift(minor_version, 20))
 end
-print("Lua Version ".._VERSION)
+print(_VERSION)
+print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)
 
@@ -65,7 +66,7 @@ end
 
 -- Report test error and increase error counter:
 function TestError(errorstring)
-    print("TEST ERROR: ", errorstring)
+    print("TEST ERROR: "..errorstring)
     NoOfTestErrors = NoOfTestErrors + 1
 end
 
@@ -127,6 +128,38 @@ function AssureEqual(value1, value2, testtext)
     return false
 end
 
+function AssureEqualStrings(str1, str2, testtext)
+    if not AssureEqual(type(str1), "string", testtext.." (str1 is not a string)") then return false end
+    if not AssureEqual(type(str2), "string", testtext.." (str2 is not a string)") then return false end
+    TestIncrease()
+    local len1, len2 = #str1, #str2
+    local len = math.min(len1, len2)
+    local diffPos = nil
+
+    for i = 1, len do
+    local ch1 = str1:sub(i,i)
+    local ch2 = str2:sub(i,i)
+    if str1:sub(i,i) ~= str2:sub(i,i) then
+        diffPos = i
+        break
+    end
+    end
+
+    if not diffPos and len1 == len2 then
+        return true
+    end
+
+    if not diffPos then
+        diffPos = len + 1
+    end
+
+    local str1Remainder = str1:sub(diffPos)
+    local str2Remainder = str2:sub(diffPos)
+
+    TestError(testtext.." (first difference is at position " .. diffPos .. ")")
+    TestError("    str1: " .. str1Remainder)
+    TestError("    str2: " .. str2Remainder)
+end
 
 -- Tests if the key name exists in the parent table.
 -- Test only one level back.
@@ -183,10 +216,11 @@ function GetPropTable(classtable, key)
 end
 
 -- Tests that the property name exists
-function TestPropertyName(classname, propertyname, testsetter)
+function TestPropertyName(classname, propertyname, testsetter, namespace)
+    namespace = namespace or "finale"
     TestIncrease()
-    for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+    for k,v in pairs(_G[namespace]) do
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
             if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return end
             if not AssureNonNil(GetPropTable(v, "__propset"), "Internal error: __propset wasn't found for class " .. classname) then return false end
@@ -204,11 +238,15 @@ function TestPropertyName(classname, propertyname, testsetter)
     TestError("Class name not found: " .. classname)
 end
 
+function TestKVIsClass(namespace, classstable)
+    return (namespace == "finale") and classstable.__class or true
+end
+
 -- Tests that the function name exists
 function TestFunctionName(classname, functionname)
     TestIncrease()
     for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
             AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
             return true
@@ -219,19 +257,22 @@ function TestFunctionName(classname, functionname)
 end
 
 -- Test the availability of the class and that the ClassName() method returns the correct string
-function TestClassName(obj, classname)
+function TestClassName(obj, classname, namespace)
+    namespace = namespace or "finale"
     TestIncrease()
     if (obj == nil) then
         TestError("'obj' is nil in TestClassName() when testing for classname " .. classname)
         return false
     end
     TestIncrease()
-    for k,v in pairs(_G.finale) do
-        if k == classname and v.__class then
+    for k,v in pairs(_G[namespace]) do
+        if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found - test the Class name method in the object
             TestIncrease()
-            if obj:ClassName() ~= classname then
-                TestError("ClassName() method for class " .. classname .. " returns " .. obj:ClassName())
+            if AssureNonNil(obj.ClassName, "ClassName method for class "..classname) then
+                if obj:ClassName() ~= classname then
+                    TestError("ClassName() method for class " .. classname .. " returns " .. obj:ClassName())
+                end
             end
             return true -- Class found, so that's considered a success
         end
@@ -241,15 +282,15 @@ function TestClassName(obj, classname)
 end
 
 -- Read-only test for properties
-function PropertyTest_RO(obj, classname, propertyname)
-    if not TestClassName(obj, classname) then return end
-    TestPropertyName(classname, propertyname, false)
+function PropertyTest_RO(obj, classname, propertyname, namespace)
+    if not TestClassName(obj, classname, namespace) then return end
+    TestPropertyName(classname, propertyname, false, namespace)
 end
 
 -- Test for read/write properties
-function PropertyTest(obj, classname, propertyname)
-    if not TestClassName(obj, classname) then return end
-    TestPropertyName(classname, propertyname, true)
+function PropertyTest(obj, classname, propertyname, namespace)
+    if not TestClassName(obj, classname, namespace) then return end
+    TestPropertyName(classname, propertyname, true, namespace)
 end
 
 -- Test for class methods
@@ -439,7 +480,7 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
     return obj
 end
 
--- This function is used to icertain records because a particular property is supposed to unlink but doesn't.
+-- This function is used to with certain records because a particular property is supposed to unlink but doesn't.
 -- This allows the test scripts to pre-unlink the records so that the test can run without errors.
 -- It can be changed to do nothing so that we can discover which properties still need to be fixed.
 function UnlinkWithProperty(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
@@ -842,3 +883,21 @@ function GetRunningFolderPath()
     str:SetRunningLuaFolderPath()
     return str.LuaString
 end
+
+function WinMac(winval, macval)
+    if finenv.UI():IsOnWindows() then
+        return winval
+    else
+        return macval
+    end
+end
+
+function DoRequire(str)
+    -- this function allows for require to fail gracefully with a test error
+    local success, lib = pcall(function() return require(str) end)
+    if not AssureTrue(success, "require('"..str.."'): "..tostring(lib)) then
+        return nil
+    end
+    return lib
+end
+

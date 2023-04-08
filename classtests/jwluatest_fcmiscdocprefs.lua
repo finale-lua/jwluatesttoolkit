@@ -1,11 +1,11 @@
 function FCMiscDocPrefs_PropertyTests(miscdocprefs)    
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCommonTimeSig")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCutTimeSig")
-   PropertyTest(miscdocprefs, "FCMiscDocPrefs", "AdjustDotForMultiVoices")
+   BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AdjustDotForMultiVoices")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AllowFloatingRests")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AlwaysSlashGraceNote")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AvoidSystemMarginCollisions")
-   PropertyTest(miscdocprefs, "FCMiscDocPrefs", "BeamSlopeStyle", {finale.BEAMSLOPE_ENDNOTESONLY,            
+   NumberPropertyTest(miscdocprefs, "FCMiscDocPrefs", "BeamSlopeStyle", {finale.BEAMSLOPE_ENDNOTESONLY,            
             finale.BEAMSLOPE_FLATTENALL, finale.BEAMSLOPE_FLATTENSTANDARD, finale.BEAMSLOPE_FLATTENEXTREME})
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "BeamThreeEights")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "BeamedCommonTimeEights")
@@ -21,7 +21,7 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CourtesyTimeSigAtSystemEnd")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CrossStaffNotesInOriginal")
    NumberPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CurveResolution", {1, 67, 128})
-   PropertyTest(miscdocprefs, "FCMiscDocPrefs", "DateFormat",  {finale.DATEFORMAT_SHORT, 
+   NumberPropertyTest(miscdocprefs, "FCMiscDocPrefs", "DateFormat",  {finale.DATEFORMAT_SHORT, 
                 finale.DATEFORMAT_LONG, finale.DATEFORMAT_MACLONG})
    NumberPropertyTest(miscdocprefs, "FCMiscDocPrefs", "DefaultClefIndex", {0, 5, 14})
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "DisplayAllBarlines")

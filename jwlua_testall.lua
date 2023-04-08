@@ -1,4 +1,5 @@
-function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   return "Finale Lua - All Tests", "All Tests", "Run all the Finale Lua tests. Requires the debug file template."end
+function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true
+   return "Finale Lua - All Tests", "All Tests", "Run all the Finale Lua tests. Requires the debug file template."end
 
 if finenv.IsRGPLua then -- if new lua
     require('mobdebug').start()

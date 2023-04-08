@@ -17,9 +17,14 @@ require("tools/jwluatesttools")
 -- Load and execute the unit tests for the classes:
 require("internaltests/jwluatest_internal_bit32")
 require("internaltests/jwluatest_internal_clib")
-require("internaltests/jwluatest_internal_execute")
 require("internaltests/jwluatest_internal_conversion")
+require("internaltests/jwluatest_internal_execute")
+require("internaltests/jwluatest_internal_math")
+require("internaltests/jwluatest_internal_tinyxml2")
 require("internaltests/jwluatest_internal_utf8")
+require("internaltests/jwluatest_internal_utils_internet")
+require("internaltests/jwluatest_internal_utils_process")
+require("internaltests/jwluatest_internal_utils_text")
 
 -- Output the results from the tests:
 PrintTestResult()
