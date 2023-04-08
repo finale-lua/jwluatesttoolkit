@@ -269,8 +269,10 @@ function TestClassName(obj, classname, namespace)
         if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found - test the Class name method in the object
             TestIncrease()
-            if obj:ClassName() ~= classname then
-                TestError("ClassName() method for class " .. classname .. " returns " .. obj:ClassName())
+            if AssureNonNil(obj.ClassName, "ClassName method for class "..classname) then
+                if obj:ClassName() ~= classname then
+                    TestError("ClassName() method for class " .. classname .. " returns " .. obj:ClassName())
+                end
             end
             return true -- Class found, so that's considered a success
         end
