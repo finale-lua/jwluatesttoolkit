@@ -688,7 +688,7 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     local success, data = internet.post_sync("https://httpbin.org/post", test_data, 10, headers)
     if AssureTrue(success, "internet.post_sync: "..data) then
         local cjson = DoRequire("cjson.safe")
-        if cjson then
+        if AssureNonNil(cjson, "Lua-cjson in internet tests") then
             local response, errmsg = cjson.decode(data)
             if AssureNonNil(response, "cjson.decode: "..tostring(errmsg)) then
                 AssureEqual(response.data, test_data, "internet.post_sync got expected reply: "..response.data)
