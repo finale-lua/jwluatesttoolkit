@@ -74,8 +74,24 @@ local function TestTinyXML2_WithFile()
                 if not AssureNonNil(subelement, "TestTinyXML2_WithFile: element for "..name.."->"..element_name..".") then
                     return nil
                 end
-                return subelement:IntText(-1)
+                return subelement:IntText()
             end
+            local function testQuery(element_name, expected_value)
+                local subelement = element:FirstChildElement(element_name)
+                if not AssureNonNil(subelement, "TestTinyXML2_WithFile: query element for "..name.."->"..element_name..".") then
+                    return
+                end
+                if not AssureNonNil(subelement.QueryDoubleText, "TestTinyXML2_WithFile: QueryDoubleText for "..name.."->"..element_name..".") then
+                    return
+                end
+                local expected_err = expected_value and tinyxml2.XML_SUCCESS or tinyxml2.XML_CAN_NOT_CONVERT_TEXT
+                expected_value = expected_value or 0.0
+                local err, val = subelement:QueryDoubleText()
+                AssureEqual(err, expected_err, "TestTinyXML2_WithFile: query double for "..name.."->"..element_name.." returned "..tostring(err)..".")
+                AssureEqual(val, expected_value, "TestTinyXML2_WithFile: query double for "..name.."->"..element_name.." returned value "..tostring(val)..".")
+            end
+            testQuery("name")
+            testQuery("calories", calories)
             AssureEqual(price, getText("price"), "TestTinyXML2_WithFile: element for "..price..".")
             AssureEqual(name, getText("name"), "TestTinyXML2_WithFile: element for "..name..".")
             AssureEqual(description, getText("description"), "TestTinyXML2_WithFile: element for "..description..".")
@@ -167,6 +183,28 @@ local function TestTinyXML2_WithPrinter()
         ptr2:CloseElement()
     ptr2:CloseElement()
     AssureEqualStrings(ptr2:CStr(), xmlstring2, "TestTinyXML2_WithPrinter: adhoc xml and original xml are equal.")
+    local xml2 = tinyxml2.XMLDocument()
+    AssureEqual(xml2:Parse(ptr2:CStr()), tinyxml2.XML_SUCCESS, "TestTinyXML2_WithPrinter: reparse adhoc xml.")
+    local element = xml2:FirstChildElement()
+    AssureNonNil(element, "TestTinyXML2_WithPrinter: reparsed adhoc xml first child.")
+    if AssureNonNil(element.QueryFloatAttribute, "TestTinyXML2_WithPrinter: element.QueryFloatAttribute") then
+        local function test_attr(name, expected_value)
+            local expected_err = expected_value and tinyxml2.XML_SUCCESS or tinyxml2.XML_WRONG_ATTRIBUTE_TYPE
+            if (name == "bar") then
+                expected_err = tinyxml2.XML_NO_ATTRIBUTE
+            end
+            expected_value = expected_value or 0.0
+            local err, val = element:QueryFloatAttribute(name)
+            AssureEqual(err, expected_err, "TestTinyXML2_WithPrinter: query float for "..name.." returned "..tostring(err)..".")
+            AssureEqual(val, expected_value, "TestTinyXML2_WithPrinter: query float for "..name.." returned value "..tostring(val)..".")
+            err, val = element:QueryIntAttribute(name)
+            AssureEqual(err, expected_err, "TestTinyXML2_WithPrinter: query int for "..name.." returned "..tostring(err)..".")
+            AssureEqual(val, math.floor(expected_value), "TestTinyXML2_WithPrinter: query int for "..name.." returned value "..tostring(val)..".")
+        end
+        test_attr("foo")
+        test_attr("bar")
+        test_attr("double", 1.5)
+    end
 end
 
 TestConstants_TinyXML2()
