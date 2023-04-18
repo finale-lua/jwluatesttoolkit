@@ -9,8 +9,13 @@ end
 local echo_str = "This is a test."
 local command_str = WinMac("cmd /c ","")..'echo '..echo_str
 
-local output = process.execute(command_str)
-AssureNonNil(output, "process.execute succeeded")
-AssureNonNil(string.find(output, echo_str, 1), "process.execute echoed correct value.")
+local success, result = pcall(process.execute, command_str)
+if AssureTrue(success, "pcall process.execute result: "..tostring(result)) then
+    AssureNonNil(result, "process.execute succeeded")
+    AssureNonNil(string.find(result, echo_str, 1), "process.execute echoed correct value.")
+end
 
-AssureTrue(process.launch(command_str), "process.launch launched echo command.")
+success, result = pcall(process.launch, command_str)
+if AssureTrue(success, "pcall process.launch result: "..tostring(result)) then
+    AssureTrue(result, "process.launch launched echo command.")
+end

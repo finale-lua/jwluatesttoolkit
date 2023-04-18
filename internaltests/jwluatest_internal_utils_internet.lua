@@ -684,14 +684,17 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     }
     
     local test_data = "This is a test"
+    
 
-    local success, data = internet.post_sync("https://httpbin.org/post", test_data, 10, headers)
-    if AssureTrue(success, "internet.post_sync: "..data) then
-        local cjson = DoRequire("cjson.safe")
-        if AssureNonNil(cjson, "Lua-cjson in internet tests") then
-            local response, errmsg = cjson.decode(data)
-            if AssureNonNil(response, "cjson.decode: "..tostring(errmsg)) then
-                AssureEqual(response.data, test_data, "internet.post_sync got expected reply: "..response.data)
+    local pcalled, success, data = pcall(internet.post_sync, "https://httpbin.org/post", test_data, 10, headers)
+    if AssureTrue(pcalled, "internet.post_sync: pcall result: "..tostring(success)) then
+        if AssureTrue(success, "internet.post_sync: "..data) then
+            local cjson = DoRequire("cjson.safe")
+            if AssureNonNil(cjson, "Lua-cjson in internet tests") then
+                local response, errmsg = cjson.decode(data)
+                if AssureNonNil(response, "cjson.decode: "..tostring(errmsg)) then
+                    AssureEqual(response.data, test_data, "internet.post_sync got expected reply: "..response.data)
+                end
             end
         end
     end
