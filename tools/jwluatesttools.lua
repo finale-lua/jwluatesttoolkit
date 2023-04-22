@@ -16,6 +16,7 @@ print(_VERSION)
 print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)
+print("Trusted mode "..tostring(finenv.TrustedMode))
 
 
 local NoOfTests = 0
