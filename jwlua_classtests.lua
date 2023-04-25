@@ -16,6 +16,9 @@ require("tools/jwluatesttools")
 if not CheckForOfficialTestTemplate() then return end
 
 -- Load and execute the unit tests for the classes:
+if LuaVersion_ >= 5.4 then
+    require("classtests/jwluatest_close")
+end
 require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")

@@ -12,11 +12,15 @@ local minor_version = bit32.band(finenv.RawFinaleVersion, 0x00f00000)
 if minor_version ~= 0 then
     fin_version = fin_version .. "." .. tostring(bit32.rshift(minor_version, 20))
 end
-print(_VERSION)
+
+LuaVersion_ = tonumber(string.match(_VERSION, "%d+%.%d+"))
+
+print(_VERSION.." ("..tostring(LuaVersion_)..")")
 print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)
 print("Trusted mode "..tostring(finenv.TrustedMode))
+
 
 
 local NoOfTests = 0
