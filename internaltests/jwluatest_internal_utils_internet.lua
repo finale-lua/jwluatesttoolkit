@@ -6,6 +6,13 @@ if not AssureNonNil(internet, osutils._VERSION.." is not the right version.") th
     return
 end
 
+if AssureNonNil(internet.server_name, "luaosutils.internet.server_name does not exist.") then
+    AssureEqual(internet.server_name("https://mail.google.com/mail/u/0/#inbox"), "mail.google.com", "luaosutils.internet.server_name")
+    AssureEqual(internet.server_name("rgp-lua/documentation"), "", "luaosutils.internet.server_name")
+    AssureEqual(internet.server_name("file:///home/documentation/html/annotated.html"), "", "luaosutils.internet.server_name")
+    AssureEqual(internet.server_name("file://Y:/home/documentation/html/annotated.html"), WinMac("","Y"), "luaosutils.internet.server_name")
+end
+
 if not AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get function: using download_url alias instead.") then
     internet.get_sync = internet.download_url_sync
 end
