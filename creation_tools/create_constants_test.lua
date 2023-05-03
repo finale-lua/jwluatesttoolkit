@@ -3,18 +3,20 @@ function plugindef()
    -- are both reserved for the plug-in definition.
    finaleplugin.RequireDocument = false
    finaleplugin.NoStore = true
+   finaleplugin.LoadTinyXML2 = true
    finaleplugin.Author = "Jari Williamsson"
    finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
    return "Create Finale Lua Constants Test", "Create constants test", "Creates a test for the constants available to Finale Lua."
 end
 
-local pattern = "EXPPLAYTYPE_" -- edit as needed in RGP Lua
+local pattern = "SYLLALIGN_" -- edit as needed in RGP Lua
+local namespace = "finale"
 
 local get_finale_propget = function()
     if finenv.IsRGPLua then
-        return _G.finale.__propget
+        return _G[namespace].__propget
     end
-    for k,v in pairs(_G.finale) do
+    for k,v in pairs(_G[namespace]) do
         if string.find(k, "__propget") == 1 and (type(v) == "table") then
             return v
         end
@@ -23,7 +25,7 @@ local get_finale_propget = function()
 end
 
 if finenv.IsRGPLua then
-    require('mobdebug').start()
+    --require('mobdebug').start()
 end
 if not finenv.IsRGPLua then
     -- Show dialog
@@ -63,7 +65,7 @@ ResultString = ResultString .. "function TestConstants_" .. pattern .. "()\n"
 table.sort(result)
 
 for k, v in pairs(result) do
-    local value = _G.finale[v]
+    local value = _G[namespace][v]
     local prefix = "Number"
     if type(value) == "boolean" then
         prefix = "Bool"
@@ -76,7 +78,7 @@ for k, v in pairs(result) do
         prefix = "String"
         value = '"' .. value .. '"'
     end
-    ResultString = ResultString .. "   " .. prefix .. "ConstantTest(finale." .. v .. ", " .. '"' .. v .. '", ' .. value .. ")\n"
+    ResultString = ResultString .. "   " .. prefix .. "ConstantTest(" .. namespace .. "." .. v .. ", " .. '"' .. v .. '", ' .. value .. ")\n"
 end
 ResultString = ResultString .. "end\n\n"
 

@@ -7,6 +7,13 @@ function TestConstants_Finenv_()
         NumberConstantTest(finenv.MessageResultType.FINALE_VERSION_MISMATCH, "FINALE_VERSION_MISMATCH", 4)
         NumberConstantTest(finenv.MessageResultType.LUA_PLUGIN_VERSION_MISMATCH, "LUA_PLUGIN_VERSION_MISMATCH", 5)
     end
+    
+    if AssureNonNil(finenv.MessageResultType, "finenv.TrustedModeType") then
+        NumberConstantTest(finenv.TrustedModeType.UNTRUSTED, "UNTRUSTED", 0)
+        NumberConstantTest(finenv.TrustedModeType.USER_TRUSTED, "USER_TRUSTED", 1)
+        NumberConstantTest(finenv.TrustedModeType.HASH_VERIFIED, "HASH_VERIFIED", 2)
+        NumberConstantTest(finenv.TrustedModeType.NOT_ENFORCED, "NOT_ENFORCED", 3)
+    end
 end
 
 -- Test the constants:

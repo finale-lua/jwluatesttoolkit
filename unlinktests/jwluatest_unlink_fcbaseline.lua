@@ -8,16 +8,17 @@ end
 local process_mode = function(mode, lyric_number)
     local global_baseline = finale.FCBaseline()
     if lyric_number then 
-        global_baseline:LoadDefaultForLyricNumber(mode, lyric_number)
+        AssureTrue(global_baseline:LoadDefaultForLyricNumber(mode, lyric_number), "LoadDefaultForLyricNumber in unlink global baseline for mode "..tostring(mode).." lyric_number "..tostring(lyric_number)..".")
     else
-        global_baseline:LoadDefaultForMode(mode)
+        AssureTrue(global_baseline:LoadDefaultForMode(mode), "LoadDefaultForMode in unlink global baseline for mode "..tostring(mode)..".")
     end
     FCBaseline_Test_Unlinkable(global_baseline, staff_to_part[2])
-    local baselines = finale.FCBaselines()
-    baselines:LoadAllForPiece(mode)
     local sys_staves = finale.FCSystemStaves()
     sys_staves:LoadAllForItem(0)
     for sys_staff in each(sys_staves) do
+        -- get baselines every time because Relink could shuffle them
+        local baselines = finale.FCBaselines()
+        baselines:LoadAllForPiece(mode)
         local baseline = nil
         if lyric_number then
             baseline = baselines:AssureSavedLyricNumberForPiece(mode, sys_staff.Staff, lyric_number)

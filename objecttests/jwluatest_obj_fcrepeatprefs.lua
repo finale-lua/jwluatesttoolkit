@@ -16,6 +16,8 @@ function FCRepeatPrefs_ValueTests_ItemNo1(repeatprefs)
    NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "ForwardSpace", 14)
    NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "HeavyLineThickness", 832)
    NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "MaxPasses", 20)
+   BoolValuePropertyTest(repeatprefs, "FCRepeatPrefs", "ShowOnTopStaffOnly", false, true) -- true: only read the value, do not test the setter
+   NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "ShowOnStaffListID", 1)
    NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "SpaceBetweenLines", 768)
    BoolValuePropertyTest(repeatprefs, "FCRepeatPrefs", "ThinInnerBracketReference", false)
    NumberValuePropertyTest(repeatprefs, "FCRepeatPrefs", "ThinLineThickness", 115)
