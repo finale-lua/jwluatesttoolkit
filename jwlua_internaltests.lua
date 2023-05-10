@@ -2,6 +2,8 @@ function plugindef()
    -- This function and the 'finaleplugin' namespace
    -- are both reserved for the plug-in definition.
    finaleplugin.NoStore = true
+   finaleplugin.ExecuteExternalCode = true
+   finaleplugin.ExecuteHttpsCalls = true
    return "Finale Lua Internal Tests", "Internal Tests", "Test internal Lua features."
 end
 

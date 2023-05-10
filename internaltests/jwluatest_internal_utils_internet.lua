@@ -679,9 +679,11 @@ if AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get or down
                 ["Accept-Language"] = "en-US,en;q=0.9"
             }
      
-    local success, data = internet.get_sync(url, 5, headers)
-    if AssureTrue(success, "internet.get_sync: "..data) then
-        AssureEqual(data, buffer, "internet.get_sync returned value: "..data)
+    local pcalled, success, data = pcall(internet.get_sync, url, 5, headers)
+    if AssureTrue(pcalled, "internet.get_sync: pcall result: "..tostring(success)) then
+        if AssureTrue(success, "internet.get_sync: "..data) then
+            AssureEqual(data, buffer, "internet.get_sync returned value: "..data)
+        end
     end
 end
 
