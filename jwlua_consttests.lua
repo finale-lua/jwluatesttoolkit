@@ -14,6 +14,7 @@ require("tools/jwluatesttools")
 
 -- Load and execute the unit tests for the classes:
 require("constanttests/consttest_fcarticulationdef")
+require("constanttests/consttest_fcbookmark")
 require("constanttests/consttest_fccategorydef")
 require("constanttests/consttest_fccellframehold")
 require("constanttests/consttest_fcchord")

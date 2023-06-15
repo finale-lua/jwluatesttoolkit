@@ -150,24 +150,12 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
-local key = finale.FCCell(1,1):GetKeySignature()
-local transposer = finale.FCTransposer(1, -2, key)
-transposer:ChromaticTranspose(2, -1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:DiatonicTranspose(-3)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:DefaultEnharmonicTranspose()
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:EnharmonicTranspose(1)
-transposer:EnharmonicTranspose(1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:SimplifySpelling(1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:EDOStepTranspose(17)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:OctaveTranspose(1)
-ProcessObject(transposer, "transposer", false, transposer.Displacement, transposer.RaiseLower)
-
+local bookmarks = finale.FCBookmarks()
+bookmarks:LoadAll()
+for i = 0, bookmarks.Count-1 do
+    local bookmark = bookmarks:GetItemAt(i)
+    ProcessObject(bookmark, "bookmark", i < bookmarks.Count - 1)
+end
 
 --[[
 local entry = LoadMeasureEntry(30, 3, 312)
