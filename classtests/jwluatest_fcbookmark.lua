@@ -1,3 +1,7 @@
+if not AssureNonNil(finale.FCBookmark, "finale.FCBookmark") then
+    return
+end
+
 function FCBookmark_PropertyTests(obj)
    obj.ViewType = finale.BOOKMARKTYPE_SCROLLVIEW
    NumberPropertyTest(obj, "FCBookmark", "VerticalPosStaffSet", {1, 3, 8})

@@ -1,3 +1,7 @@
+if not AssureNonNil(finale.FCBookmark, "finale.FCBookmark") then
+    return
+end
+
 function FCBookmark_ValueTests_ItemNo32768(bookmark)
    NumberValuePropertyTest(bookmark, "FCBookmark", "HorizontalPosInst", 2)
    NumberValuePropertyTest(bookmark, "FCBookmark", "Locator", 7)
