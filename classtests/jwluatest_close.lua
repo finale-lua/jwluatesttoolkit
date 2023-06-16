@@ -13,6 +13,7 @@ local entry = LoadMeasureEntry(6, 2, 125)
 AssureNonNil(entry, "Entry for close tests.")
 
 -- All classes that can do <close> (ToDo: special tests for commented out collection classes that can't be constructed in Lua)
+TestClose("FCBookmarks", true)
 TestClose("FCCellMetrics", true)
 TestClose("FCEntryMetrics", true)
 TestClose("FCNumbers", true)
