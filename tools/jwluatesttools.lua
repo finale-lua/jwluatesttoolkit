@@ -15,7 +15,9 @@ end
 
 LuaVersion_ = tonumber(string.match(_VERSION, "%d+%.%d+"))
 
-print(_VERSION.." ("..tostring(LuaVersion_)..")")
+local luavers_string = finenv.LuaReleaseVersion or _VERSION
+
+print(luavers_string.." ("..tostring(LuaVersion_)..")")
 print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)

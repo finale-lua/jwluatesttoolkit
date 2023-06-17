@@ -13,3 +13,15 @@ FunctionTest(str, "FCString", "EndsWith")
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
 str:Replace(",", ".")
 AssureValue(str.LuaString, "88.19444", "SetMeasurement() - centimeters")
+
+str.LuaString = 1.335
+AssureValue(str.LuaString, "1.335", "Set from number with property")
+
+str:SetLuaString(3.556)
+AssureValue(str:GetLuaString(), "3.556", "Set from number with setter")
+
+str.LuaString = "abcde"
+AssureValue(str.LuaString, "abcde", "Set from string with property")
+
+str:SetLuaString("1a4.tr")
+AssureValue(str:GetLuaString(), "1a4.tr", "Set from string with setter")
