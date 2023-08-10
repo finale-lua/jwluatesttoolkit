@@ -17,3 +17,11 @@ end
 
 -- Test the constants:
 TestConstants_EXECMODAL_RETURNS_()
+
+function TestConstants_MENUCMDTYPE_()
+   NumberConstantTest(finale.MENUCMDTYPE_SELECTION, "MENUCMDTYPE_SELECTION", 0)
+   NumberConstantTest(finale.MENUCMDTYPE_ACCELERATOR, "MENUCMDTYPE_ACCELERATOR", 1)
+end
+
+-- Test the constants:
+TestConstants_MENUCMDTYPE_()
