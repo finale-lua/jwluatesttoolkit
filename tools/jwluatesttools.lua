@@ -908,3 +908,15 @@ function DoRequire(str)
     return lib
 end
 
+function CreateMusicRegion(startmeas, startstaff, startpos, endmeas, endstaff, endpos)
+    local region = finale.FCMusicRegion()
+    region.StartMeasure = startmeas
+    region.StartStaff = startstaff
+    region.StartMeasurePos = startpos
+    region.EndMeasure = endmeas
+    region.EndStaff = endstaff
+    region.EndMeasurePos = endpos
+    return region
+end
+
+

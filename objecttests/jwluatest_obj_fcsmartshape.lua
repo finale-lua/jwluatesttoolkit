@@ -23,6 +23,9 @@ function FCSmartShape_ValueTests_ItemNo1(smartshape)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "MeasurePos", 0)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "NoteID", 0)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "Staff", 3)
+    if AssureNonNil(left_seg.CalcMeasurePos, "FCSmartShapeSegment.CalcMeasurePos (1, left)") then
+        AssureEqual(left_seg:CalcMeasurePos(), 0, "FCSmartShapeSegment.CalcMeasurePos (1, left)")
+    end
     local right_seg = smartshape:GetTerminateSegmentRight()
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "BreakOffsetX", 0)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "BreakOffsetY", 0)
@@ -37,6 +40,9 @@ function FCSmartShape_ValueTests_ItemNo1(smartshape)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "MeasurePos", 2048)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "NoteID", 0)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "Staff", 3)
+    if AssureNonNil(right_seg.CalcMeasurePos, "FCSmartShapeSegment.CalcMeasurePos (1, right)") then
+        AssureEqual(right_seg:CalcMeasurePos(), 2048, "FCSmartShapeSegment.CalcMeasurePos (1, right)")
+    end
 end
 
 
@@ -44,6 +50,10 @@ end
 local smartshape = finale.FCSmartShape()
 AssureTrue(smartshape:Load(1), "FCSmartShape:Load(1)")
 FCSmartShape_ValueTests_ItemNo1(smartshape)
+AssureFalse(smartshape:IsWithinRegion(CreateMusicRegion(25, 3, 0, 25, 3, 2048)), "Measure Smartshape 1 is in region (25, 3, 0, 25, 3, 2048)")
+AssureTrue(smartshape:IsWithinRegion(CreateMusicRegion(25, 3, 0, 26, 3, 2048)), "Measure Smartshape 1 is in region (25, 3, 0, 26, 3, 2048)")
+AssureFalse(smartshape:IsWithinRegion(CreateMusicRegion(25, 3, 128, 26, 3, 2048)), "Measure Smartshape 1 is in region (25, 3, 128, 26, 3, 2048)")
+AssureFalse(smartshape:IsWithinRegion(CreateMusicRegion(25, 3, 0, 26, 3, 1024)), "Measure Smartshape 1 is in region (25, 3, 0, 26, 3, 1024)")
 
 
 function FCSmartShape_ValueTests_ItemNo2(smartshape)
@@ -71,6 +81,9 @@ function FCSmartShape_ValueTests_ItemNo2(smartshape)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "MeasurePos", 294)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "NoteID", 0)
     NumberValuePropertyTest(left_seg, "FCSmartShapeSegment", "Staff", 2)
+    if AssureNonNil(left_seg.CalcMeasurePos, "FCSmartShapeSegment.CalcMeasurePos (2, left)") then
+        AssureEqual(left_seg:CalcMeasurePos(), 0, "FCSmartShapeSegment.CalcMeasurePos (2, left)")
+    end
     local right_seg = smartshape:GetTerminateSegmentRight()
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "BreakOffsetX", 0)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "BreakOffsetY", 0)
@@ -85,6 +98,9 @@ function FCSmartShape_ValueTests_ItemNo2(smartshape)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "MeasurePos", 299)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "NoteID", 0)
     NumberValuePropertyTest(right_seg, "FCSmartShapeSegment", "Staff", 2)
+    if AssureNonNil(right_seg.CalcMeasurePos, "FCSmartShapeSegment.CalcMeasurePos (2, right)") then
+        AssureEqual(right_seg:CalcMeasurePos(), 256, "FCSmartShapeSegment.CalcMeasurePos (2, right)")
+    end
 end
 
 
@@ -92,3 +108,5 @@ end
 local smartshape = finale.FCSmartShape()
 AssureTrue(smartshape:Load(2), "FCSmartShape:Load(2)")
 FCSmartShape_ValueTests_ItemNo2(smartshape)
+AssureFalse(smartshape:IsWithinRegion(CreateMusicRegion(25, 2, 128, 26, 2, 1023)), "Entry Smartshape 2 is in region (25, 2, 128, 26, 2, 1023)")
+AssureTrue(smartshape:IsWithinRegion(CreateMusicRegion(25, 2, 0, 26, 2, 256)), "Entry Smartshape 2 is in region (25, 2, 0, 26, 2, 256)")
