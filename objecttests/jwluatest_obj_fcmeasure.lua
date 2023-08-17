@@ -64,6 +64,11 @@ function FCMeasure_ValueTests_ItemNo1(meas)
    FCTimeSignature_ValueTests_ItemNo1(meas.TimeSignature)
    FCTimeSignature_ForDisplay_ValueTests_ItemNo1(meas.TimeSignatureForDisplay)
    FCKeySignature_ValueTests_ItemNo1(meas.KeySignature)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "#1", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "1", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -111,6 +116,11 @@ function FCMeasure_ValueTests_ItemNo2(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 480)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "1", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "1", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -157,6 +167,11 @@ function FCMeasure_ValueTests_ItemNo3(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 636)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "2", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "2", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -202,6 +217,11 @@ function FCMeasure_ValueTests_ItemNo4(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 600)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "3", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "3", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -247,6 +267,11 @@ function FCMeasure_ValueTests_ItemNo5(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 600)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "#5", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "5", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -292,6 +317,11 @@ function FCMeasure_ValueTests_ItemNo6(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 600)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "4", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "4", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -337,6 +367,11 @@ function FCMeasure_ValueTests_ItemNo7(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 600)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "5", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "5", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
@@ -382,6 +417,11 @@ function FCMeasure_ValueTests_ItemNo8(meas)
    AssureNil(meas.TimeSignatureForDisplay)
    BoolValuePropertyTest(meas, "FCMeasure", "UseTimeSigForDisplay", false)
    NumberValuePropertyTest(meas, "FCMeasure", "Width", 600)
+   
+   if AssureNonNil(meas.CreateNumberString, "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..") is non nil.") then
+       AssureEqual(meas:CreateNumberString().LuaString, "6", "FCMeasure.CreateNumberString ("..tostring(meas.ItemNo)..")")
+       AssureEqual(meas:CreateNumberStringUnqualified().LuaString, "6", "FCMeasure.CreateNumberStringUnqualified ("..tostring(meas.ItemNo)..")")
+   end
 end
 
 
