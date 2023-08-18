@@ -21,4 +21,6 @@ require("jwlua_classtests")
 require("jwlua_unlinktests")
 require("jwlua_internaltests")
 
+print("All tests complete.")
+
 -- No need to output the result, since that's already been done
