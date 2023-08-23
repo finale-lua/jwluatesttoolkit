@@ -17,6 +17,7 @@ if not CheckForOfficialTestTemplate() then return end
 
 _G.skip_finale_version = 0x1b200000 -- Finale 27.2
 _G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
+_G.skip_unlink_bugs_version = 0x1b200000 -- Finale 27.3
 
 -- Load and execute the unit tests for the classes:
 require("unlinktests/jwluatest_unlink_fcarticulation")

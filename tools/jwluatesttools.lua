@@ -491,7 +491,7 @@ end
 -- This allows the test scripts to pre-unlink the records so that the test can run without errors.
 -- It can be changed to do nothing so that we can discover which properties still need to be fixed.
 function UnlinkWithProperty(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
-    if finenv.RawFinaleVersion > 0x1b300000 then -- 27.3 is the top version number we check for this
+    if finenv.RawFinaleVersion > skip_unlink_bugs_version then -- skip_unlink_bugs_version is the top version number we check for this
         return
     end
     skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
@@ -555,9 +555,6 @@ end
 -- Here is a list of known tests that use the unlinkproperty to work around a bug:
 --              jwluatest_unlink_fcbackwardrepeat
 function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion, unlinkproperty)
-    if unlinkproperty then
-        UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
-    end
     skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
     if finenv.RawFinaleVersion <= skipfinaleversion then return end
     if not AssureNonNil(obj, "nil passed to UnlinkableNumberPropertyTest for " .. classname .. "." .. tostring(updater) .. " partnumber " .. partnumber) then return end
@@ -620,14 +617,32 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     end
     
     local score_value = obj_updater()
-    part:SwitchTo()
-    local loaded_in_part = obj_load()
     local new_value
     if type(score_value) == "boolean" then
         new_value = not score_value
     else
         new_value = score_value + increment
     end
+    if loaded_in_score and finenv.RawFinaleVersion > skip_unlink_bugs_version then
+        -- check that modifying in score view does not cause an unlink
+        AssureTrue(obj:RelinkToScore(), "UnlinkableNumberPropertyTest Internal error: relink to score before testing erroneous unlink. ("..classname..")")
+        obj_updater(new_value)
+        AssureTrue(obj:Save(), "UnlinkableNumberPropertyTest Internal error: save in score for testing erroneous unlink. ("..classname..")")
+        part:SwitchTo()
+        if AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest loading to see if changing in score erroneously unlinks. ("..classname..")") then
+            AssureEqual(obj_updater(), new_value, classname.."."..tostring(updater).." unlinks erroneously when modified in score view.")
+        end
+        part:SwitchBack()
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest loading score after seeing if changing in score erroneously unlinks.")
+        obj_updater(score_value)
+        AssureTrue(obj:Save(), "UnlinkableNumberPropertyTest Internal error: save in score after testing erroneous unlink. ("..classname..")")
+        AssureTrue(obj:RelinkToScore(), "UnlinkableNumberPropertyTest Internal error: relink to score after testing erroneous unlink. ("..classname..")")
+    end
+    if unlinkproperty then
+        UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+    end
+    part:SwitchTo()
+    local loaded_in_part = obj_load()
     obj_updater(new_value)
     AssureTrue(obj_save(loaded_in_part), "UnlinkableNumberPropertyTest Internal error: save in part. ("..classname..")")
     AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part. ("..classname..")")
