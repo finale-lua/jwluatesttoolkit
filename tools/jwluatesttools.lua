@@ -24,6 +24,12 @@ print("Running on Finale "..fin_version..os_string)
 print("Trusted mode "..tostring(finenv.TrustedMode))
 
 
+_G.skip_finale_version = 0x1b200000 -- Finale 27.2 is the highest version to skip for pre-Fin26.3 unlinkable items
+_G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
+_G.skip_unlink_bugs_version = 0x1b300000 -- Finale 27.3 is the highest version tested for unlink bugs
+_G.highest_playback_prefs_tested_version = 0x1b300000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
+
+
 
 local NoOfTests = 0
 local NoOfTestErrors = 0
@@ -355,7 +361,7 @@ function BoolPropertyTest_RO(obj, classname, propertyname)
 end
 
 -- Test for number properties
-function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction)
+function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction, reload_replaces_obj)
     if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
@@ -367,7 +373,9 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
     end
     
     savefunction = savefunction or obj["Save"]
-    local reload_replaces_obj = (reloadfunction ~= nil)
+    if reload_replaces_obj == nil then
+        reload_replaces_obj = (reloadfunction ~= nil)
+    end
     reloadfunction = reloadfunction or obj["Reload"]
     
 

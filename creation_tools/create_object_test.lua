@@ -150,9 +150,14 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
-local prefs = finale.FCPlaybackPrefs(true)
+local prefs = finale.FCPlaybackPrefs()
 prefs:LoadFirst()
-ProcessObject(prefs, "pref")
+--ProcessObject(prefs, "pref")
+
+ProcessObject(prefs.ClickInfoForMidiNotesOnDownBeats, "obj", true, 1)
+ProcessObject(prefs.ClickInfoForMidiNotesOnOtherBeats, "obj", true, 2)
+ProcessObject(prefs.ClickInfoForMidiDataOnDownBeats, "obj", true, 3)
+ProcessObject(prefs.ClickInfoForMidiDataOnOtherBeats, "obj", false, 4)
 
 --[[
 local bookmarks = finale.FCBookmarks()

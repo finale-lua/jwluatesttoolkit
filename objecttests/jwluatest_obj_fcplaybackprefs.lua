@@ -1,3 +1,37 @@
+function FCHyperClick_ValueTests_ItemNo1(obj)
+   NumberValuePropertyTest(obj, "FCHyperClick", "Duration", 500)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData1", 37)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData2", 127)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiStatus", 144)
+   NumberValuePropertyTest(obj, "FCHyperClick", "VirtualChannel", 9)
+end
+
+
+function FCHyperClick_ValueTests_ItemNo2(obj)
+   NumberValuePropertyTest(obj, "FCHyperClick", "Duration", 250)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData1", 37)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData2", 100)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiStatus", 144)
+   NumberValuePropertyTest(obj, "FCHyperClick", "VirtualChannel", 9)
+end
+
+
+function FCHyperClick_ValueTests_ItemNo3(obj)
+   NumberValuePropertyTest(obj, "FCHyperClick", "Duration", 500)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData1", 37)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData2", 127)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiStatus", 144)
+   NumberValuePropertyTest(obj, "FCHyperClick", "VirtualChannel", 9)
+end
+
+
+function FCHyperClick_ValueTests_ItemNo4(obj)
+   NumberValuePropertyTest(obj, "FCHyperClick", "Duration", 250)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData1", 37)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiData2", 100)
+   NumberValuePropertyTest(obj, "FCHyperClick", "MidiStatus", 144)
+   NumberValuePropertyTest(obj, "FCHyperClick", "VirtualChannel", 9)
+end
 
 function FCPlaybackPrefs_ValueTests_ItemNo1(pref)
     NumberValuePropertyTest(pref, "FCPlaybackPrefs", "BaseKeyVelocity", 64)
@@ -35,6 +69,11 @@ function FCPlaybackPrefs_ValueTests_ItemNo1(pref)
     BoolValuePropertyTest(pref, "FCPlaybackPrefs", "SyncChaseContinuousData", false)
     BoolValuePropertyTest(pref, "FCPlaybackPrefs", "SyncChasePatches", false)
     BoolValuePropertyTest(pref, "FCPlaybackPrefs", "SyncReceiveMidi", false)
+    --------
+    FCHyperClick_ValueTests_ItemNo1(pref.ClickInfoForMidiNotesOnDownBeats)
+    FCHyperClick_ValueTests_ItemNo2(pref.ClickInfoForMidiNotesOnOtherBeats)
+    FCHyperClick_ValueTests_ItemNo3(pref.ClickInfoForMidiDataOnDownBeats)
+    FCHyperClick_ValueTests_ItemNo4(pref.ClickInfoForMidiDataOnOtherBeats)
 end
 
 -- Call:
@@ -43,6 +82,8 @@ AssureTrue(pref:Load(1), "FCPlaybackPrefs:Load(1)")
 FCPlaybackPrefs_ValueTests_ItemNo1(pref)
 
 -- Call:
-pref = finale.FCPlaybackPrefs(true) -- secret constructor for Finale testing. Should not be used in real code.
-AssureTrue(pref:Load(1), "FCPlaybackPrefs:Load(1) (new struct)")
-FCPlaybackPrefs_ValueTests_ItemNo1(pref)
+if finenv.RawFinaleVersion > highest_playback_prefs_tested_version then
+    pref = finale.FCPlaybackPrefs(true) -- secret constructor for Finale testing. Should not be used in real code.
+    AssureTrue(pref:Load(1), "FCPlaybackPrefs:Load(1) (new struct)")
+    FCPlaybackPrefs_ValueTests_ItemNo1(pref)
+end

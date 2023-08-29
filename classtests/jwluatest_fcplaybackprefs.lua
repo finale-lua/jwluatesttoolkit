@@ -1,5 +1,9 @@
 function FCPlaybackPrefs_PropertyTests(pref)
     NumberPropertyTest(pref, "FCPlaybackPrefs", "BaseKeyVelocity", {0, 24, 48, 64, 96, 127})
+    PropertyTest_RO(pref, "FCPlaybackPrefs", "ClickInfoForMidiNotesOnDownBeats")
+    PropertyTest_RO(pref, "FCPlaybackPrefs", "ClickInfoForMidiNotesOnOtherBeats")
+    PropertyTest_RO(pref, "FCPlaybackPrefs", "ClickInfoForMidiDataOnDownBeats")
+    PropertyTest_RO(pref, "FCPlaybackPrefs", "ClickInfoForMidiDataOnOtherBeats")
     BoolPropertyTest(pref, "FCPlaybackPrefs", "ClickWhenPlaying")
     BoolPropertyTest(pref, "FCPlaybackPrefs", "ClickWhenRecording")
     NumberPropertyTest(pref, "FCPlaybackPrefs", "CountOffMeasures", {0, 1, 2, 5, 126})
@@ -35,6 +39,26 @@ function FCPlaybackPrefs_PropertyTests(pref)
     BoolPropertyTest(pref, "FCPlaybackPrefs", "SyncChaseContinuousData")
     BoolPropertyTest(pref, "FCPlaybackPrefs", "SyncChasePatches")
     BoolPropertyTest(pref, "FCPlaybackPrefs", "SyncReceiveMidi")
+    ---------------
+    local function FCHyperClick_PropertyTests(obj, propertyname, forMidiNote)
+        local function save_func()
+            return AssureTrue(pref:Save(), propertyname)
+        end
+        local function reload_func()
+            return AssureTrue(pref:Reload(), propertyname)
+        end
+        NumberPropertyTest(obj, "FCHyperClick", "Duration", {0, 25, 350, 500, 1200, 13456}, save_func, reload_func, false)
+        NumberPropertyTest(obj, "FCHyperClick", "MidiData1", {0, 12, 47, 127}, save_func, reload_func, false)
+        NumberPropertyTest(obj, "FCHyperClick", "MidiData2", {0, 12, 47, 127}, save_func, reload_func, false)
+        if not forMidiNote then -- the Midi Note metronome source doesn't save the status
+            NumberPropertyTest(obj, "FCHyperClick", "MidiStatus", {0x80, 0x90, 0xa0, 0xb0, 0xc0, 0xe0, 0xf0}, save_func, reload_func, false)
+        end
+        NumberPropertyTest(obj, "FCHyperClick", "VirtualChannel", {0, 12, 47, 127}, save_func, reload_func, false)
+    end
+    FCHyperClick_PropertyTests(pref.ClickInfoForMidiNotesOnDownBeats, "ClickInfoForMidiNotesOnDownBeats", true)
+    FCHyperClick_PropertyTests(pref.ClickInfoForMidiNotesOnOtherBeats, "ClickInfoForMidiNotesOnOtherBeats", true)
+    FCHyperClick_PropertyTests(pref.ClickInfoForMidiDataOnDownBeats, "ClickInfoForMidiDataOnDownBeats")
+    FCHyperClick_PropertyTests(pref.ClickInfoForMidiDataOnOtherBeats, "ClickInfoForMidiDataOnOtherBeats")
 end
 
 -- Call:
@@ -43,7 +67,8 @@ AssureTrue(pref:Load(1))
 FCPlaybackPrefs_PropertyTests(pref)
 
 -- Test new struct
-pref = finale.FCPlaybackPrefs(true) -- hidden constructor to use bug-ridden playback prefs struct introduced in Finale 26.2
-AssureTrue(pref:Load(1))
-FCPlaybackPrefs_PropertyTests(pref)
-
+if finenv.RawFinaleVersion > highest_playback_prefs_tested_version then
+    pref = finale.FCPlaybackPrefs(true) -- hidden constructor to use bug-ridden playback prefs struct introduced in Finale 26.2
+    AssureTrue(pref:Load(1))
+    FCPlaybackPrefs_PropertyTests(pref)
+end

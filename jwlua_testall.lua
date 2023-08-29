@@ -13,7 +13,7 @@ require("tools/jwluatesttools")
 -- Validate the current file prior to the test:
 if not CheckForOfficialTestTemplate() then return end
 
--- Load the toolkit  functions needed for the tests.
+-- Load the toolkit functions needed for the tests.
 -- Make sure to run jwlua_filetests first, to assure that the file contents is intact.
 require("jwlua_filetests")
 require("jwlua_consttests")
