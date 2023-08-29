@@ -150,12 +150,18 @@ if finenv.IsRGPLua then
     --require('mobdebug').start()
 end
 
+local prefs = finale.FCPlaybackPrefs(true)
+prefs:LoadFirst()
+ProcessObject(prefs, "pref")
+
+--[[
 local bookmarks = finale.FCBookmarks()
 bookmarks:LoadAll()
 for i = 0, bookmarks.Count-1 do
     local bookmark = bookmarks:GetItemAt(i)
     ProcessObject(bookmark, "bookmark", i < bookmarks.Count - 1)
 end
+]]
 
 --[[
 local entry = LoadMeasureEntry(30, 3, 312)
