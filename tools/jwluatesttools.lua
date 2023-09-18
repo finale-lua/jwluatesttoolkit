@@ -381,7 +381,10 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
 
     local oldvalue = obj[propertyname]    
     for k, v in pairs(numbertable) do        
-        obj[propertyname] = v        
+        local success, message = pcall(function() obj[propertyname] = v end)
+        if not AssureTrue(success, "Writing to property " .. classname .. "." .. propertyname .. ".") then
+            return
+        end
         TestIncrease()
         if savefunction and reloadfunction then  
             AssureTrue(savefunction(obj), classname .. "::Save()")
