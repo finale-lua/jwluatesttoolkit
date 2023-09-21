@@ -15,6 +15,12 @@ function FCSyllableBase_ValueTests_Entry30_3_312(obj)
    if AssureTrue(obj:GetRawText(str), "FCVerseSyllable.GetRawText") then
        AssureEqual(str.LuaString, "^font(Times New Roman,8192)^size(12)^nfx(0)test ", "FCVerseSyllable.GetRawText == \"test\"")       
    end
+   local font = obj:CreateFontInfo()
+   if AssureNonNil(font, "FCVerseSyllable CreateFontInfo not nil.") then
+       AssureEqual(font.Name, "Times New Roman", "FCVerseSyllable font is Times New Roman")
+       AssureEqual(font.Size, 12, "FCVerseSyllable font size is 12")
+       AssureFalse(font.Bold, "FCVerseSyllable font is not bold")
+   end
 end
 
 -- Call:
@@ -36,13 +42,19 @@ function FCSyllableBase_ValueTests_Entry31_2_318(obj)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "VerticalOffset", 0)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "WordExtensionID", 0)
    local str = finale.FCString()
-   AssureEqual(obj:CalcStringPos(), 55, "FCVerseSyllable.CalcStringPos == 55")
-   AssureEqual(obj:CalcNextStringPos(), 58, "FCVerseSyllable.CalcNextStringPos == 58")
+   AssureEqual(obj:CalcStringPos(), 62, "FCVerseSyllable.CalcStringPos == 62")
+   AssureEqual(obj:CalcNextStringPos(), 65, "FCVerseSyllable.CalcNextStringPos == 65")
    if AssureTrue(obj:GetText(str), "FCVerseSyllable.GetText") then
        AssureEqual(str.LuaString, "こん", "FCVerseSyllable.GetText == \"こん\"")       
    end
    if AssureTrue(obj:GetRawText(str), "FCVerseSyllable.GetRawText") then
        AssureEqual(str.LuaString, "こん ", "FCVerseSyllable.GetRawText == \"こん\"")       
+   end
+   local font = obj:CreateFontInfo()
+   if AssureNonNil(font, "FCVerseSyllable CreateFontInfo not nil.") then
+       AssureEqual(font.Name, "Times New Roman", "FCVerseSyllable font is Times New Roman")
+       AssureEqual(font.Size, 12, "FCVerseSyllable font size is 12")
+       AssureTrue(font.Bold, "FCVerseSyllable font is bold")
    end
 end
 
@@ -65,13 +77,19 @@ function FCSyllableBase_ValueTests_Entry31_2_319(obj)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "VerticalOffset", 0)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "WordExtensionID", 0)
    local str = finale.FCString()
-   AssureEqual(obj:CalcStringPos(), 58, "FCVerseSyllable.CalcStringPos == 55")
-   AssureEqual(obj:CalcNextStringPos(), 60, "FCVerseSyllable.CalcNextStringPos == 58")
+   AssureEqual(obj:CalcStringPos(), 65, "FCVerseSyllable.CalcStringPos == 65")
+   AssureEqual(obj:CalcNextStringPos(), 67, "FCVerseSyllable.CalcNextStringPos == 67")
    if AssureTrue(obj:GetText(str), "FCVerseSyllable.GetText") then
        AssureEqual(str.LuaString, "に", "FCVerseSyllable.GetText == \"に\"")       
    end
    if AssureTrue(obj:GetRawText(str), "FCVerseSyllable.GetRawText") then
        AssureEqual(str.LuaString, "に-", "FCVerseSyllable.GetRawText == \"に\"")       
+   end
+   local font = obj:CreateFontInfo()
+   if AssureNonNil(font, "FCVerseSyllable CreateFontInfo not nil.") then
+       AssureEqual(font.Name, "Times New Roman", "FCVerseSyllable font is Times New Roman")
+       AssureEqual(font.Size, 12, "FCVerseSyllable font size is 12")
+       AssureTrue(font.Bold, "FCVerseSyllable font is bold")
    end
 end
 
