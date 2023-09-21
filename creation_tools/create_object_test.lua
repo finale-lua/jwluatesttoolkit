@@ -147,9 +147,17 @@ end
 -- The actual code to process an object (modify as needed):
 
 if finenv.IsRGPLua then
-    --require('mobdebug').start()
+    require('mobdebug').start()
 end
 
+local entry = LoadMeasureEntry(31, 2, 319)
+local obj = finale.FCVerseSyllable()
+obj:SetNoteEntry(entry)
+obj:LoadFirst()
+--ProcessObject(obj, "obj")
+ CreateCode(obj, "FCSyllableBase", "obj")
+ 
+--[[
 local prefs = finale.FCPlaybackPrefs()
 prefs:LoadFirst()
 --ProcessObject(prefs, "pref")
@@ -158,6 +166,7 @@ ProcessObject(prefs.ClickInfoForMidiNotesOnDownBeats, "obj", true, 1)
 ProcessObject(prefs.ClickInfoForMidiNotesOnOtherBeats, "obj", true, 2)
 ProcessObject(prefs.ClickInfoForMidiDataOnDownBeats, "obj", true, 3)
 ProcessObject(prefs.ClickInfoForMidiDataOnOtherBeats, "obj", false, 4)
+]]
 
 --[[
 local bookmarks = finale.FCBookmarks()
