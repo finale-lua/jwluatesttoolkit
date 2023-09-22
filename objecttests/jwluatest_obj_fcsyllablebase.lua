@@ -42,8 +42,8 @@ function FCSyllableBase_ValueTests_Entry31_2_318(obj)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "VerticalOffset", 0)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "WordExtensionID", 0)
    local str = finale.FCString()
-   AssureEqual(obj:CalcStringPos(), 62, "FCVerseSyllable.CalcStringPos == 62")
-   AssureEqual(obj:CalcNextStringPos(), 65, "FCVerseSyllable.CalcNextStringPos == 65")
+   AssureEqual(obj:CalcStringPos(), WinMac(63,62), "FCVerseSyllable.CalcStringPos == 62")
+   AssureEqual(obj:CalcNextStringPos(), WinMac(66,65), "FCVerseSyllable.CalcNextStringPos == 65")
    if AssureTrue(obj:GetText(str), "FCVerseSyllable.GetText") then
        AssureEqual(str.LuaString, "こん", "FCVerseSyllable.GetText == \"こん\"")       
    end
@@ -77,8 +77,8 @@ function FCSyllableBase_ValueTests_Entry31_2_319(obj)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "VerticalOffset", 0)
    NumberValuePropertyTest(obj, "FCVerseSyllable", "WordExtensionID", 0)
    local str = finale.FCString()
-   AssureEqual(obj:CalcStringPos(), 65, "FCVerseSyllable.CalcStringPos == 65")
-   AssureEqual(obj:CalcNextStringPos(), 67, "FCVerseSyllable.CalcNextStringPos == 67")
+   AssureEqual(obj:CalcStringPos(), WinMac(66,65), "FCVerseSyllable.CalcStringPos == 65")
+   AssureEqual(obj:CalcNextStringPos(), WinMac(68,67), "FCVerseSyllable.CalcNextStringPos == 67")
    if AssureTrue(obj:GetText(str), "FCVerseSyllable.GetText") then
        AssureEqual(str.LuaString, "に", "FCVerseSyllable.GetText == \"に\"")       
    end
