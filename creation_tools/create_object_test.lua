@@ -150,13 +150,19 @@ if finenv.IsRGPLua then
     require('mobdebug').start()
 end
 
+local obj = finale.FCVerseLyricsText()
+obj:Load(1)
+CreateCode(obj, "FCRawText", "obj")
+
+--[[
 local entry = LoadMeasureEntry(31, 2, 319)
 local obj = finale.FCVerseSyllable()
 obj:SetNoteEntry(entry)
 obj:LoadFirst()
 --ProcessObject(obj, "obj")
  CreateCode(obj, "FCSyllableBase", "obj")
- 
+]]
+
 --[[
 local prefs = finale.FCPlaybackPrefs()
 prefs:LoadFirst()

@@ -175,16 +175,37 @@ function AssureEqualStrings(str1, str2, testtext)
 end
 
 -- Tests if the key name exists in the parent table.
--- Test only one level back.
-function TestKeyInParentTable(t, keyname, indexname)
+function TestKeyInParentTable(classtable, keyname, indexname)
+    local ptable = nil
+    if finenv.IsRGPLua then
+        ptable = classtable["__parent"]
+        if type(ptable) == "table" then
+            for k2, v2 in pairs(ptable) do
+                classtable = _G.finale[k2]
+                ptable = classtable
+                if ptable and indexname == "" then
+                    ptable = classtable.__class
+                end
+            end
+        end
+    else
+        ptable = classtable.__class["__parent"]
+    end
+    if not ptable then
+        return false
+    end
     if not (indexname == "")  then
-        t = t[indexname]
-    end    
-    for k, v in pairs(t) do
+        ptable = ptable[indexname]
+    end
+    for k, v in pairs(ptable) do
         --print (k, keyname)
         if (k == keyname) then return true end
     end
-    return false
+    if finenv.MinorVersion <= 54 then
+        -- do not recurse in JW Lua, because __FCBase crashes us
+        return false
+    end
+    return TestKeyInParentTable(classtable, keyname, indexname)
 end
 
 -- Tests if the key name exists in the table
@@ -201,20 +222,8 @@ function AssureKeyInTable(classtable, keyname, indexname, testtext)
     for k, v in pairs(testtable) do
         if k == keyname then return true end        
     end
-    -- Test parent  class info (one parent level only)
-    local ptable = nil
-    if finenv.IsRGPLua then
-        ptable = classtable["__parent"]
-        for k2, v2 in pairs(ptable) do
-            ptable = _G.finale[k2]
-            if ptable and indexname == "" then
-                ptable = ptable.__class
-            end
-        end
-    else
-        ptable = classtable.__class["__parent"]
-    end
-    if ptable and (TestKeyInParentTable(ptable, keyname, indexname)) then
+    -- Test parent class info
+    if TestKeyInParentTable(classtable, keyname, indexname) then
         return true
     end
     TestError(testtext .. keyname)    
