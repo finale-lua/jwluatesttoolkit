@@ -1,0 +1,8 @@
+function TestConstants_LYRICSTEXTBLOCK()
+   NumberConstantTest(finale.LYRICSTEXTBLOCKVERSE, "LYRICSTEXTBLOCKVERSE", 1)
+   NumberConstantTest(finale.LYRICSTEXTBLOCKCHORUS, "LYRICSTEXTBLOCKCHORUS", 2)
+   NumberConstantTest(finale.LYRICSTEXTBLOCKSECTION, "LYRICSTEXTBLOCKSECTION", 3)
+end
+
+-- Test the constants:
+TestConstants_LYRICSTEXTBLOCK()

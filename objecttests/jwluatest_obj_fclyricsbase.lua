@@ -1,4 +1,5 @@
 function FCLyricsBase_ValueTests_ItemNo1(obj)
+    NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "BlockType", finale.LYRICSTEXTBLOCKVERSE)
     NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "ItemNo", 1)
     NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "NumChars", 78)
     if AssureNonNil(obj["NumChars"], "FCRawText_ValueTests_ItemNo1 NumChars exists.") then
@@ -13,3 +14,9 @@ end
 local obj = finale.FCVerseLyricsText()
 AssureTrue(obj:Load(1), "FCVerseLyricsText:Load(1)")
 FCLyricsBase_ValueTests_ItemNo1(obj)
+
+obj = finale.FCChorusLyricsText()
+NumberValuePropertyTest_RO(obj, "FCChorusLyricsText", "BlockType", finale.LYRICSTEXTBLOCKCHORUS)
+
+obj = finale.FCSectionLyricsText()
+NumberValuePropertyTest_RO(obj, "FCSectionLyricsText", "BlockType", finale.LYRICSTEXTBLOCKSECTION)
