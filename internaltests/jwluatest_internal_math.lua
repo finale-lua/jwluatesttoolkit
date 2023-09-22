@@ -2,7 +2,7 @@
 
 local success, result -- for using pcall
 
-success, result = pcall(function() return finale.FCNumber(1/0) end) -- this errors out on LuaBridge3
+success, result = pcall(function() return finale.FCNumber(1/0) end)
 if AssureTrue(success, "Assigning 1/0 to FCNumber: "..tostring(result)) then
     local num = result
     local expected = num.Int == 0x7fffffff or num.Int == -2147483648
