@@ -19,6 +19,7 @@ if not CheckForOfficialTestTemplate() then return end
 if LuaVersion_ >= 5.4 then
     require("classtests/jwluatest_close")
 end
+require("classtests/jwluatest_fcactivelyric")
 require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")

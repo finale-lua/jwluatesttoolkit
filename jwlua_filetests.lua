@@ -17,6 +17,7 @@ if not CheckForOfficialTestTemplate() then return end
 
 -- Load and execute the tests for the classes:
 require("objecttests/jwluatest_obj_fcaccidentalmod")
+require("objecttests/jwluatest_obj_fcactivelyric")
 require("objecttests/jwluatest_obj_fcallotment")
 require("objecttests/jwluatest_obj_fcarticulation")
 require("objecttests/jwluatest_obj_fcarticulationdef")

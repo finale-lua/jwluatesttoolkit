@@ -150,9 +150,16 @@ if finenv.IsRGPLua then
     require('mobdebug').start()
 end
 
+
+local obj = finale.FCActiveLyric()
+obj:Load()
+ProcessObject(obj, "obj", false, 1)
+
+--[[
 local obj = finale.FCVerseLyricsText()
 obj:Load(1)
 CreateCode(obj, "FCRawText", "obj")
+]]
 
 --[[
 local entry = LoadMeasureEntry(31, 2, 319)
