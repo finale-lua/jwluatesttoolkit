@@ -1,7 +1,7 @@
 function FCLyricsBase_ValueTests_ItemNo1(obj)
     NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "BlockType", finale.LYRICSTEXTBLOCKVERSE)
     NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "ItemNo", 1)
-    NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "NumChars", 78)
+    NumberValuePropertyTest_RO(obj, "FCVerseLyricsText", "NumChars", WinMac(80,78))
     if AssureNonNil(obj["NumChars"], "FCRawText_ValueTests_ItemNo1 NumChars exists.") then
         if AssureNonNil(obj["CreateString"], "FCRawText_ValueTests_ItemNo1 CreateString exists.") then
             local str = obj:CreateString()
