@@ -4,7 +4,7 @@ function plugindef()   -- This function and the 'finaleplugin' namespace   -- 
    return "Finale Lua - All Tests", "All Tests", "Run all the Finale Lua tests. Requires the debug file template."end
 
 if finenv.IsRGPLua then -- if new lua
-    require('mobdebug').start()
+    --require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:

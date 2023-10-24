@@ -6,7 +6,7 @@ function plugindef()
 end
 
 if finenv.IsRGPLua then -- if new lua
-    require('mobdebug').start()
+    --require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:
@@ -19,7 +19,6 @@ require("constanttests/consttest_fccategorydef")
 require("constanttests/consttest_fccellframehold")
 require("constanttests/consttest_fcchord")
 require("constanttests/consttest_fcchordprefs")
-require("constanttests/consttest_fcctrledittext")
 require("constanttests/consttest_fccustomsmartlinedef")
 require("constanttests/consttest_fcfontprefs")
 require("constanttests/consttest_fcgeneralprefs")
@@ -44,6 +43,7 @@ require("constanttests/consttest_fcsmartshapeentryconnectstyle")
 require("constanttests/consttest_fcstaff")
 require("constanttests/consttest_fcsyllableentrymod")
 require("constanttests/consttest_fctextblock")
+require("constanttests/consttest_fcctrltexteditor")
 require("constanttests/consttest_fctextexpressiondef")
 require("constanttests/consttest_fctextrepeat")
 require("constanttests/consttest_fctextrepeatdef")

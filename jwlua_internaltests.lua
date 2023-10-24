@@ -8,7 +8,7 @@ function plugindef()
 end
 
 if finenv.IsRGPLua then -- if new lua
-    require('mobdebug').start()
+    --require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:
