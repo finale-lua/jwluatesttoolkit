@@ -1,5 +1,5 @@
 function FCActiveLyric_ValueTests_ItemNo1(obj)
-   NumberValuePropertyTest(obj, "FCActiveLyric", "BlockType", finale.LYRICSTEXTBLOCKCHORUS)
+   NumberValuePropertyTest(obj, "FCActiveLyric", "BlockType", finale.RAWTEXTTYPE_CHORUSLYRIC)
    NumberValuePropertyTest(obj, "FCActiveLyric", "Syllable", 3)
    NumberValuePropertyTest(obj, "FCActiveLyric", "TextBlockID", 2)
 end
