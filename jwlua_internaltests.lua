@@ -18,6 +18,7 @@ require("tools/jwluatesttools")
 
 -- Load and execute the unit tests for the classes:
 require("internaltests/jwluatest_internal_bit32")
+require("internaltests/jwluatest_internal_cjson")
 require("internaltests/jwluatest_internal_clib")
 require("internaltests/jwluatest_internal_conversion")
 require("internaltests/jwluatest_internal_execute")
