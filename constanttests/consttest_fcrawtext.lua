@@ -7,6 +7,7 @@ function TestConstants_RAWTEXTTYPE_()
    NumberConstantTest(finale.RAWTEXTTYPE_EXPRESSION, "RAWTEXTTYPE_EXPRESSION", 5)
    NumberConstantTest(finale.RAWTEXTTYPE_FILEINFO, "RAWTEXTTYPE_FILEINFO", 6)
    NumberConstantTest(finale.RAWTEXTTYPE_BOOKMARK, "RAWTEXTTYPE_BOOKMARK", 7)
+   NumberConstantTest(finale.RAWTEXTTYPE_UNKNOWN, "RAWTEXTTYPE_UNKNOWN", -1)
 end
 
 -- Test the constants:
