@@ -5,8 +5,8 @@ function plugindef()
    return "Finale Lua File Tests", "File Tests", "Test the validity of Finale Lua classes against a specific debug file."
 end
 
-if finenv.IsRGPLua then -- if new lua
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:

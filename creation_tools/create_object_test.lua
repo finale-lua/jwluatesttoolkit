@@ -1,4 +1,11 @@
-function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   finaleplugin.Author = "Jari Williamsson"   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"   return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."end
+function plugindef()
+   -- This function and the 'finaleplugin' namespace
+   -- are both reserved for the plug-in definition.
+   finaleplugin.NoStore = true
+   finaleplugin.Author = "Jari Williamsson"
+   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
+   return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."
+end
 
 local TestOutput = ""
 local TestOutputCount = 0
@@ -146,7 +153,7 @@ end
 
 -- The actual code to process an object (modify as needed):
 
-if finenv.IsRGPLua then
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
@@ -209,7 +216,6 @@ end
 
 --[[
 local noteheadmod = finale.FCNoteheadMod()
-require('mobdebug').start()
 local entry = LoadMeasureEntry(6, 2, 130)
     noteheadmod:SetNoteEntry(entry)
     local note = entry:GetItemAt(0)

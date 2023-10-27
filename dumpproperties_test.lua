@@ -1,4 +1,4 @@
-if finenv.IsRGPLua then -- if new lua
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 

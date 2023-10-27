@@ -1,21 +1,31 @@
-function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   finaleplugin.Author = "Jari Williamsson"   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"   return "Create Property Test", "Create Property Test", "Create a test for the properties found for a class."end
+function plugindef()
+   -- This function and the 'finaleplugin' namespace
+   -- are both reserved for the plug-in definition.
+   finaleplugin.NoStore = true
+   finaleplugin.Author = "Jari Williamsson"
+   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
+   return "Create Property Test", "Create Property Test", "Create a test for the properties found for a class."
+end
 
-if finenv.IsRGPLua then -- if new lua
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 
 -- Show dialog
 if not finenv.IsRGPLua then
-    local dialog = finenv.UserValueInput()    dialog.Title = "Create Property Test"    dialog:SetTypes("String", "String")    dialog:SetDescriptions("Class name:", "Passed argument name to function:")
+    local dialog = finenv.UserValueInput()
+    dialog.Title = "Create Property Test"
+    dialog:SetTypes("String", "String")
+    dialog:SetDescriptions("Class name:", "Passed argument name to function:")
 
-    local returnvalues = dialog:Execute()    if returnvalues == nil then return end
+    local returnvalues = dialog:Execute()
+    if returnvalues == nil then return end
 
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
     ClassNameToFind = "FCActiveLyric"
     PassedArgument = "obj"
-    --require("mobdebug").start()
 end
 
 local TestOutput = ""
@@ -92,4 +102,12 @@ else
     finenv.UI():AlertInfo("Error: No "..ClassNameToFind.." class found.", "Test Not Created")
 end
 
--- Present sorted result:
+-- Present sorted result:
+
+
+
+
+
+
+
+

@@ -1,10 +1,14 @@
-function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true
+function plugindef()
+   -- This function and the 'finaleplugin' namespace
+   -- are both reserved for the plug-in definition.
+   finaleplugin.NoStore = true
    finaleplugin.ExecuteExternalCode = true
    finaleplugin.ExecuteHttpsCalls = true
-   return "Finale Lua - All Tests", "All Tests", "Run all the Finale Lua tests. Requires the debug file template."end
+   return "Finale Lua - All Tests", "All Tests", "Run all the Finale Lua tests. Requires the debug file template."
+end
 
-if finenv.IsRGPLua then -- if new lua
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:

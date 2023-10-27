@@ -24,8 +24,8 @@ local get_finale_propget = function()
     return nil
 end
 
-if finenv.IsRGPLua then
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 if not finenv.IsRGPLua then
     -- Show dialog

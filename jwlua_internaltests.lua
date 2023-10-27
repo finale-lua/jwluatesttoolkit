@@ -7,8 +7,8 @@ function plugindef()
    return "Finale Lua Internal Tests", "Internal Tests", "Test internal Lua features."
 end
 
-if finenv.IsRGPLua then -- if new lua
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 
 -- Load the toolkit  functions needed for the tests:

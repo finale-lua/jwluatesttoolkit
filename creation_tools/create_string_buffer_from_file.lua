@@ -21,8 +21,6 @@ if not file then
     return
 end
 
---require('mobdebug').start()
-
 local result_string = 'local buffer = "'
 local next_byte = file:read(1)
 local counter = 0
