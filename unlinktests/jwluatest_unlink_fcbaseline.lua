@@ -50,11 +50,12 @@ for _, mode in pairs({finale.BASELINEMODE_LYRICSVERSE, finale.BASELINEMODE_LYRIC
         if AssureTrue(baseline:LoadDefaultForLyricNumber(mode, 1), "Load default baseline for lyric number 1, mode "..mode..".") then
             AssureTrue(baseline:DeleteData(), "Delete default baseline for lyric number 1, mode "..mode..".") 
             local new_baselines = finale.FCBaselines()
-            local new_count = original_baselines.Count - 1
+            local expect_count = original_baselines.Count - 1
             local got_count = new_baselines:LoadAllDefaultsForLyrics(mode)
-            if ignore_baselines_delete_version ~= finenv.RawFinaleVersion then
-                AssureEqual(new_count, got_count, "Lyrics default Baseline mode "..mode.." expects "..new_count.." incis, got "..got_count..".")
+            if ignore_baselines_delete_version == finenv.RawFinaleVersion then
+                expect_count = 0 -- Finale 27.3 erroneously deletes all incis
             end
+            AssureEqual(expect_count, got_count, "Lyrics default Baseline mode "..mode.." expects "..expect_count.." incis, got "..got_count..".")
             AssureTrue(original_baselines:SaveAll(), "Restore original_baselines with SaveAll for mode "..mode..".")
         end
     end
