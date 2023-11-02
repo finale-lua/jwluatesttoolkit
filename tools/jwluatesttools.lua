@@ -28,6 +28,7 @@ _G.skip_finale_version = 0x1b200000 -- Finale 27.2 is the highest version to ski
 _G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
 _G.skip_unlink_bugs_version = 0x1b300000 -- Finale 27.3 is the highest version tested for unlink bugs
 _G.highest_playback_prefs_tested_version = 0x1b300000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
+_G.ignore_baselines_delete_version = 0x1b300000 -- Ignore default lyrics baselines delete problem in 27.3. Revisit with future Finale versions.
 
 
 
