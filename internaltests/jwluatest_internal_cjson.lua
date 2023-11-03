@@ -82,6 +82,7 @@ local json_pretty = [[
      "intval": 334,
      "numval": 12.34
 }
+
 ]]
 
 AssureEqual(json_pretty, prettyformatjson(json_flat, 5), "prettyformatjson comparison")
