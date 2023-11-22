@@ -158,9 +158,9 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 
 
-local obj = finale.FCActiveLyric()
-obj:Load()
-ProcessObject(obj, "obj", false, 1)
+local obj = finale.FCFretboardStyleDef()
+obj:Load(4)
+ProcessObject(obj, "obj")
 
 --[[
 local obj = finale.FCVerseLyricsText()

@@ -271,8 +271,7 @@ function TestFunctionName(classname, functionname)
     for k,v in pairs(_G.finale) do
         if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
-            AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
-            return true
+            return AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
         end
     end
     TestError("Class name not found: " .. classname)
@@ -318,8 +317,8 @@ end
 
 -- Test for class methods
 function FunctionTest(obj, classname, functionname)
-    if not TestClassName(obj, classname) then return end
-    return TestFunctionName(classname, functionname, true)
+    if not TestClassName(obj, classname) then return false end
+    return TestFunctionName(classname, functionname)
 end
 
 -- Test for static function existence
@@ -718,27 +717,64 @@ end
 function StringPropertyTest(obj, classname, propertyname, stringtable)
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "string", "property " .. classname .. "." .. propertyname) then return end
-    -- Test to set each number in the number table
+    -- Test to set each value in the stringtable
     if stringtable == nil then
         TestIncrease()
-        TestError("Internal error - String test table for property " .. classname .. "." .. propertyname .. " test is nil.")
+        TestError("Internal error - String test table for property " ..
+        classname .. "." .. propertyname .. " test is nil.")
         return
     end
 
-    local oldvalue = obj[propertyname]    
-    for k, v in pairs(stringtable) do        
+    local oldvalue = obj[propertyname]
+    for k, v in pairs(stringtable) do
         obj[propertyname] = v
         TestIncrease()
         AssureTrue(obj:Save(), classname .. "::Save()")
         obj[propertyname] = oldvalue
         AssureTrue(obj:Reload(), classname .. "::Reload()")
         if obj[propertyname] ~= v then
-            TestError("String test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. v .. " (received ".. obj[propertyname] .. ")" )
+            TestError("String test failure while trying to set/save " ..
+                classname .. "." .. propertyname .. " to " .. v .. " (received " .. obj[propertyname] .. ")")
             break
         end
     end
     -- Restore the previous value
     obj[propertyname] = oldvalue
+    AssureTrue(obj:Save(), classname .. "::Save()")
+end
+
+-- Test for getter/setter pair that gets FCSring
+function FCStringGetterSetterTest(obj, classname, gettername, settername, stringtable)
+    if not FunctionTest(obj, classname, gettername) then return end
+    if not FunctionTest(obj, classname, settername) then return end
+    -- Test to set each value in the stringtable
+    if stringtable == nil then
+        TestIncrease()
+        TestError("Internal error - String test table for getter " ..
+            classname .. "." .. gettername .. " test is nil.")
+        return
+    end
+
+    local oldvalue = finale.FCString()
+    obj[gettername](obj, oldvalue)
+    for k, v in pairs(stringtable) do
+        local newvalue = finale.FCString()
+        newvalue.LuaString = v
+        obj[settername](obj, newvalue)
+        TestIncrease()
+        AssureTrue(obj:Save(), classname .. "::Save()")
+        obj[settername](obj, oldvalue)
+        AssureTrue(obj:Reload(), classname .. "::Reload()")
+        local testvalue = finale.FCString()
+        obj[gettername](obj, testvalue)
+        if testvalue.LuaString ~= v then
+            TestError("FCString test failure while trying to set/save " ..
+                classname .. "." .. settername .. " to " .. v .. " (received " .. testvalue.LuaString .. ")")
+            break
+        end
+    end
+    -- Restore the previous value
+    obj[settername](obj, oldvalue)
     AssureTrue(obj:Save(), classname .. "::Save()")
 end
 
