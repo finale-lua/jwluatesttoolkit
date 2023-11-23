@@ -29,7 +29,8 @@ _G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
 _G.skip_unlink_bugs_version = 0x1b300000 -- Finale 27.3 is the highest version tested for unlink bugs
 _G.highest_playback_prefs_tested_version = 0x1b300000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
 _G.ignore_baselines_delete_version = 0x1b300000 -- Ignore default lyrics baselines delete problem in 27.3. Revisit with future Finale versions.
-
+_G.do_playback_test = finenv.RawFinaleVersion > 0x1b300000
+_G.playback_test_expected_to_succeed = finenv.UI():IsOnWindows()
 
 
 local NoOfTests = 0
@@ -202,8 +203,10 @@ function TestKeyInParentTable(classtable, keyname, indexname)
         --print (k, keyname)
         if (k == keyname) then return true end
     end
-    if finenv.MinorVersion <= 54 then
+    if finenv.MajorVersion == 0 and finenv.MinorVersion < 68 then
         -- do not recurse in JW Lua, because __FCBase crashes us
+        -- do not recurse in RGP Lua before 0.68, because __FCBase causes infinite loop when
+        --      function does not exist.
         return false
     end
     return TestKeyInParentTable(classtable, keyname, indexname)
