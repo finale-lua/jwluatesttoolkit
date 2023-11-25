@@ -374,14 +374,14 @@ end
 
 -- Test for number properties
 function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction, reload_replaces_obj)
-    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return end
+    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return obj end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
     -- Test to set each number in the number table
     if numbertable == nil then
         TestIncrease()
         TestError("Internal error - Number test table for property " .. classname .. "." .. propertyname .. " test is nil.")
-        return
+        return obj
     end
     
     savefunction = savefunction or obj["Save"]
@@ -395,7 +395,7 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
     for k, v in pairs(numbertable) do        
         local success, message = pcall(function() obj[propertyname] = v end)
         if not AssureTrue(success, "Writing to property " .. classname .. "." .. propertyname .. ".") then
-            return
+            return obj
         end
         TestIncrease()
         if savefunction and reloadfunction then  
@@ -417,6 +417,7 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
     -- Restore the previous value
     obj[propertyname] = oldvalue
     if savefunction then AssureTrue(savefunction(obj), classname .. "::Save()") end
+    return obj
 end
 
 -- Test for indexed function pairs

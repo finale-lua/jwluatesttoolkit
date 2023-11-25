@@ -157,10 +157,15 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
+local group_item = finale.FCFretboardGroupItem()
+group_item:Load(65534, 0, 11)
+ProcessObject(group_item.FretBarreItems:GetItemAt(0), "obj", false, "65534_0_11_0")
 
+--[[
 local obj = finale.FCFretboardStyleDef()
 obj:Load(4)
 ProcessObject(obj, "obj")
+]]
 
 --[[
 local obj = finale.FCVerseLyricsText()
