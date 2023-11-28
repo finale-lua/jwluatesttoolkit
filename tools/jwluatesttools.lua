@@ -17,8 +17,11 @@ LuaVersion_ = tonumber(string.match(_VERSION, "%d+%.%d+"))
 
 local luavers_string = finenv.LuaReleaseVersion or _VERSION
 
+local osutils = require("luaosutils")
+
 print(luavers_string.." ("..tostring(LuaVersion_)..")")
 print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
+print(osutils._VERSION)
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)
 print("Trusted mode "..tostring(finenv.TrustedMode))
