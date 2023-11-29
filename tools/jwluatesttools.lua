@@ -251,20 +251,30 @@ function TestPropertyName(classname, propertyname, testsetter, namespace)
     for k,v in pairs(_G[namespace]) do
         if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
-            if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return end
+            if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return false end
             if not AssureNonNil(GetPropTable(v, "__propset"), "Internal error: __propset wasn't found for class " .. classname) then return false end
-            AssureKeyInTable(v, propertyname, "__propget", "Getter property not found for class " .. classname .. ": ")
-            local methodname = "Get" .. propertyname
-            AssureKeyInTable(v, methodname, "", "Getter method not found for class " .. classname .. ": ")
-            if testsetter then
-                AssureKeyInTable(v, propertyname, "__propset", "Setter property not found for " .. classname .. ": ")
-                methodname = "Set" .. propertyname
-                AssureKeyInTable(v, methodname, "", "Setter method not found for " .. classname .. ": ")
+            local retval = true
+            if not AssureKeyInTable(v, propertyname, "__propget", "Getter property not found for class " .. classname .. ": ") then
+                retval = false
             end
-            return
+            local methodname = "Get" .. propertyname
+            if not AssureKeyInTable(v, methodname, "", "Getter method not found for class " .. classname .. ": ") then
+                retval = false
+            end
+            if testsetter then
+                if not AssureKeyInTable(v, propertyname, "__propset", "Setter property not found for " .. classname .. ": ") then
+                    retval = false
+                end
+                methodname = "Set" .. propertyname
+                if not AssureKeyInTable(v, methodname, "", "Setter method not found for " .. classname .. ": ") then
+                    retval = false
+                end
+            end
+            return retval
         end
     end
     TestError("Class name not found: " .. classname)
+    return false
 end
 
 function TestKVIsClass(namespace, classstable)
@@ -317,8 +327,8 @@ end
 
 -- Test for read/write properties
 function PropertyTest(obj, classname, propertyname, namespace)
-    if not TestClassName(obj, classname, namespace) then return end
-    TestPropertyName(classname, propertyname, true, namespace)
+    if not TestClassName(obj, classname, namespace) then return false end
+    return TestPropertyName(classname, propertyname, true, namespace)
 end
 
 -- Test for class methods
