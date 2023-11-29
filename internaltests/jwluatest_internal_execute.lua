@@ -95,3 +95,38 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry stri
     item:RegisterPrintFunction(print_back)
     FCLuaScriptItem_TestReturnValue(item, "did it", true)
 end
+
+-- Check on-complete values
+items = finenv.CreateLuaScriptItemsFromFilePath("")
+if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry string has no items") then
+    local item = items:GetItemAt(0)
+    if AssureNonNil(item.RegisterOnExecutionDidStop, "CreateLuaScriptItemsFromFilePath RegisterOnExecutionDidStop not defined (nil).") then
+        local expected_linenum = 5
+        item:RegisterOnExecutionDidStop(function(item, success, msg, msgtype, line_number, source)
+            AssureEqual(msgtype, finenv.MessageResultType.SCRIPT_RESULT, "finenv.ExecuteLuaScriptItem OnExecutionDidStop msgtype")
+            AssureFalse(success, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop result")
+            AssureEqual(source, item.OptionalScriptText, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned source value")
+            AssureEqual(line_number, expected_linenum, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned line number")
+        end)
+        item.OptionalScriptText = [[
+            -- comment (line 1)
+            -- comment (line 2)
+            -- comment (line 3)
+            local x = 23
+            sdsd(sdsd) -- should cause runtime error at line 5
+        ]]
+        FCLuaScriptItem_TestReturnValue(item, "", false)
+        expected_linenum = 4
+        item.OptionalScriptText = [[
+            local items = finenv.CreateLuaScriptItemsFromFilePath("")
+            item = items:GetItemAt(0)
+            item:RegisterPrintFunction(function(...)
+                asdsad(sdf) -- should cause runtime error at line 4
+            end)
+            item.AutomaticallyReportErrors = false
+            item.OptionalScriptText = "print('Hello World!')"
+            finenv.ExecuteLuaScriptItem(item)
+        ]]
+        FCLuaScriptItem_TestReturnValue(item, "", false)
+    end
+end
