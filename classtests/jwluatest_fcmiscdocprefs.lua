@@ -47,6 +47,7 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigOnlyFirstSystem")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigPreserveOctave")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplayMultipe")
+   BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplayMultiple")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplaySingle")
    if Is27_4OrAbove() then
       BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LegacyDotPositionOnFlippedStems")
