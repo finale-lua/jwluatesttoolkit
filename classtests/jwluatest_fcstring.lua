@@ -13,3 +13,25 @@ FunctionTest(str, "FCString", "EndsWith")
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
 str:Replace(",", ".")
 AssureValue(str.LuaString, "88.19444", "SetMeasurement() - centimeters")
+
+function assignStrValue(fcstr, value)
+    local success, msg = pcall(function() fcstr.LuaString = value end)
+    AssureTrue(success, "FCString.LuaString property did not accept "..tostring(value).." as a value: "..tostring(msg))
+end
+
+function setStrValue(fcstr, value)
+    local success, msg = pcall(function() fcstr:SetLuaString(value) end)
+    AssureTrue(success, "FCString.SetLuaString setter did not accept "..tostring(value).." as a value: "..tostring(msg))
+end
+
+assignStrValue(str, 1.335)
+AssureValue(str.LuaString, "1.335", "Set from number with property")
+
+setStrValue(str, 3.556)
+AssureValue(str:GetLuaString(), "3.556", "Set from number with setter")
+
+assignStrValue(str, "abcde")
+AssureValue(str.LuaString, "abcde", "Set from string with property")
+
+setStrValue(str, "1a4.tr")
+AssureValue(str:GetLuaString(), "1a4.tr", "Set from string with setter")

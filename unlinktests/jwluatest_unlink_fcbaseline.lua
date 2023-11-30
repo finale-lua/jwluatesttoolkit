@@ -41,3 +41,22 @@ for _, mode in pairs({finale.BASELINEMODE_LYRICSVERSE, finale.BASELINEMODE_LYRIC
     end
 end
 
+-- This is a Finale test. Currently it fails on Finale 27.3, and this test is to discover if MakeMusic ever fixes it:
+for _, mode in pairs({finale.BASELINEMODE_LYRICSVERSE, finale.BASELINEMODE_LYRICSCHORUS, finale.BASELINEMODE_LYRICSSECTION}) do
+    local original_baselines = finale.FCBaselines()
+    AssureEqual(10, original_baselines:LoadAllDefaultsForLyrics(mode), "Lyrics default Baseline mode "..mode.." has 10 incis.")
+    if original_baselines.Count > 0 then
+        local baseline = finale.FCBaseline()
+        if AssureTrue(baseline:LoadDefaultForLyricNumber(mode, 1), "Load default baseline for lyric number 1, mode "..mode..".") then
+            AssureTrue(baseline:DeleteData(), "Delete default baseline for lyric number 1, mode "..mode..".") 
+            local new_baselines = finale.FCBaselines()
+            local expect_count = original_baselines.Count - 1
+            local got_count = new_baselines:LoadAllDefaultsForLyrics(mode)
+            if ignore_baselines_delete_version == finenv.RawFinaleVersion then
+                expect_count = 0 -- Finale 27.3 erroneously deletes all incis
+            end
+            AssureEqual(expect_count, got_count, "Lyrics default Baseline mode "..mode.." expects "..expect_count.." incis, got "..got_count..".")
+            AssureTrue(original_baselines:SaveAll(), "Restore original_baselines with SaveAll for mode "..mode..".")
+        end
+    end
+end

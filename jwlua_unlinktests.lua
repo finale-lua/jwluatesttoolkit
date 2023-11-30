@@ -5,7 +5,7 @@ function plugindef()
    return "Finale Lua Unlink Tests", "Unlink Tests", "Test whether Finale Lua classes can be unlinked."
 end
 
-if finenv.IsRGPLua then -- if new lua
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
@@ -14,9 +14,6 @@ require("tools/jwluatesttools")
 
 -- Validate the current file prior to the test:
 if not CheckForOfficialTestTemplate() then return end
-
-_G.skip_finale_version = 0x1b200000 -- Finale 27.2
-_G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
 
 -- Load and execute the unit tests for the classes:
 require("unlinktests/jwluatest_unlink_fcarticulation")

@@ -5,7 +5,7 @@ function plugindef()
    return "Finale Lua File Tests", "File Tests", "Test the validity of Finale Lua classes against a specific debug file."
 end
 
-if finenv.IsRGPLua then -- if new lua
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
@@ -17,12 +17,15 @@ if not CheckForOfficialTestTemplate() then return end
 
 -- Load and execute the tests for the classes:
 require("objecttests/jwluatest_obj_fcaccidentalmod")
+require("objecttests/jwluatest_obj_fcactivelyric")
 require("objecttests/jwluatest_obj_fcallotment")
 require("objecttests/jwluatest_obj_fcarticulation")
 require("objecttests/jwluatest_obj_fcarticulationdef")
 require("objecttests/jwluatest_obj_fcbackwardrepeat")
 require("objecttests/jwluatest_obj_fcbeatchartelement")
+require("objecttests/jwluatest_obj_fcbookmark")
 require("objecttests/jwluatest_obj_fccategorydef")
+require("objecttests/jwluatest_obj_fccell")
 require("objecttests/jwluatest_obj_fccellclefchange")
 require("objecttests/jwluatest_obj_fccellframehold")
 require("objecttests/jwluatest_obj_fccellgraphic")
@@ -34,9 +37,13 @@ require("objecttests/jwluatest_obj_fccustomsmartlinedef")
 require("objecttests/jwluatest_obj_fcdistanceprefs")
 require("objecttests/jwluatest_obj_fcendingrepeat")
 require("objecttests/jwluatest_obj_fcfreezesystem")
+require("objecttests/jwluatest_obj_fcfretbarreitem")
+require("objecttests/jwluatest_obj_fcfretboardstyledef")
 require("objecttests/jwluatest_obj_fcfretinstrumentdef")
+require("objecttests/jwluatest_obj_fcfretitem")
 require("objecttests/jwluatest_obj_fcgridsguidesprefs")
 require("objecttests/jwluatest_obj_fcluaiterator")
+require("objecttests/jwluatest_obj_fclyricsbase")
 require("objecttests/jwluatest_obj_fclyricsprefs")
 require("objecttests/jwluatest_obj_fcmeasure")
 require("objecttests/jwluatest_obj_fcmiscdocprefs")

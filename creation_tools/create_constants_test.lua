@@ -9,7 +9,7 @@ function plugindef()
    return "Create Finale Lua Constants Test", "Create constants test", "Creates a test for the constants available to Finale Lua."
 end
 
-local pattern = "SYLLALIGN_" -- edit as needed in RGP Lua
+local pattern = "FRETFINGERING_" -- edit as needed in RGP Lua
 local namespace = "finale"
 
 local get_finale_propget = function()
@@ -24,8 +24,8 @@ local get_finale_propget = function()
     return nil
 end
 
-if finenv.IsRGPLua then
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 if not finenv.IsRGPLua then
     -- Show dialog

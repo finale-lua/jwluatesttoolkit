@@ -5,7 +5,7 @@ function plugindef()
    return "Finale Lua Class Tests", "Class Tests", "Test the validity of Finale Lua classes"
 end
 
-if finenv.IsRGPLua then -- if new lua
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
@@ -19,10 +19,12 @@ if not CheckForOfficialTestTemplate() then return end
 if LuaVersion_ >= 5.4 then
     require("classtests/jwluatest_close")
 end
+require("classtests/jwluatest_fcactivelyric")
 require("classtests/jwluatest_fcallotment")
 require("classtests/jwluatest_fcarticulationdef")
 require("classtests/jwluatest_fcbackwardrepeat")
 require("classtests/jwluatest_fcbeatchartelement")
+require("classtests/jwluatest_fcbookmark")
 require("classtests/jwluatest_fccategorydef")
 require("classtests/jwluatest_fccellclefchange")
 require("classtests/jwluatest_fccellgraphic")
@@ -30,17 +32,23 @@ require("classtests/jwluatest_fccellmetrics")
 require("classtests/jwluatest_fccelltext")
 require("classtests/jwluatest_fcchord")
 require("classtests/jwluatest_fcchordprefs")
+require("classtests/jwluatest_fcchordsuffixelement")
 require("classtests/jwluatest_fccustomsmartlinedef")
 require("classtests/jwluatest_fcdistanceprefs")
 require("classtests/jwluatest_fcendingrepeat")
 require("classtests/jwluatest_fcentrymetrics")
 require("classtests/jwluatest_fcfontdialog")
 require("classtests/jwluatest_fcfreezesystem")
+require("classtests/jwluatest_fcfretbarreitem")
+require("classtests/jwluatest_fcfretboardstyledef")
 require("classtests/jwluatest_fcfretinstrumentdef")
+require("classtests/jwluatest_fcfretitem")
 require("classtests/jwluatest_fcgeneralprefs")
 require("classtests/jwluatest_fcgridsguidesprefs")
 require("classtests/jwluatest_fcgroup")
 require("classtests/jwluatest_fclayerprefs")
+require("classtests/jwluatest_fclistentomidiresult")
+require("classtests/jwluatest_fclyricsbase")
 require("classtests/jwluatest_fclyricsprefs")
 require("classtests/jwluatest_fcmeasure")
 require("classtests/jwluatest_fcmiscdocprefs")

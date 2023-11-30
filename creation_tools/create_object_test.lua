@@ -1,4 +1,11 @@
-function plugindef()   -- This function and the 'finaleplugin' namespace   -- are both reserved for the plug-in definition.   finaleplugin.NoStore = true   finaleplugin.Author = "Jari Williamsson"   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"   return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."end
+function plugindef()
+   -- This function and the 'finaleplugin' namespace
+   -- are both reserved for the plug-in definition.
+   finaleplugin.NoStore = true
+   finaleplugin.Author = "Jari Williamsson"
+   finaleplugin.CategoryTags = "Debug, Development, Diagnose, UI"
+   return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."
+end
 
 local TestOutput = ""
 local TestOutputCount = 0
@@ -146,28 +153,54 @@ end
 
 -- The actual code to process an object (modify as needed):
 
-if finenv.IsRGPLua then
-    --require('mobdebug').start()
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
+    require('mobdebug').start()
 end
 
-local key = finale.FCCell(1,1):GetKeySignature()
-local transposer = finale.FCTransposer(1, -2, key)
-transposer:ChromaticTranspose(2, -1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:DiatonicTranspose(-3)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:DefaultEnharmonicTranspose()
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:EnharmonicTranspose(1)
-transposer:EnharmonicTranspose(1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:SimplifySpelling(1)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:EDOStepTranspose(17)
-ProcessObject(transposer, "transposer", true, transposer.Displacement, transposer.RaiseLower)
-transposer:OctaveTranspose(1)
-ProcessObject(transposer, "transposer", false, transposer.Displacement, transposer.RaiseLower)
+local group_item = finale.FCFretboardGroupItem()
+group_item:Load(65534, 0, 11)
+ProcessObject(group_item.FretBarreItems:GetItemAt(0), "obj", false, "65534_0_11_0")
 
+--[[
+local obj = finale.FCFretboardStyleDef()
+obj:Load(4)
+ProcessObject(obj, "obj")
+]]
+
+--[[
+local obj = finale.FCVerseLyricsText()
+obj:Load(1)
+CreateCode(obj, "FCRawText", "obj")
+]]
+
+--[[
+local entry = LoadMeasureEntry(31, 2, 319)
+local obj = finale.FCVerseSyllable()
+obj:SetNoteEntry(entry)
+obj:LoadFirst()
+--ProcessObject(obj, "obj")
+ CreateCode(obj, "FCSyllableBase", "obj")
+]]
+
+--[[
+local prefs = finale.FCPlaybackPrefs()
+prefs:LoadFirst()
+--ProcessObject(prefs, "pref")
+
+ProcessObject(prefs.ClickInfoForMidiNotesOnDownBeats, "obj", true, 1)
+ProcessObject(prefs.ClickInfoForMidiNotesOnOtherBeats, "obj", true, 2)
+ProcessObject(prefs.ClickInfoForMidiDataOnDownBeats, "obj", true, 3)
+ProcessObject(prefs.ClickInfoForMidiDataOnOtherBeats, "obj", false, 4)
+]]
+
+--[[
+local bookmarks = finale.FCBookmarks()
+bookmarks:LoadAll()
+for i = 0, bookmarks.Count-1 do
+    local bookmark = bookmarks:GetItemAt(i)
+    ProcessObject(bookmark, "bookmark", i < bookmarks.Count - 1)
+end
+]]
 
 --[[
 local entry = LoadMeasureEntry(30, 3, 312)
@@ -188,7 +221,6 @@ end
 
 --[[
 local noteheadmod = finale.FCNoteheadMod()
-require('mobdebug').start()
 local entry = LoadMeasureEntry(6, 2, 130)
     noteheadmod:SetNoteEntry(entry)
     local note = entry:GetItemAt(0)

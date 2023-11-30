@@ -15,12 +15,26 @@ end
 
 LuaVersion_ = tonumber(string.match(_VERSION, "%d+%.%d+"))
 
-print(_VERSION.." ("..tostring(LuaVersion_)..")")
+local luavers_string = finenv.LuaReleaseVersion or _VERSION
+
+local osutils = require("luaosutils")
+
+print(luavers_string.." ("..tostring(LuaVersion_)..")")
 print(finenv.LuaBridgeVersion or "LuaBridge Version Unknown")
+print(osutils._VERSION)
 print("Lua Plugin Version "..finenv.StringVersion)
 print("Running on Finale "..fin_version..os_string)
 print("Trusted mode "..tostring(finenv.TrustedMode))
 
+
+_G.skip_finale_version = 0x1b200000 -- Finale 27.2 is the highest version to skip for pre-Fin26.3 unlinkable items
+_G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
+_G.skip_unlink_bugs_version = 0x1b400000 -- Finale 27.3 is the highest version tested for unlink bugs
+_G.highest_playback_prefs_tested_version = 0x1b400000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
+_G.ignore_baselines_delete_version = 0x1b400000 -- Ignore default lyrics baselines delete problem in 27.4. Revisit with future Finale versions.
+_G.do_playback_test = finenv.RawFinaleVersion > 0x1b400000 -- playback test not fixed as of 27.4
+_G.playback_test_expected_to_succeed = finenv.UI():IsOnWindows()
+_G.interdot_spacing_unlink_check = finenv.RawFinaleVersion <= 0x1b400000 -- Finale 27.4 is the highest version we've checked.
 
 
 local NoOfTests = 0
@@ -42,6 +56,10 @@ function Is2014BOrAbove()
     return finenv.RawFinaleVersion >= 0x12020000
 end
 
+function Is25_2OrAbove()    
+    return finenv.RawFinaleVersion >= 0x19200000
+end
+
 function Is26OrAbove()    
     return finenv.RawFinaleVersion >= 0x1a000000
 end
@@ -52,6 +70,10 @@ end
 
 function Is27_3OrAbove()    
     return finenv.RawFinaleVersion >= 0x1b300000
+end
+
+function Is27_4OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1b400000
 end
 
 -- A help method to assure a usable string value
@@ -167,16 +189,39 @@ function AssureEqualStrings(str1, str2, testtext)
 end
 
 -- Tests if the key name exists in the parent table.
--- Test only one level back.
-function TestKeyInParentTable(t, keyname, indexname)
+function TestKeyInParentTable(classtable, keyname, indexname)
+    local ptable = nil
+    if finenv.IsRGPLua then
+        ptable = classtable["__parent"]
+        if type(ptable) == "table" then
+            for k2, v2 in pairs(ptable) do
+                classtable = _G.finale[k2]
+                ptable = classtable
+                if ptable and indexname == "" then
+                    ptable = classtable.__class
+                end
+            end
+        end
+    else
+        ptable = classtable.__class["__parent"]
+    end
+    if not ptable then
+        return false
+    end
     if not (indexname == "")  then
-        t = t[indexname]
-    end    
-    for k, v in pairs(t) do
+        ptable = ptable[indexname]
+    end
+    for k, v in pairs(ptable) do
         --print (k, keyname)
         if (k == keyname) then return true end
     end
-    return false
+    if finenv.MajorVersion == 0 and finenv.MinorVersion < 68 then
+        -- do not recurse in JW Lua, because __FCBase crashes us
+        -- do not recurse in RGP Lua before 0.68, because __FCBase causes infinite loop when
+        --      function does not exist.
+        return false
+    end
+    return TestKeyInParentTable(classtable, keyname, indexname)
 end
 
 -- Tests if the key name exists in the table
@@ -193,20 +238,8 @@ function AssureKeyInTable(classtable, keyname, indexname, testtext)
     for k, v in pairs(testtable) do
         if k == keyname then return true end        
     end
-    -- Test parent  class info (one parent level only)
-    local ptable = nil
-    if finenv.IsRGPLua then
-        ptable = classtable["__parent"]
-        for k2, v2 in pairs(ptable) do
-            ptable = _G.finale[k2]
-            if ptable and indexname == "" then
-                ptable = ptable.__class
-            end
-        end
-    else
-        ptable = classtable.__class["__parent"]
-    end
-    if ptable and (TestKeyInParentTable(ptable, keyname, indexname)) then
+    -- Test parent class info
+    if TestKeyInParentTable(classtable, keyname, indexname) then
         return true
     end
     TestError(testtext .. keyname)    
@@ -227,20 +260,30 @@ function TestPropertyName(classname, propertyname, testsetter, namespace)
     for k,v in pairs(_G[namespace]) do
         if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
-            if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return end
+            if not AssureNonNil(GetPropTable(v, "__propget"),  "Internal error: __propget wasn't found for class " .. classname) then return false end
             if not AssureNonNil(GetPropTable(v, "__propset"), "Internal error: __propset wasn't found for class " .. classname) then return false end
-            AssureKeyInTable(v, propertyname, "__propget", "Getter property not found for class " .. classname .. ": ")
-            local methodname = "Get" .. propertyname
-            AssureKeyInTable(v, methodname, "", "Getter method not found for class " .. classname .. ": ")
-            if testsetter then
-                AssureKeyInTable(v, propertyname, "__propset", "Setter property not found for " .. classname .. ": ")
-                methodname = "Set" .. propertyname
-                AssureKeyInTable(v, methodname, "", "Setter method not found for " .. classname .. ": ")
+            local retval = true
+            if not AssureKeyInTable(v, propertyname, "__propget", "Getter property not found for class " .. classname .. ": ") then
+                retval = false
             end
-            return
+            local methodname = "Get" .. propertyname
+            if not AssureKeyInTable(v, methodname, "", "Getter method not found for class " .. classname .. ": ") then
+                retval = false
+            end
+            if testsetter then
+                if not AssureKeyInTable(v, propertyname, "__propset", "Setter property not found for " .. classname .. ": ") then
+                    retval = false
+                end
+                methodname = "Set" .. propertyname
+                if not AssureKeyInTable(v, methodname, "", "Setter method not found for " .. classname .. ": ") then
+                    retval = false
+                end
+            end
+            return retval
         end
     end
     TestError("Class name not found: " .. classname)
+    return false
 end
 
 function TestKVIsClass(namespace, classstable)
@@ -253,8 +296,7 @@ function TestFunctionName(classname, functionname)
     for k,v in pairs(_G.finale) do
         if k == classname and TestKVIsClass(namespace, v) then
             -- Class name found
-            AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
-            return true
+            return AssureKeyInTable(v, functionname, "", "Function not found for class " .. classname .. ": ")
         end
     end
     TestError("Class name not found: " .. classname)
@@ -294,14 +336,14 @@ end
 
 -- Test for read/write properties
 function PropertyTest(obj, classname, propertyname, namespace)
-    if not TestClassName(obj, classname, namespace) then return end
-    TestPropertyName(classname, propertyname, true, namespace)
+    if not TestClassName(obj, classname, namespace) then return false end
+    return TestPropertyName(classname, propertyname, true, namespace)
 end
 
 -- Test for class methods
 function FunctionTest(obj, classname, functionname)
-    if not TestClassName(obj, classname) then return end
-    return TestFunctionName(classname, functionname, true)
+    if not TestClassName(obj, classname) then return false end
+    return TestFunctionName(classname, functionname)
 end
 
 -- Test for static function existence
@@ -353,25 +395,30 @@ function BoolPropertyTest_RO(obj, classname, propertyname)
 end
 
 -- Test for number properties
-function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction)
-    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return end
+function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction, reload_replaces_obj)
+    if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return obj end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
     -- Test to set each number in the number table
     if numbertable == nil then
         TestIncrease()
         TestError("Internal error - Number test table for property " .. classname .. "." .. propertyname .. " test is nil.")
-        return
+        return obj
     end
     
     savefunction = savefunction or obj["Save"]
-    local reload_replaces_obj = (reloadfunction ~= nil)
+    if reload_replaces_obj == nil then
+        reload_replaces_obj = (reloadfunction ~= nil)
+    end
     reloadfunction = reloadfunction or obj["Reload"]
     
 
     local oldvalue = obj[propertyname]    
     for k, v in pairs(numbertable) do        
-        obj[propertyname] = v        
+        local success, message = pcall(function() obj[propertyname] = v end)
+        if not AssureTrue(success, "Writing to property " .. classname .. "." .. propertyname .. ".") then
+            return obj
+        end
         TestIncrease()
         if savefunction and reloadfunction then  
             AssureTrue(savefunction(obj), classname .. "::Save()")
@@ -392,6 +439,7 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
     -- Restore the previous value
     obj[propertyname] = oldvalue
     if savefunction then AssureTrue(savefunction(obj), classname .. "::Save()") end
+    return obj
 end
 
 -- Test for indexed function pairs
@@ -489,7 +537,7 @@ end
 -- This allows the test scripts to pre-unlink the records so that the test can run without errors.
 -- It can be changed to do nothing so that we can discover which properties still need to be fixed.
 function UnlinkWithProperty(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
-    if finenv.RawFinaleVersion > 0x1b300000 then -- 27.3 is the top version number we check for this
+    if finenv.RawFinaleVersion > skip_unlink_bugs_version then -- skip_unlink_bugs_version is the top version number we check for this
         return
     end
     skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
@@ -553,9 +601,6 @@ end
 -- Here is a list of known tests that use the unlinkproperty to work around a bug:
 --              jwluatest_unlink_fcbackwardrepeat
 function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loadargument, increment, partnumber, skipfinaleversion, unlinkproperty)
-    if unlinkproperty then
-        UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
-    end
     skipfinaleversion = skipfinaleversion or 0 -- skipfinaleversion is optional
     if finenv.RawFinaleVersion <= skipfinaleversion then return end
     if not AssureNonNil(obj, "nil passed to UnlinkableNumberPropertyTest for " .. classname .. "." .. tostring(updater) .. " partnumber " .. partnumber) then return end
@@ -618,14 +663,32 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     end
     
     local score_value = obj_updater()
-    part:SwitchTo()
-    local loaded_in_part = obj_load()
     local new_value
     if type(score_value) == "boolean" then
         new_value = not score_value
     else
         new_value = score_value + increment
     end
+    if loaded_in_score and finenv.RawFinaleVersion > skip_unlink_bugs_version then
+        -- check that modifying in score view does not cause an unlink
+        AssureTrue(obj:RelinkToScore(), "UnlinkableNumberPropertyTest Internal error: relink to score before testing erroneous unlink. ("..classname..")")
+        obj_updater(new_value)
+        AssureTrue(obj:Save(), "UnlinkableNumberPropertyTest Internal error: save in score for testing erroneous unlink. ("..classname..")")
+        part:SwitchTo()
+        if AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest loading to see if changing in score erroneously unlinks. ("..classname..")") then
+            AssureEqual(obj_updater(), new_value, classname.."."..tostring(updater).." unlinks erroneously when modified in score view.")
+        end
+        part:SwitchBack()
+        AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest loading score after seeing if changing in score erroneously unlinks.")
+        obj_updater(score_value)
+        AssureTrue(obj:Save(), "UnlinkableNumberPropertyTest Internal error: save in score after testing erroneous unlink. ("..classname..")")
+        AssureTrue(obj:RelinkToScore(), "UnlinkableNumberPropertyTest Internal error: relink to score after testing erroneous unlink. ("..classname..")")
+    end
+    if unlinkproperty then
+        UnlinkWithProperty(obj, classname, unlinkproperty, loadfunction, loadargument, increment, partnumber, skipfinaleversion)
+    end
+    part:SwitchTo()
+    local loaded_in_part = obj_load()
     obj_updater(new_value)
     AssureTrue(obj_save(loaded_in_part), "UnlinkableNumberPropertyTest Internal error: save in part. ("..classname..")")
     AssureTrue(obj:Reload(), "UnlinkableNumberPropertyTest Internal error: reload in part. ("..classname..")")
@@ -680,27 +743,64 @@ end
 function StringPropertyTest(obj, classname, propertyname, stringtable)
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "string", "property " .. classname .. "." .. propertyname) then return end
-    -- Test to set each number in the number table
+    -- Test to set each value in the stringtable
     if stringtable == nil then
         TestIncrease()
-        TestError("Internal error - String test table for property " .. classname .. "." .. propertyname .. " test is nil.")
+        TestError("Internal error - String test table for property " ..
+        classname .. "." .. propertyname .. " test is nil.")
         return
     end
 
-    local oldvalue = obj[propertyname]    
-    for k, v in pairs(stringtable) do        
+    local oldvalue = obj[propertyname]
+    for k, v in pairs(stringtable) do
         obj[propertyname] = v
         TestIncrease()
         AssureTrue(obj:Save(), classname .. "::Save()")
         obj[propertyname] = oldvalue
         AssureTrue(obj:Reload(), classname .. "::Reload()")
         if obj[propertyname] ~= v then
-            TestError("String test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. v .. " (received ".. obj[propertyname] .. ")" )
+            TestError("String test failure while trying to set/save " ..
+                classname .. "." .. propertyname .. " to " .. v .. " (received " .. obj[propertyname] .. ")")
             break
         end
     end
     -- Restore the previous value
     obj[propertyname] = oldvalue
+    AssureTrue(obj:Save(), classname .. "::Save()")
+end
+
+-- Test for getter/setter pair that gets FCSring
+function FCStringGetterSetterTest(obj, classname, gettername, settername, stringtable)
+    if not FunctionTest(obj, classname, gettername) then return end
+    if not FunctionTest(obj, classname, settername) then return end
+    -- Test to set each value in the stringtable
+    if stringtable == nil then
+        TestIncrease()
+        TestError("Internal error - String test table for getter " ..
+            classname .. "." .. gettername .. " test is nil.")
+        return
+    end
+
+    local oldvalue = finale.FCString()
+    obj[gettername](obj, oldvalue)
+    for k, v in pairs(stringtable) do
+        local newvalue = finale.FCString()
+        newvalue.LuaString = v
+        obj[settername](obj, newvalue)
+        TestIncrease()
+        AssureTrue(obj:Save(), classname .. "::Save()")
+        obj[settername](obj, oldvalue)
+        AssureTrue(obj:Reload(), classname .. "::Reload()")
+        local testvalue = finale.FCString()
+        obj[gettername](obj, testvalue)
+        if testvalue.LuaString ~= v then
+            TestError("FCString test failure while trying to set/save " ..
+                classname .. "." .. settername .. " to " .. v .. " (received " .. testvalue.LuaString .. ")")
+            break
+        end
+    end
+    -- Restore the previous value
+    obj[settername](obj, oldvalue)
     AssureTrue(obj:Save(), classname .. "::Save()")
 end
 
@@ -905,4 +1005,16 @@ function DoRequire(str)
     end
     return lib
 end
+
+function CreateMusicRegion(startmeas, startstaff, startpos, endmeas, endstaff, endpos)
+    local region = finale.FCMusicRegion()
+    region.StartMeasure = startmeas
+    region.StartStaff = startstaff
+    region.StartMeasurePos = startpos
+    region.EndMeasure = endmeas
+    region.EndStaff = endstaff
+    region.EndMeasurePos = endpos
+    return region
+end
+
 

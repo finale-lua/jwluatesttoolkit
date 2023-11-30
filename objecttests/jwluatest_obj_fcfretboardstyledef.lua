@@ -1,0 +1,66 @@
+function FCFretboardStyleDef_NamesTest(obj, expected_name, expected_fret_text)
+    local str = finale.FCString()
+    obj:GetName(str)
+    AssureEqual(str.LuaString, expected_name, "FCFreboardStyle "..obj.ItemNo.." name comparison")
+    obj:GetFretNumberText(str)
+    AssureEqual(str.LuaString, expected_fret_text, "FCFreboardStyle "..obj.ItemNo.." fret number text comparison")
+end
+
+function FCFretboardStyleDef_ValueTests_ItemNo1(obj)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "BarreShapeID", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "CustomShapeID", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FingeredShapeID", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FingeringWhiteout", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretCountDefault", 4)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretSpacing", 1404)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretThickness", 134)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalFingeringOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalFretNumberOffset", 192)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalHandleOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "MuteStringShapeID", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "NutThickness", 376)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "OpenStringShapeID", 0)
+   BoolValuePropertyTest(obj, "FCFretboardStyleDef", "ShowLastFret", true)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "StringSpacing", 900)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "StringThickness", 125)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalFingeringOffset", 80)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalFretNumberOffset", 320)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalHandleOffset", 0)
+end
+
+
+-- Call:
+local obj = finale.FCFretboardStyleDef()
+AssureTrue(obj:Load(1), "FCFretboardStyleDef:Load(1)")
+FCFretboardStyleDef_ValueTests_ItemNo1(obj)
+FCFretboardStyleDef_NamesTest(obj, "Seville", "fr.")
+
+
+function FCFretboardStyleDef_ValueTests_ItemNo4(obj)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "BarreShapeID", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "CustomShapeID", 78)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FingeredShapeID", 75)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FingeringWhiteout", 166)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretCountDefault", 4)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretSpacing", 1659)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "FretThickness", 184)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalFingeringOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalFretNumberOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "HorizontalHandleOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "MuteStringShapeID", 77)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "NutThickness", 553)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "OpenStringShapeID", 76)
+   BoolValuePropertyTest(obj, "FCFretboardStyleDef", "ShowLastFret", true)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "StringSpacing", 1106)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "StringThickness", 184)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalFingeringOffset", -111)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalFretNumberOffset", 0)
+   NumberValuePropertyTest(obj, "FCFretboardStyleDef", "VerticalHandleOffset", 0)
+end
+
+
+-- Call:
+local obj = finale.FCFretboardStyleDef()
+AssureTrue(obj:Load(4), "FCFretboardStyleDef:Load(4)")
+FCFretboardStyleDef_ValueTests_ItemNo4(obj)
+FCFretboardStyleDef_NamesTest(obj, "Jazz 2", "fr.")

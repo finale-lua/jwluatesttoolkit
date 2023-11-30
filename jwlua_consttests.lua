@@ -5,7 +5,7 @@ function plugindef()
    return "Finale Lua Constants Tests", "Constants Tests", "Test the validity of the Finale Lua constants."
 end
 
-if finenv.IsRGPLua then -- if new lua
+if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
 
@@ -14,12 +14,14 @@ require("tools/jwluatesttools")
 
 -- Load and execute the unit tests for the classes:
 require("constanttests/consttest_fcarticulationdef")
+require("constanttests/consttest_fcbookmark")
 require("constanttests/consttest_fccategorydef")
 require("constanttests/consttest_fccellframehold")
 require("constanttests/consttest_fcchord")
 require("constanttests/consttest_fcchordprefs")
 require("constanttests/consttest_fccustomsmartlinedef")
 require("constanttests/consttest_fcfontprefs")
+require("constanttests/consttest_fcfretitem")
 require("constanttests/consttest_fcgeneralprefs")
 require("constanttests/consttest_fcgridsguidesprefs")
 require("constanttests/consttest_fcgroup")
@@ -33,6 +35,7 @@ require("constanttests/consttest_fcpagegraphic")
 require("constanttests/consttest_fcpagetext")
 require("constanttests/consttest_fcpartstaffvoicing")
 require("constanttests/consttest_fcplaybackprefs")
+require("constanttests/consttest_fcrawtext")
 require("constanttests/consttest_fcrepeatprefs")
 require("constanttests/consttest_fcresourcewindow")
 require("constanttests/consttest_fcseparateplacement")
@@ -41,6 +44,7 @@ require("constanttests/consttest_fcsmartshapeentryconnectstyle")
 require("constanttests/consttest_fcstaff")
 require("constanttests/consttest_fcsyllableentrymod")
 require("constanttests/consttest_fctextblock")
+require("constanttests/consttest_fcctrltexteditor")
 require("constanttests/consttest_fctextexpressiondef")
 require("constanttests/consttest_fctextrepeat")
 require("constanttests/consttest_fctextrepeatdef")

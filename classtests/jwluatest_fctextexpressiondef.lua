@@ -2,6 +2,7 @@ function FCTextExpressionDef_PropertyTests(exprdef)
    BoolPropertyTest(exprdef, "FCTextExpressionDef", "BreakMMRest")
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "CategoryID", {1, 20, 30})
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "ExecutableShapeID", {0, 4, 30})
+   BoolPropertyTest(exprdef, "FCTextExpressionDef", "HideMeasureNumbers")
    NumberPropertyTest(exprdef, "FCTextExpressionDef", "HorizontalAlignmentPoint", {finale.ALIGNHORIZ_CLICKPOS,
             finale.ALIGNHORIZ_LEFTOFALLNOTEHEAD, finale.ALIGNHORIZ_LEFTOFPRIMARYNOTEHEAD,
             finale.ALIGNHORIZ_STEM, finale.ALIGNHORIZ_CENTERPRIMARYNOTEHEAD,
