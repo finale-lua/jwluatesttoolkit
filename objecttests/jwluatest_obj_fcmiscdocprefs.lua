@@ -2,6 +2,9 @@ function FCMiscDocPrefs_ValueTests_ItemNo1(miscdocprefs)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCommonTimeSig", false)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCutTimeSig", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AdjustDotForMultiVoices", true)
+   if Is27_4OrAbove() then
+      BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AlignMeasureNumbersWithBarline", false)
+   end
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AllowFloatingRests", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AlwaysSlashGraceNote", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "AvoidSystemMarginCollisions", false)
@@ -31,6 +34,9 @@ function FCMiscDocPrefs_ValueTests_ItemNo1(miscdocprefs)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "HalfStemsForBeamedRests", false)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "IncludeRestsInFour", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "ItalicizeCapoChords", true)
+   if Is25_2OrAbove() then
+      BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeepOctaveTransposition", true)
+   end
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigCancelOutgoing", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigModeChange", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigNaturalsInC", false)
@@ -38,6 +44,9 @@ function FCMiscDocPrefs_ValueTests_ItemNo1(miscdocprefs)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigPreserveOctave", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplayMultipe", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplaySingle", false)
+   if Is27_4OrAbove() then
+      BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "LegacyDotPositionOnFlippedStems", false)
+   end
    NumberValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "MaxBeamSlope", 12)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "NormalDefaultBarline", true)
    BoolValuePropertyTest(miscdocprefs, "FCMiscDocPrefs", "OnlyFirstSystemClef", false)

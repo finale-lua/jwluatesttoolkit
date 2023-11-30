@@ -29,11 +29,12 @@ print("Trusted mode "..tostring(finenv.TrustedMode))
 
 _G.skip_finale_version = 0x1b200000 -- Finale 27.2 is the highest version to skip for pre-Fin26.3 unlinkable items
 _G.staff_to_part = {3, 2, 1} -- The Part numbers are in reverse staff order
-_G.skip_unlink_bugs_version = 0x1b300000 -- Finale 27.3 is the highest version tested for unlink bugs
-_G.highest_playback_prefs_tested_version = 0x1b300000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
-_G.ignore_baselines_delete_version = 0x1b300000 -- Ignore default lyrics baselines delete problem in 27.3. Revisit with future Finale versions.
-_G.do_playback_test = finenv.RawFinaleVersion > 0x1b300000
+_G.skip_unlink_bugs_version = 0x1b400000 -- Finale 27.3 is the highest version tested for unlink bugs
+_G.highest_playback_prefs_tested_version = 0x1b400000 -- Finale 27.3 is the highest version tested for EDTPlaybackPrefs26_2 bugs
+_G.ignore_baselines_delete_version = 0x1b400000 -- Ignore default lyrics baselines delete problem in 27.4. Revisit with future Finale versions.
+_G.do_playback_test = finenv.RawFinaleVersion > 0x1b400000 -- playback test not fixed as of 27.4
 _G.playback_test_expected_to_succeed = finenv.UI():IsOnWindows()
+_G.interdot_spacing_unlink_check = finenv.RawFinaleVersion <= 0x1b400000 -- Finale 27.4 is the highest version we've checked.
 
 
 local NoOfTests = 0
@@ -55,6 +56,10 @@ function Is2014BOrAbove()
     return finenv.RawFinaleVersion >= 0x12020000
 end
 
+function Is25_2OrAbove()    
+    return finenv.RawFinaleVersion >= 0x19200000
+end
+
 function Is26OrAbove()    
     return finenv.RawFinaleVersion >= 0x1a000000
 end
@@ -65,6 +70,10 @@ end
 
 function Is27_3OrAbove()    
     return finenv.RawFinaleVersion >= 0x1b300000
+end
+
+function Is27_4OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1b400000
 end
 
 -- A help method to assure a usable string value

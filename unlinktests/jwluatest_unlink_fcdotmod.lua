@@ -6,9 +6,9 @@ function FCDotMod_Test_Unlinkable(measure, staff, entrynumber, partnumber)
             local dot_mod = finale.FCDotMod()
             dot_mod:SetNoteEntry(entry)
             -- this code creates the dot mod if it doesn't exist.
-            -- it works around what appears to be a problem with Finale 27.3 that if you create them
+            -- it works around what appears to be a problem stating with Finale 27.3 that if you create them
             -- after switching to part view, unlinking InterDotSpacing has a problem. None of the others have this problem.
-            if finenv.RawFinaleVersion <= 0x1b300000 then -- 27.3 is the top version number we check for this
+            if interdot_spacing_unlink_check then
                 local create_it = finale.FCDotMod()
                 create_it:SetNoteEntry(entry)
                 if not create_it:LoadAt(note) then

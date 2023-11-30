@@ -2,6 +2,9 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCommonTimeSig")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AbbreviateCutTimeSig")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AdjustDotForMultiVoices")
+   if Is27_4OrAbove() then
+      BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AlignMeasureNumbersWithBarline")
+   end
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AllowFloatingRests")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AlwaysSlashGraceNote")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "AvoidSystemMarginCollisions")
@@ -14,7 +17,7 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CloseBarlineAtEnd")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CloseBarlineAtSystem")
    if Is2014OrAbove() then
-        BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "ConsolidateRestsAcrossLayers")
+      BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "ConsolidateRestsAcrossLayers")
    end
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CourtesyClefAtSystemEnd")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "CourtesyKeySigAtSystemEnd")
@@ -35,6 +38,9 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "HalfStemsForBeamedRests")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "IncludeRestsInFour")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "ItalicizeCapoChords")
+   if Is25_2OrAbove() then
+      BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeepOctaveTransposition")
+   end
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigCancelOutgoing")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigModeChange")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigNaturalsInC")
@@ -42,6 +48,9 @@ function FCMiscDocPrefs_PropertyTests(miscdocprefs)
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "KeySigPreserveOctave")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplayMultipe")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LeftBarlineDisplaySingle")
+   if Is27_4OrAbove() then
+      BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "LegacyDotPositionOnFlippedStems")
+   end
    NumberPropertyTest(miscdocprefs, "FCMiscDocPrefs", "MaxBeamSlope", {0, 16, 33})
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "NormalDefaultBarline")
    BoolPropertyTest(miscdocprefs, "FCMiscDocPrefs", "OnlyFirstSystemClef")
