@@ -68,6 +68,10 @@ function Is26_2OrAbove()
     return finenv.RawFinaleVersion >= 0x1a200000
 end
 
+function Is27_1OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1b100000
+end
+
 function Is27_3OrAbove()    
     return finenv.RawFinaleVersion >= 0x1b300000
 end

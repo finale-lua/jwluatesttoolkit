@@ -3,7 +3,9 @@ function FCFontInfo_ValueTests_ItemNoFinaleMaestro_24(obj)
    BoolValuePropertyTest(obj, "FCFontInfo", "Bold", false)
    NumberValuePropertyTest(obj, "FCFontInfo", "EnigmaStyles", 0)
    BoolValuePropertyTest(obj, "FCFontInfo", "Hidden", false)
-   BoolValuePropertyTest_RO(obj, "FCFontInfo", "IsSMuFLFont", true)
+   if Is27_1OrAbove()  then
+      BoolValuePropertyTest_RO(obj, "FCFontInfo", "IsSMuFLFont", true)
+   end
    BoolValuePropertyTest(obj, "FCFontInfo", "Italic", false)
    StringValuePropertyTest(obj, "FCFontInfo", "Name", "Finale Maestro")
    NumberValuePropertyTest(obj, "FCFontInfo", "Size", 24)
