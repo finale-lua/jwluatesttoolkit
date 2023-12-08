@@ -68,6 +68,10 @@ function Is26_2OrAbove()
     return finenv.RawFinaleVersion >= 0x1a200000
 end
 
+function Is27_1OrAbove()    
+    return finenv.RawFinaleVersion >= 0x1b100000
+end
+
 function Is27_3OrAbove()    
     return finenv.RawFinaleVersion >= 0x1b300000
 end
@@ -367,25 +371,28 @@ function BoolPropertyTest(obj, classname, propertyname)
     -- Test to set each number in the number table
     local oldvalue = obj[propertyname]
     obj[propertyname] = true
+    AssureTrue(obj[propertyname] == true, classname .. "." .. propertyname .. " is true.")
     TestIncrease()
-    AssureTrue(obj:Save(), classname .. "::Save()")
+    if obj.Save then AssureTrue(obj:Save(), classname .. "::Save()") end
     obj[propertyname] = false
     AssureTrue(obj[propertyname] == false, classname .. "." .. propertyname .. " is false.")
-    AssureTrue(obj:Reload(), classname .. "::Reload()")
-    if obj[propertyname] ~= true then
-         TestError("Bool test error while trying to set/save " .. classname .. "." .. propertyname .. " to true." )
-    end
-    obj[propertyname] = false
-    TestIncrease()
-    AssureTrue(obj:Save(), classname .. "::Save()")
-    obj[propertyname] = true
-    AssureTrue(obj[propertyname] == true, classname .. "." .. propertyname .. " is true.")
-    AssureTrue(obj:Reload(), classname .. "::Reload()")
-    if obj[propertyname] ~= false then
-         TestError("Bool test error while trying to set/save " .. classname .. "." .. propertyname .. " to false." )
+    if obj.Reload and obj.Save then
+        AssureTrue(obj:Reload(), classname .. "::Reload()")
+        if obj[propertyname] ~= true then
+             TestError("Bool test error while trying to set/save " .. classname .. "." .. propertyname .. " to true." )
+        end
+        obj[propertyname] = false
+        TestIncrease()
+        AssureTrue(obj:Save(), classname .. "::Save()")
+        obj[propertyname] = true
+        AssureTrue(obj[propertyname] == true, classname .. "." .. propertyname .. " is true.")
+        AssureTrue(obj:Reload(), classname .. "::Reload()")
+        if obj[propertyname] ~= false then
+             TestError("Bool test error while trying to set/save " .. classname .. "." .. propertyname .. " to false." )
+        end
     end
     obj[propertyname] = oldvalue
-    AssureTrue(obj:Save(), classname .. "::Save()")
+    if obj.Save then AssureTrue(obj:Save(), classname .. "::Save()") end
 end
 
 -- Test for read-only boolean properties
@@ -432,7 +439,7 @@ function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunct
                 AssureTrue(reloadfunction(obj), classname .. "::Reload()")
             end
         end
-        if obj[propertyname] ~= v then
+        if not AssureEqual(obj[propertyname], v, "Setting property " .. classname .. "." .. propertyname .. "to value.") then
             TestError("Number test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. v .. " (received ".. obj[propertyname] .. ")" )
         end        
     end
