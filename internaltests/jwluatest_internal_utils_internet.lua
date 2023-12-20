@@ -709,3 +709,35 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     end
 end
 
+if AssureNonNil(internet.url_escape, osutils._VERSION.." does not have url_escape function.") then
+    local long_string = [[This is a test of a very long string to convert to a URL. It contains many spaces as well as
+        non-ASCII characters. For example:
+        今日は, fünf Lüste, åéîøü, 🀄, 🜀, etc.
+        𐒎𝑙𝒾𝓀𝑒 𝓉𝒽𝒾𝓈 𝒸𝓊𝓇𝓈𝒾𝓋𝑒 𝓈𝑒𝓃𝓉𝑒𝓃𝒸𝑒 𝓊𝓈𝒾𝓃𝑔 𝓊𝓃𝓊𝓈𝓊𝒶𝓁 𝒸𝒽𝒶𝓇𝒶𝒸𝓉𝑒𝓇𝓈.
+        And unsafe characters: \, <, >, ", #, {, }, |, , ^, [, ], and '
+        Other characters: %
+        It needs to be longer than 256 characters (or whatever the number is now), so that the full Windows code path
+        will be tested. How many characters is this, I wonder.
+    ]]
+    local expected_url_string =
+"This%20is%20a%20test%20of%20a%20very%20long%20string%20to%20convert%20to%20a%20URL.%20It%20contains%20many%20spaces%20as%20well%20as%0A%20%20%20%20%20%20%20%20non-ASCII%20characters.%20For%20example:%0A%20%20%20%20%20%20%20%20%E4%BB%8A%E6%97%A5%E3%81%AF,%20f%C3%BCnf%20L%C3%BCste,%20%C3%A5%C3%A9%C3%AE%C3%B8%C3%BC,%20%F0%9F%80%84,%20%F0%9F%9C%80,%20etc.%0A%20%20%20%20%20%20%20%20%F0%90%92%8E%F0%9D%91%99%F0%9D%92%BE%F0%9D%93%80%F0%9D%91%92%20%F0%9D%93%89%F0%9D%92%BD%F0%9D%92%BE%F0%9D%93%88%20%F0%9D%92%B8%F0%9D%93%8A%F0%9D%93%87%F0%9D%93%88%F0%9D%92%BE%F0%9D%93%8B%F0%9D%91%92%20%F0%9D%93%88%F0%9D%91%92%F0%9D%93%83%F0%9D%93%89%F0%9D%91%92%F0%9D%93%83%F0%9D%92%B8%F0%9D%91%92%20%F0%9D%93%8A%F0%9D%93%88%F0%9D%92%BE%F0%9D%93%83%F0%9D%91%94%20%F0%9D%93%8A%F0%9D%93%83%F0%9D%93%8A%F0%9D%93%88%F0%9D%93%8A%F0%9D%92%B6%F0%9D%93%81%20%F0%9D%92%B8%F0%9D%92%BD%F0%9D%92%B6%F0%9D%93%87%F0%9D%92%B6%F0%9D%92%B8%F0%9D%93%89%F0%9D%91%92%F0%9D%93%87%F0%9D%93%88.%0A%20%20%20%20%20%20%20%20And%20unsafe%20characters:%20%5C,%20%3C,%20%3E,%20%22,%20%23,%20%7B,%20%7D,%20%7C,%20,%20%5E,%20%5B,%20%5D,%20and%20'%0A%20%20%20%20%20%20%20%20Other%20characters:%20%25%0A%20%20%20%20%20%20%20%20It%20needs%20to%20be%20longer%20than%20256%20characters%20(or%20whatever%20the%20number%20is%20now),%20so%20that%20the%20full%20Windows%20code%20path%0A%20%20%20%20%20%20%20%20will%20be%20tested.%20How%20many%20characters%20is%20this,%20I%20wonder.%0A%20%20%20%20"
+    local pcalled, url_string = pcall(internet.url_escape, long_string)
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for long string: "..tostring(url_string)) then
+        AssureTrue(#url_string > 256, "internet.url_escape: returned url_string is not greater than 256 characters")
+        AssureEqual(url_string, expected_url_string, "internet.url_escape: returned url_string")
+    end
+    pcalled, url_string = pcall(internet.url_escape, "short string")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for short string: "..tostring(url_string)) then
+        AssureEqual(url_string, "short%20string", "internet.url_escape: returned url_string")
+    end
+    -- The next tests document known platform differences in encoding
+    pcalled, url_string = pcall(internet.url_escape, "?")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for question mark: "..tostring(url_string)) then
+        AssureEqual(url_string, WinMac("%3F", "?"), "internet.url_escape: returned url_string")
+    end
+    pcalled, url_string = pcall(internet.url_escape, "/")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for forward slash: "..tostring(url_string)) then
+        AssureEqual(url_string, WinMac("%2F", "/"), "internet.url_escape: returned url_string")
+    end    
+
+end
