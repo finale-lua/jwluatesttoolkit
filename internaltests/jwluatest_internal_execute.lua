@@ -5,7 +5,7 @@ if not AssureNonNil(finenv.CreateLuaScriptItemsFromFilePath, "finenv.CreateLuaSc
     return
 end
 
-local function FCLuaScriptItem_TestReturnValue(item, expected_value, expected_success)
+local function FCLuaScriptItem_TestReturnValue(item, expected_value, expected_success, expected_error_message)
     if AssureNonNil(item.AutomaticallyReportErrors) then 
         item.AutomaticallyReportErrors = false
     end
@@ -17,6 +17,13 @@ local function FCLuaScriptItem_TestReturnValue(item, expected_value, expected_su
             AssureEqual(msg:sub(1, 8), expected_value:sub(1, 8), "finenv.ExecuteLuaScriptItem")
         end
     else
+        if AssureTrue(type(msg) == "string", "finenv.ExecuteLuaScriptItem returned false, but message response was type "..type(msg)..".") then
+            AssureTrue(#msg > 0,  "finenv.ExecuteLuaScriptItem returned false, but message was empty.")
+            if expected_error_message then
+                local _, end_index = msg:find(expected_error_message)
+                AssureNonNil(end_index, "finenv.ExecuteLuaScriptItem returned false, but message was not the expected value. Message returned: "..msg)
+            end
+        end
         AssureFalse(success, "finenv.ExecuteLuaScriptItem result: " .. tostring(msg))
     end
 end
@@ -128,5 +135,15 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry stri
             finenv.ExecuteLuaScriptItem(item)
         ]]
         FCLuaScriptItem_TestReturnValue(item, "", false)
+        expected_linenum = 6
+        item.OptionalScriptText = [[
+            function plugindef()
+                finaleplugin.ExecuteHttpsCalls = true
+            end
+            local internet = require('luaosutils').internet
+            local success, response = internet.get_sync("https://robertgpatterson.com/test space.txt", 0.001)
+            assert(success, response)
+        ]]
+        FCLuaScriptItem_TestReturnValue(item, "", false, "Request timed out.")
     end
 end
