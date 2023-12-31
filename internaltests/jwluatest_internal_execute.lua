@@ -113,7 +113,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry stri
             AssureEqual(msgtype, finenv.MessageResultType.SCRIPT_RESULT, "finenv.ExecuteLuaScriptItem OnExecutionDidStop msgtype")
             AssureFalse(success, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop result")
             AssureEqual(source, item.OptionalScriptText, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned source value")
-            AssureEqual(line_number, expected_linenum, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned line number")
+            AssureValue(line_number, expected_linenum, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned line number")
         end)
         item.OptionalScriptText = [[
             -- comment (line 1)
@@ -145,5 +145,32 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry stri
             assert(success, response)
         ]]
         FCLuaScriptItem_TestReturnValue(item, "", false, "Request timed out.")
+        expected_linenum = 10
+        item.OptionalScriptText = [[
+            function plugindef()
+                finaleplugin.ExecuteHttpsCalls = true
+            end
+            local internet = require('luaosutils').internet
+            local process = require('luaosutils').process
+            local success, response
+            local function callback(cbsuccess, cbresponse)
+                success = cbsuccess
+                response = cbresponse
+                assert(success, response) -- SHOULD FAIL HERE
+            end
+            local session = internet.get("https://robertgpatterson.com/test space.txt", callback)
+            internet.report_errors(session, false)
+            local timestamp = finale.FCUI.GetHiResTimer()
+            while not response do
+                process.run_event_loop(0.05)
+                if finale.FCUI.GetHiResTimer() - timestamp > 10 then
+                    success = false
+                    data = "Callback was not called in time."
+                end
+            end
+            session = internet.cancel_session(session)
+            assert(success, response) -- SHOULD NOT FAIL HERE
+        ]]
+        FCLuaScriptItem_TestReturnValue(item, "", false, WinMac("Not Found", "unsupported URL"))
     end
 end
