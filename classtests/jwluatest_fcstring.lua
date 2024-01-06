@@ -35,3 +35,15 @@ AssureValue(str.LuaString, "abcde", "Set from string with property")
 
 setStrValue(str, "1a4.tr")
 AssureValue(str:GetLuaString(), "1a4.tr", "Set from string with setter")
+
+if AssureNonNil(utf8, "utf8 library not available for FCString.SetCharacterAt test.") then
+    setStrValue(str, "12345")
+    str:SetCharacterAt(0, 0xfeb1)
+    str:SetCharacterAt(1, 0xfeb2)
+    str:SetCharacterAt(2, 0xfeb3)
+    str:SetCharacterAt(3, 0xfeb4)
+    str:SetCharacterAt(4, 0xfeb5)
+    local expected_value = utf8.char(0xfeb1, 0xfeb2, 0xfeb3, 0xfeb4, 0xfeb5)
+    AssureValue(str:GetLuaString(), expected_value, "Setting characters greater than 0xfeb0")
+end
+

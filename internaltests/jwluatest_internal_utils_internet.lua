@@ -5,6 +5,10 @@ local internet = osutils.internet
 if not AssureNonNil(internet, osutils._VERSION.." is not the right version.") then
     return
 end
+local process = osutils.process
+if not AssureNonNil(process, osutils._VERSION.." is not the right version.") then
+    return
+end
 
 if AssureNonNil(internet.server_name, "luaosutils.internet.server_name does not exist.") then
     AssureEqual(internet.server_name("https://mail.google.com/mail/u/0/#inbox"), "mail.google.com", "luaosutils.internet.server_name")
@@ -14,6 +18,10 @@ if AssureNonNil(internet.server_name, "luaosutils.internet.server_name does not 
 end
 
 if not AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get function: using download_url alias instead.") then
+    internet.get = internet.download_url
+end
+
+if not AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get_sync function: using download_url_sync alias instead.") then
     internet.get_sync = internet.download_url_sync
 end
 
@@ -673,12 +681,11 @@ buffer = buffer.."\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\
 buffer = buffer.."\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32\0\2\32"
 buffer = buffer.."\0\2\32\144\25\2\255\15\196\154\148\201\98\212\185\23\0\0\0\0\73\69\78\68\174\66\96\130"
 
-if AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get or download_url function.") then
+if AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get_sync or download_url_sync function.") then
     local headers = {
                 ["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
                 ["Accept-Language"] = "en-US,en;q=0.9"
             }
-     
     local pcalled, success, data = pcall(internet.get_sync, url, 5, headers)
     if AssureTrue(pcalled, "internet.get_sync: pcall result: "..tostring(success)) then
         if AssureTrue(success, "internet.get_sync: "..data) then
@@ -687,14 +694,12 @@ if AssureNonNil(internet.get_sync, osutils._VERSION.." does not have get or down
     end
 end
 
-if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post function.") then
+if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post_sync function.") then
     local headers = {
         ["Content-Type"] = "application/json"
     }
     
     local test_data = "This is a test"
-    
-
     local pcalled, success, data = pcall(internet.post_sync, "https://httpbin.org/post", test_data, 10, headers)
     if AssureTrue(pcalled, "internet.post_sync: pcall result: "..tostring(success)) then
         if AssureTrue(success, "internet.post_sync: "..data) then
@@ -709,3 +714,96 @@ if AssureNonNil(internet.post_sync, osutils._VERSION.." does not have post funct
     end
 end
 
+if AssureNonNil(process.run_event_loop, osutils._VERSION.." does not have run_event_loop function.") then
+    if AssureNonNil(internet.get, osutils._VERSION.." does not have get or download_url function.") then
+        local headers = {
+                    ["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+                    ["Accept-Language"] = "en-US,en;q=0.9"
+                }
+        local success, data
+        local function callback(cb_success, cb_response)
+            success = cb_success
+            data = cb_response
+        end
+        local pcalled, session = pcall(internet.get, url, callback, headers)
+        if AssureTrue(pcalled, "internet.get: pcall result: "..tostring(session)) then
+            local timestamp = finale.FCUI.GetHiResTimer()
+            while not data do
+                process.run_event_loop(0.05)
+                if finale.FCUI.GetHiResTimer() - timestamp > 10 then
+                    success = false
+                    data = "Callback was not called in time."
+                end
+            end
+            session = internet.cancel_session
+            if AssureTrue(success, "internet.get: "..data) then
+                AssureEqual(data, buffer, "internet.get returned value: "..data)
+            end
+        end
+    end
+    if AssureNonNil(internet.post, osutils._VERSION.." does not have post function.") then
+        local headers = {
+            ["Content-Type"] = "application/json"
+        }
+        local success, data
+        local function callback(cb_success, cb_response)
+            success = cb_success
+            data = cb_response
+        end
+        local test_data = "This is a test"
+        local pcalled, session = pcall(internet.post, "https://httpbin.org/post", test_data, callback, headers)
+        if AssureTrue(pcalled, "internet.post: pcall result: "..tostring(success)) then
+            local timestamp = finale.FCUI.GetHiResTimer()
+            while not data do
+                process.run_event_loop(0.05)
+                if finale.FCUI.GetHiResTimer() - timestamp > 10 then
+                    success = false
+                    data = "Callback was not called in time."
+                end
+            end
+            session = internet.cancel_session
+            if AssureTrue(success, "internet.post: "..data) then
+                local cjson = DoRequire("cjson.safe")
+                if AssureNonNil(cjson, "Lua-cjson in internet tests") then
+                    local response, errmsg = cjson.decode(data)
+                    if AssureNonNil(response, "cjson.decode: "..tostring(errmsg)) then
+                        AssureEqual(response.data, test_data, "internet.post got expected reply: "..response.data)
+                    end
+                end
+            end
+        end
+    end
+end
+
+if AssureNonNil(internet.url_escape, osutils._VERSION.." does not have url_escape function.") then
+    local long_string = [[This is a test of a very long string to convert to a URL. It contains many spaces as well as
+        non-ASCII characters. For example:
+        今日は, fünf Lüste, åéîøü, 🀄, 🜀, etc.
+        𐒎𝑙𝒾𝓀𝑒 𝓉𝒽𝒾𝓈 𝒸𝓊𝓇𝓈𝒾𝓋𝑒 𝓈𝑒𝓃𝓉𝑒𝓃𝒸𝑒 𝓊𝓈𝒾𝓃𝑔 𝓊𝓃𝓊𝓈𝓊𝒶𝓁 𝒸𝒽𝒶𝓇𝒶𝒸𝓉𝑒𝓇𝓈.
+        And unsafe characters: \, <, >, ", #, {, }, |, , ^, [, ], and '
+        Other characters: %
+        It needs to be longer than 256 characters (or whatever the number is now), so that the full Windows code path
+        will be tested. How many characters is this, I wonder.
+    ]]
+    local expected_url_string =
+"This%20is%20a%20test%20of%20a%20very%20long%20string%20to%20convert%20to%20a%20URL.%20It%20contains%20many%20spaces%20as%20well%20as%0A%20%20%20%20%20%20%20%20non-ASCII%20characters.%20For%20example:%0A%20%20%20%20%20%20%20%20%E4%BB%8A%E6%97%A5%E3%81%AF,%20f%C3%BCnf%20L%C3%BCste,%20%C3%A5%C3%A9%C3%AE%C3%B8%C3%BC,%20%F0%9F%80%84,%20%F0%9F%9C%80,%20etc.%0A%20%20%20%20%20%20%20%20%F0%90%92%8E%F0%9D%91%99%F0%9D%92%BE%F0%9D%93%80%F0%9D%91%92%20%F0%9D%93%89%F0%9D%92%BD%F0%9D%92%BE%F0%9D%93%88%20%F0%9D%92%B8%F0%9D%93%8A%F0%9D%93%87%F0%9D%93%88%F0%9D%92%BE%F0%9D%93%8B%F0%9D%91%92%20%F0%9D%93%88%F0%9D%91%92%F0%9D%93%83%F0%9D%93%89%F0%9D%91%92%F0%9D%93%83%F0%9D%92%B8%F0%9D%91%92%20%F0%9D%93%8A%F0%9D%93%88%F0%9D%92%BE%F0%9D%93%83%F0%9D%91%94%20%F0%9D%93%8A%F0%9D%93%83%F0%9D%93%8A%F0%9D%93%88%F0%9D%93%8A%F0%9D%92%B6%F0%9D%93%81%20%F0%9D%92%B8%F0%9D%92%BD%F0%9D%92%B6%F0%9D%93%87%F0%9D%92%B6%F0%9D%92%B8%F0%9D%93%89%F0%9D%91%92%F0%9D%93%87%F0%9D%93%88.%0A%20%20%20%20%20%20%20%20And%20unsafe%20characters:%20%5C,%20%3C,%20%3E,%20%22,%20%23,%20%7B,%20%7D,%20%7C,%20,%20%5E,%20%5B,%20%5D,%20and%20'%0A%20%20%20%20%20%20%20%20Other%20characters:%20%25%0A%20%20%20%20%20%20%20%20It%20needs%20to%20be%20longer%20than%20256%20characters%20(or%20whatever%20the%20number%20is%20now),%20so%20that%20the%20full%20Windows%20code%20path%0A%20%20%20%20%20%20%20%20will%20be%20tested.%20How%20many%20characters%20is%20this,%20I%20wonder.%0A%20%20%20%20"
+    local pcalled, url_string = pcall(internet.url_escape, long_string)
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for long string: "..tostring(url_string)) then
+        AssureTrue(#url_string > 256, "internet.url_escape: returned url_string is not greater than 256 characters")
+        AssureEqual(url_string, expected_url_string, "internet.url_escape: returned url_string")
+    end
+    pcalled, url_string = pcall(internet.url_escape, "short string")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for short string: "..tostring(url_string)) then
+        AssureEqual(url_string, "short%20string", "internet.url_escape: returned url_string")
+    end
+    -- The next tests document known platform differences in encoding
+    pcalled, url_string = pcall(internet.url_escape, "?")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for question mark: "..tostring(url_string)) then
+        AssureEqual(url_string, WinMac("%3F", "?"), "internet.url_escape: returned url_string")
+    end
+    pcalled, url_string = pcall(internet.url_escape, "/")
+    if AssureTrue(pcalled, "internet.url_escape: pcall result for forward slash: "..tostring(url_string)) then
+        AssureEqual(url_string, WinMac("%2F", "/"), "internet.url_escape: returned url_string")
+    end    
+
+end
