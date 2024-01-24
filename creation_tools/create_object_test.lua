@@ -153,17 +153,29 @@ end
 
 -- The actual code to process an object (modify as needed):
 
-local font = finale.FCFontInfo("Times New Roman", 17, 32 + 3 + 64)
-ProcessObject(font, "obj", false, "TimesNewRoman_17_efx")
-
 --[[
 if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
     require('mobdebug').start()
 end
+]]
 
+local obj = finale.FCStaffStyleDef()
+obj:SetName(finale.FCString("Position Adjust Creator"))
+obj:SaveNew()
+local fn = obj:GetFullNamePosition()
+local an = obj:GetAbbreviatedNamePosition()
+obj:Save()
+ProcessObject(an, "ssd_abbr")
+
+--[[
 local group_item = finale.FCFretboardGroupItem()
 group_item:Load(65534, 0, 11)
 ProcessObject(group_item.FretBarreItems:GetItemAt(0), "obj", false, "65534_0_11_0")
+]]
+
+--[[
+local font = finale.FCFontInfo("Times New Roman", 17, 32 + 3 + 64)
+ProcessObject(font, "obj", false, "TimesNewRoman_17_efx")
 ]]
 
 --[[
