@@ -13,6 +13,7 @@ local function FCLuaScriptItem_TestReturnValue(item, expected_value, expected_su
         item.OptionalScriptText = item.OptionalScriptText:match("^%s*(.-)%s*$") -- trim whitespace, so that matching will work
     end
     local success, msg, msgtype = finenv.ExecuteLuaScriptItem(item)
+    msgtype = msgtype or finenv.MessageResultType.SCRIPT_RESULT
     local expected_msgtype = expected_value and expected_success and finenv.MessageResultType.SCRIPT_RETURN_VALUE or finenv.MessageResultType.SCRIPT_RESULT
     AssureEqual(msgtype, expected_msgtype, "finenv.ExecuteLuaScriptItem msgtype")
     if expected_success then
@@ -115,12 +116,20 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
     local item = items:GetItemAt(0)
     if AssureNonNil(item.RegisterOnExecutionDidStop, "CreateLuaScriptItemsFromFilePath RegisterOnExecutionDidStop not defined (nil).") then
         local expected_linenum = 5
-        item:RegisterOnExecutionDidStop(function(item, success, msg, msgtype, line_number, source)
-            AssureEqual(msgtype, finenv.MessageResultType.SCRIPT_RESULT, "finenv.ExecuteLuaScriptItem OnExecutionDidStop msgtype")
-            AssureFalse(success, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop result")
-            AssureStartsWith(source, item.OptionalScriptText, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned source value")
-            AssureValue(line_number, expected_linenum, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned line number")
-        end)
+        local function run_script(item, expected_value, expected_success, expected_error_message)
+            item:RegisterOnExecutionDidStop(function(item, success, msg, msgtype, line_number, source)
+                local expected_msgtype = expected_value and expected_success and finenv.MessageResultType.SCRIPT_RETURN_VALUE or finenv.MessageResultType.SCRIPT_RESULT
+                AssureEqual(msgtype, expected_msgtype, "finenv.ExecuteLuaScriptItem OnExecutionDidStop msgtype")
+                AssureEqual(success, expected_success, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop result")
+                if expected_success then
+                    AssureNil(source, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned source value")
+                else                 
+                    AssureStartsWith(source, item.OptionalScriptText, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned source value")
+                end
+                AssureValue(line_number, expected_linenum, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop returned line number")
+            end)
+            FCLuaScriptItem_TestReturnValue(item, expected_value, expected_success, expected_error_message)
+        end
         item.OptionalScriptText = [[
             -- comment (line 1)
             -- comment (line 2)
@@ -128,7 +137,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             local x = 23
             sdsd(sdsd) -- should cause runtime error at line 5
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false)
+        run_script(item, nil, false)
         expected_linenum = 4
         item.OptionalScriptText = [[
             local items = finenv.CreateLuaScriptItemsFromFilePath("")
@@ -140,7 +149,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             item.OptionalScriptText = "print('Hello World!')"
             finenv.ExecuteLuaScriptItem(item)
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false)
+        run_script(item, nil, false)
         expected_linenum = 6
         item.OptionalScriptText = [[
             function plugindef()
@@ -151,7 +160,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             local success, response = internet.get_sync("https://robertgpatterson.com/test space.txt", 0.001)
             assert(success, response)
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "current permissions environment")
+        run_script(item, nil, false, "current permissions environment")
         expected_linenum = 6
         item.OptionalScriptText = [[
             function plugindef()
@@ -161,7 +170,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             local success, response = internet.get_sync("https://robertgpatterson.com/test space.txt", 0.001)
             assert(success, response) -- should be a timeout error
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "Request timed out.")
+        run_script(item, nil, false, "Request timed out.")
         expected_linenum = 10
         item.OptionalScriptText = [[
             function plugindef()
@@ -188,21 +197,21 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             session = internet.cancel_session(session)
             assert(success, response) -- SHOULD NOT FAIL HERE
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, WinMac("Not Found", "unsupported URL"))
+        run_script(item, nil, false, WinMac("Not Found", "unsupported URL"))
         expected_linenum = 2
         item.OptionalScriptText = [[
             function plugindef()
                 os.execute("ls") -- should be disallowed
             end
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "current permissions environment")
+        run_script(item, nil, false, "current permissions environment")
         expected_linenum = 2
         item.OptionalScriptText = [[
             function plugindef()
                 sdfsdfsd-!dfdsf -- should fail to even compile
             end
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "syntax error")
+        run_script(item, nil, false, "syntax error")
         item.Trusted = true
         expected_linenum = 4
         item.OptionalScriptText = [[
@@ -211,16 +220,32 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             end
             os.execute("cd .") -- should get a permissions error, due to ExecuteExternalCode false
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "current permissions environment")
+        run_script(item, nil, false, "current permissions environment")
         expected_linenum = 0
         item.OptionalScriptText = [[
             function plugindef()
                 finaleplugin.ExecuteExternalCode = true
             end
             os.execute("cd .") -- should work
-            return "worked"
         ]]
-        FCLuaScriptItem_TestReturnValue(item, "worked", true)
+        expected_linenum = 0
+        item.OptionalScriptText = [[
+            function plugindef()
+                finaleplugin.ExecuteExternalCode = true
+            end
+            local process = require('luaosutils').process
+            process.execute("cd .") -- should work
+        ]]
+        run_script(item, nil, true)
+        expected_linenum = 5
+        item.OptionalScriptText = [[
+            function plugindef()
+                finaleplugin.ExecuteExternalCode = false
+            end
+            local process = require('luaosutils').process
+            process.execute("cd .") -- should fail here, due to not not allowed by script
+        ]]
+        run_script(item, nil, false, "current permissions environment")
         expected_linenum = 4
         item.Trusted = false
         item.OptionalScriptText = [[
@@ -229,6 +254,15 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             end
             os.execute("cd .") -- should get a permissions error, due to not trusted
         ]]
-        FCLuaScriptItem_TestReturnValue(item, nil, false, "current permissions environment")
+        run_script(item, nil, false, "current permissions environment")
+        expected_linenum = 5
+        item.OptionalScriptText = [[
+            function plugindef()
+                finaleplugin.ExecuteExternalCode = true
+            end
+            local process = require('luaosutils').process
+            process.execute("cd .") -- should fail here, due to not trusted
+        ]]
+        run_script(item, nil, false, "current permissions environment")
     end
 end
