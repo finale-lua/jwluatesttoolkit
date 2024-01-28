@@ -6,6 +6,10 @@ function TestConstants_Finenv_()
         NumberConstantTest(finenv.MessageResultType.SCORE_REQUIRED, "SCORE_REQUIRED", 3)
         NumberConstantTest(finenv.MessageResultType.FINALE_VERSION_MISMATCH, "FINALE_VERSION_MISMATCH", 4)
         NumberConstantTest(finenv.MessageResultType.LUA_PLUGIN_VERSION_MISMATCH, "LUA_PLUGIN_VERSION_MISMATCH", 5)
+        NumberConstantTest(finenv.MessageResultType.LUA_PLUGIN_VERSION_MISMATCH, "LUA_PLUGIN_VERSION_MISMATCH", 5)
+        NumberConstantTest(finenv.MessageResultType.MISCELLANEOUS, "MISCELLANEOUS", 6)
+        NumberConstantTest(finenv.MessageResultType.EXTERNAL_TERMINATION, "EXTERNAL_TERMINATION", 7)
+        NumberConstantTest(finenv.MessageResultType.SCRIPT_RETURN_VALUE, "SCRIPT_RETURN_VALUE", 8)
     end
     
     if AssureNonNil(finenv.MessageResultType, "finenv.TrustedModeType") then

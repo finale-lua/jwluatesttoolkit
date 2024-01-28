@@ -159,6 +159,16 @@ function AssureEqual(value1, value2, testtext)
     return false
 end
 
+function AssureStartsWith(value1, value2, testtext)
+    if not AssureType(value1, "string", testtext) or not AssureType(value2, "string", testtext) then
+        return false
+    end
+    TestIncrease()
+    if value1:sub(1, #value2) == value2 then return true end
+    TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
+    return false
+end
+
 function AssureEqualStrings(str1, str2, testtext)
     if not AssureEqual(type(str1), "string", testtext.." (str1 is not a string)") then return false end
     if not AssureEqual(type(str2), "string", testtext.." (str2 is not a string)") then return false end
