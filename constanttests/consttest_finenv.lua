@@ -9,7 +9,7 @@ function TestConstants_Finenv_()
         NumberConstantTest(finenv.MessageResultType.LUA_PLUGIN_VERSION_MISMATCH, "LUA_PLUGIN_VERSION_MISMATCH", 5)
         NumberConstantTest(finenv.MessageResultType.MISCELLANEOUS, "MISCELLANEOUS", 6)
         NumberConstantTest(finenv.MessageResultType.EXTERNAL_TERMINATION, "EXTERNAL_TERMINATION", 7)
-        NumberConstantTest(finenv.MessageResultType.SCRIPT_RETURN_VALUE, "SCRIPT_RETURN_VALUE", 8)
+        NumberConstantTest(finenv.MessageResultType.LUA_ERROR, "LUA_ERROR", 8)
     end
     
     if AssureNonNil(finenv.MessageResultType, "finenv.TrustedModeType") then

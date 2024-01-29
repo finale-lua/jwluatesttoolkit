@@ -14,7 +14,7 @@ local function FCLuaScriptItem_TestReturnValue(item, expected_value, expected_su
     end
     local success, msg, msgtype = finenv.ExecuteLuaScriptItem(item)
     msgtype = msgtype or finenv.MessageResultType.SCRIPT_RESULT
-    local expected_msgtype = expected_value and expected_success and finenv.MessageResultType.SCRIPT_RETURN_VALUE or finenv.MessageResultType.SCRIPT_RESULT
+    local expected_msgtype = expected_success and finenv.MessageResultType.SCRIPT_RESULT or finenv.MessageResultType.LUA_ERROR
     AssureEqual(msgtype, expected_msgtype, "finenv.ExecuteLuaScriptItem msgtype")
     if expected_success then
         AssureTrue(success, "finenv.ExecuteLuaScriptItem result: " .. tostring(msg))
@@ -118,7 +118,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
         local expected_linenum = 5
         local function run_script(item, expected_value, expected_success, expected_error_message)
             item:RegisterOnExecutionDidStop(function(item, success, msg, msgtype, line_number, source)
-                local expected_msgtype = expected_value and expected_success and finenv.MessageResultType.SCRIPT_RETURN_VALUE or finenv.MessageResultType.SCRIPT_RESULT
+                local expected_msgtype = expected_success and finenv.MessageResultType.SCRIPT_RESULT or finenv.MessageResultType.LUA_ERROR
                 AssureEqual(msgtype, expected_msgtype, "finenv.ExecuteLuaScriptItem OnExecutionDidStop msgtype")
                 AssureEqual(success, expected_success, "CreateLuaScriptItemsFromFilePath OnExecutionDidStop result")
                 if expected_success then
