@@ -8,7 +8,7 @@ The following tests are performed.
 ### Constant Tests:
 
 - The existence of the constant.
-- The value of the constat.
+- The value of the constant.
 
 ### Property Tests:
 
@@ -20,6 +20,15 @@ The following tests are performed.
 ### File-Specific Tests:
 
 - Properties are checked against actual values in the test template.
+
+### Internal Tests:
+
+- Functions in embedded version of `luaosutils`.
+- Math functions, mainly to compare responses from a new embedded version of Lua.
+- Embedded library tests, including `bit32`, `cjson`, `utf8`, and `tinyxml2`.
+- Ability to execute scripts and get return values using `FCLuaScriptItem`.
+- Ability to load an external C library.
+- Other miscellaneous internal health tests.
 
 ### Unlinkable Tests:
 
@@ -33,7 +42,7 @@ This is useful for testing if a new version of Finale has added unlinkable data 
 
 1. Put all the files in a folder, making sure the subfolders are extracted.
 2. In JW Lua, open the Preferences dialog box (by clicking on the "..." button) and add the folder to the "require" paths. (This step is not necessary for RGP Lua.)
-3. In RGP Lua, add the folder to the RGP Lua configuration. (In JW Lua you can load and run scripts directly from the JW Lua dialog.)
+3. In RGP Lua, add the folder to the RGP Lua configuration or load and run the top-level script(s) from the RGP Lua Console. (In JW Lua you can load and run scripts directly from the JW Lua dialog.)
 
 ## To Run Tests
 
@@ -45,15 +54,15 @@ This is useful for testing if a new version of Finale has added unlinkable data 
 4. In Finale, open the test file, `testtemplate/testtemplate-fin2011format.musx`.
 5. Run test script. Output appears in the Output window of ZeroBrane Studio.
 
-### JW Lua:
+### JW Lua or RGP Lua:
 
 1. In Finale, open the test file, `testtemplate/testtemplate-fin2011format.musx`.
-2. Open the JW Lua dialog.
-3. Select the `Development` tab.
+2. Open the JW Lua dialog (JW Lua) or the RGP Lua Console (RGP Lua).
+3. If using JW Lua, select the `Development` tab.
 4. Open the test script file you wish to run.
-5. Select the Run Script button. Output appears in the JW Lua window.
+5. Select the Run Script button. Output appears in the console window.
 
-Note that with the current version of `jwluatesttools`, JW Lua generates several hundred errors, since JW Lua has not been updated since 2017. RGP Lua should generate no errors.
+Note that with the current version of `jwluatesttools`, JW Lua generates several hundred errors, since JW Lua has not been updated since 2017. The latest version of RGP Lua should generate no errors.
 
 ### Script Files
 
@@ -64,6 +73,7 @@ The following scripts each provide a report as described.
 |`jwlua_classtests.lua`|Contains the tasks to run the available class-level unit tests.|
 |`jwlua_consttests.lua`|Contains the tasks to run the tests for JW Lua constants. |
 |`jwlua_filetests.lua`|Contains the tasks to run the tests on the Finale test document.|
+|`jwlua_internaltests.lua`|Contains the tasks to run the internal tests.|
 |`jwlua_unlinktests.lua`|Contains the tasks to check whether properties unlink.|
 |`jwlua_testall.lua`|Runs all tests at once.|
 
