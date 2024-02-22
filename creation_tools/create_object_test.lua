@@ -159,6 +159,12 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
+local chordprefs = finale.FCChordPrefs()
+chordprefs:Load(1)
+ProcessObject(chordprefs, "chordprefs")
+
+
+--[[
 local obj = finale.FCStaffStyleDef()
 obj:SetName(finale.FCString("Position Adjust Creator"))
 obj:SaveNew()
@@ -166,6 +172,7 @@ local fn = obj:GetFullNamePosition()
 local an = obj:GetAbbreviatedNamePosition()
 obj:Save()
 ProcessObject(an, "ssd_abbr")
+]]
 
 --[[
 local group_item = finale.FCFretboardGroupItem()
