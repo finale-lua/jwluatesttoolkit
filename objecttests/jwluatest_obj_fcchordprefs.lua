@@ -1,6 +1,8 @@
 function FCChordPrefs_ValueTests_ItemNo1(chordprefs)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "EnableChordPlayback", true)
    NumberValuePropertyTest(chordprefs, "FCChordPrefs", "FlatBaselineAdjustment", 19)
+   NumberValuePropertyTest(chordprefs, "FCChordPrefs", "FretboardStyleID", 2)
+   NumberValuePropertyTest(chordprefs, "FCChordPrefs", "FretboardInstrumentID", 1)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "ItalicizeCapoChords", true)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "LeftAlignment", false)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "MultipleItemsPerString", false)
@@ -10,6 +12,7 @@ function FCChordPrefs_ValueTests_ItemNo1(chordprefs)
    NumberValuePropertyTest(chordprefs, "FCChordPrefs", "SharpBaselineAdjustment", 23)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "ShowFretboards", true)
    NumberValuePropertyTest(chordprefs, "FCChordPrefs", "Style", finale.CHRDSTYLE_ROMAN)
+   BoolValuePropertyTest(chordprefs, "FCChordPrefs", "UseFretboardFont", false)
    BoolValuePropertyTest(chordprefs, "FCChordPrefs", "UseSimpleSpelling", true)
 end
 

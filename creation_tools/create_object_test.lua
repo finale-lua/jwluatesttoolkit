@@ -159,9 +159,9 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local chordprefs = finale.FCChordPrefs()
-chordprefs:Load(1)
-ProcessObject(chordprefs, "chordprefs")
+local prefs = finale.FCMusicSpacingPrefs()
+prefs:Load(1)
+ProcessObject(prefs, "prefs")
 
 
 --[[

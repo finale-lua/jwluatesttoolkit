@@ -24,8 +24,8 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCChordPrefs"
-    PassedArgument = "obj"
+    ClassNameToFind = "FCMusicSpacingPrefs"
+    PassedArgument = "prefs"
 end
 
 local TestOutput = ""
