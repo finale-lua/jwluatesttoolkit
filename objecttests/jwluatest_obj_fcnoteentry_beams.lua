@@ -233,7 +233,6 @@ prefs.ExtendBeamsOverRests = false
 AssureTrue(prefs:Save(), "Saving prefs for restoring beams not to extend over rests.")
 region:RebeamMusic()
 
-
 region = finale.FCMusicRegion()
 region.StartMeasure = 61
 region.StartStaff = 1
@@ -268,5 +267,35 @@ end
 AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 34 only rests.")
 
 prefs.ExtendBeamsOverRests = true
---AssureTrue(prefs:Save(), "Saving prefs for checking beams over rests.")
---region:RebeamMusic()
+AssureTrue(prefs:Save(), "Saving prefs for checking beams over rests.")
+region:RebeamMusic()
+
+beam_starts = {368, 380, 380, 382, 382, 380, 380, 368, 375, 375, 375, 368, 368, 371, 371, 371, 371, 378}
+beam_iters = {{368, 369, 370, 379}, {380, 381, 384, 385}, {381, 384, 385}, {382, 383}, {383}, {384, 385}, {385}, {369, 370, 379}, {375, 376, 377}, {376, 377}, {377}, {370, 379}, {379}, {371, 372, 373, 374}, {372, 373, 374}, {373, 374}, {374}, {}}
+beam_ends = {false, false, false, false, true, false, true, false, false, false, true, false, true, false, false, false, true, false}
+unbeamed = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true}
+beam_counts = {1, 3, 3, 4, 4, 3, 3, 2, 3, 3, 3, 3, 3, 2, 2, 2, 2, 0}
+flippables = {true, true, false, false, false, false, false, false, false, false, false ,false, false, true, false, false, false, false}
+local x = 0
+for entry in eachentry(region) do
+    x = x + 1
+    AssureEqual(entry:CalcBeamCount(), beam_counts[x], "Beam count for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    local unbeamed_note = entry:CalcUnbeamedNote()
+    local beam_start = entry:CalcBeamStartEntry()
+    if unbeamed_note then
+        AssureEqual(beam_start, nil, "Beam start for entry " .. entry.EntryNumber .. " is nil. (x = " .. x .. ")")
+        beam_start = entry
+    end
+    if AssureNonNil(beam_start, "Beam start for entry " .. entry.EntryNumber .. " is non nil. (x = " .. x .. ")") then
+        AssureEqual(beam_start.EntryNumber, beam_starts[x], "Beam start for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    end
+    AssureEqual(entry:CalcBeamedGroupEnd(), beam_ends[x], "Beam group end status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    AssureEqual(entry:CalcUnbeamedNote(), unbeamed[x], "Note not beamed status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    AssureEqual(entry:CalcFlippable(), flippables[x], "Note flippable status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    check_beamed_group(entry, beam_iters[x])
+end
+AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 34 only rests.")
+
+prefs.ExtendBeamsOverRests = false
+AssureTrue(prefs:Save(), "Saving prefs for restoring beams not to extend over rests.")
+region:RebeamMusic()
