@@ -102,6 +102,30 @@ if AssureNonNil(entry4, "FCNoteEntry_Scenario_IsOnLedgerLine entry4") then
     end
 end
 
+local function check_beamed_group(entry, expected_entrynums)
+    if not AssureNonNil(entry.NextInBeamedGroup, "This version of RGP Lua does not include FCNoteEntry.NextInBeamedGroup. Beam iteration skipped.") then
+        return
+    end
+    if not AssureNonNil(entry, "Nil entry passed to check_beamed_group for iterating beam.") then
+        return
+    end
+    local is_beamed = #expected_entrynums > 0
+    local is_unbeamed = entry:CalcUnbeamedNote()
+    AssureEqual(is_unbeamed, not is_beamed, "Iterating beam from entry " .. entry.EntryNumber .. " beamed status is not correct.")
+    if is_unbeamed then return end
+    if not AssureNonNil(entry, "Nil expected_entrynums passed to check_beamed_group for iterating beam.") then
+        return
+    end
+    local x = 0
+    local next = entry
+    while next do
+        x = x + 1
+        AssureEqual(next.EntryNumber, expected_entrynums[x], "Check next entry number in beamed group iteration for entry " .. entry.EntryNumber .. ".")
+        next = next:NextInBeamedGroup()
+    end
+    AssureEqual(x, #expected_entrynums, "Check number of entries in beamed group expected for entry " .. entry.EntryNumber .. ".")
+end
+
 local region = finale.FCMusicRegion()
 region.StartMeasure = 33
 region.StartStaff = 3
@@ -110,6 +134,7 @@ region.EndMeasure = 33
 region.EndStaff = 3
 region:SetEndMeasurePosRight()
 local beam_starts = {323, 323, 323, 326, 333, 333, 333, 326, 327, 328, 328, 327, 327, 332}
+local beam_iters = {{323, 324, 325}, {324, 325}, {325}, {326, 336}, {333, 334, 335}, {334, 335}, {335}, {336}, {327, 330, 331}, {328, 329}, {329}, {330, 331}, {331}, {}} 
 local beam_ends = {false, false, true, false, false, false, true, true, false, false, true, false, true, false}
 local unbeamed = {false, false, false, false, false, false, false, false, false, false, false, false, false, true}
 local beam_counts = {1, 2, 2, 1, 2, 2, 2, 2, 1, 3, 3, 1, 1, 1}
@@ -130,6 +155,7 @@ for entry in eachentry(region) do
     AssureEqual(entry:CalcBeamedGroupEnd(), beam_ends[x], "Beam group end status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
     AssureEqual(entry:CalcUnbeamedNote(), unbeamed[x], "Note not beamed status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
     AssureEqual(entry:CalcFlippable(), flippables[x], "Note flippable status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    check_beamed_group(entry, beam_iters[x])
 end
 AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 33.")
 
