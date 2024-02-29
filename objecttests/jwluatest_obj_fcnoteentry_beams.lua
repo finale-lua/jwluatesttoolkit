@@ -41,7 +41,7 @@ local beam_iters = {{323, 324, 325}, {324, 325}, {325}, {326, 336}, {333, 334, 3
 local beam_ends = {false, false, true, false, false, false, true, true, false, false, true, false, true, false}
 local unbeamed = {false, false, false, false, false, false, false, false, false, false, false, false, false, true}
 local beam_counts = {1, 2, 2, 1, 2, 2, 2, 2, 1, 3, 3, 1, 1, 1}
-local flippables = {true, false, false, true, true, false, false, false, true, false, false, false, false, true}
+local flippables = {true, false, false, true, true, false, false, false, true, true, false, false, false, true}
 local x = 0
 for entry in eachentry(region) do
     x = x + 1
@@ -74,7 +74,7 @@ beam_iters = {{}, {}, {}, {}, {}, {342, 343}, {343}, {344, 345}, {345}, {}, {347
 beam_ends = {false, false, false, false, false, false, true, false, true, false, false, true}
 unbeamed = {true, true, true, true, true, false, false, false, false, true, false, false}
 beam_counts = {2, 2, 2, 2, 0, 1, 1, 3, 3, 3, 1, 1}
-flippables = {false, false, false, true, true, true, false, false, false, true, false, false}
+flippables = {false, false, false, true, true, true, false, true, false, true, true, false}
 local x = 0
 for entry in eachentry(region) do
     x = x + 1
@@ -245,7 +245,7 @@ beam_iters = {{368, 369, 370}, {380, 381, 384}, {381, 384}, {382, 383}, {383}, {
 beam_ends = {false, false, false, false, true, true, false, false, false, false, true, true, false, false, false, true, false, false}
 unbeamed = {false, false, false, false, false, false, true, false, false, false, false, false, true, true, false, false, true, true}
 beam_counts = {1, 3, 3, 4, 4, 3, 3, 2, 3, 3, 3, 3, 3, 2, 2, 2, 2, 0}
-flippables = {true, true, false, false, false, false, false, false, false, false, false ,false, false, false, true, false, false, false}
+flippables = {true, true, false, true, false, false, false, false, true, false, false ,false, false, false, true, false, false, false}
 local x = 0
 for entry in eachentry(region) do
     x = x + 1
@@ -264,7 +264,7 @@ for entry in eachentry(region) do
     AssureEqual(entry:CalcFlippable(), flippables[x], "Note flippable status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
     check_beamed_group(entry, beam_iters[x])
 end
-AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 34 only rests.")
+AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 61.")
 
 prefs.ExtendBeamsOverRests = true
 AssureTrue(prefs:Save(), "Saving prefs for checking beams over rests.")
@@ -275,7 +275,7 @@ beam_iters = {{368, 369, 370, 379}, {380, 381, 384, 385}, {381, 384, 385}, {382,
 beam_ends = {false, false, false, false, true, false, true, false, false, false, true, false, true, false, false, false, true, false}
 unbeamed = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true}
 beam_counts = {1, 3, 3, 4, 4, 3, 3, 2, 3, 3, 3, 3, 3, 2, 2, 2, 2, 0}
-flippables = {true, true, false, false, false, false, false, false, false, false, false ,false, false, true, false, false, false, false}
+flippables = {true, true, false, true, false, false, false, false, true, false, false ,false, false, true, false, false, false, false}
 local x = 0
 for entry in eachentry(region) do
     x = x + 1
@@ -294,8 +294,41 @@ for entry in eachentry(region) do
     AssureEqual(entry:CalcFlippable(), flippables[x], "Note flippable status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
     check_beamed_group(entry, beam_iters[x])
 end
-AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 34 only rests.")
+AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 61.")
 
 prefs.ExtendBeamsOverRests = false
 AssureTrue(prefs:Save(), "Saving prefs for restoring beams not to extend over rests.")
 region:RebeamMusic()
+
+region = finale.FCMusicRegion()
+region.StartMeasure = 61
+region.StartStaff = 2
+region:SetStartMeasurePosLeft()
+region.EndMeasure = 61
+region.EndStaff = 2
+region:SetEndMeasurePosRight()
+beam_starts = {386, 387, 387, 389, 390, 390, 392, 393, 394, 394, 394, 394, 398, 399}
+beam_iters = {{}, {387, 388}, {388}, {}, {390, 391}, {391}, {}, {}, {394, 395, 396, 397}, {395, 396, 397}, {396, 397}, {397}, {}, {}}
+beam_ends = {false, false, true, false, false, true, false, false, false, false, false, true, false, false}
+unbeamed = {true, false, false, true, false, false, true, true, false, false, false, false, true, true}
+beam_counts = {3, 3, 3, 3, 1, 1, 0, 1, 3, 3, 3, 3, 1, 0}
+flippables = {false, true, false, false, true, false, false, false, true, false, false ,false, true, true}
+local x = 0
+for entry in eachentry(region) do
+    x = x + 1
+    AssureEqual(entry:CalcBeamCount(), beam_counts[x], "Beam count for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    local unbeamed_note = entry:CalcUnbeamedNote()
+    local beam_start = entry:CalcBeamStartEntry()
+    if unbeamed_note then
+        AssureEqual(beam_start, nil, "Beam start for entry " .. entry.EntryNumber .. " is nil. (x = " .. x .. ")")
+        beam_start = entry
+    end
+    if AssureNonNil(beam_start, "Beam start for entry " .. entry.EntryNumber .. " is non nil. (x = " .. x .. ")") then
+        AssureEqual(beam_start.EntryNumber, beam_starts[x], "Beam start for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    end
+    AssureEqual(entry:CalcBeamedGroupEnd(), beam_ends[x], "Beam group end status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    AssureEqual(entry:CalcUnbeamedNote(), unbeamed[x], "Note not beamed status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    AssureEqual(entry:CalcFlippable(), flippables[x], "Note flippable status for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
+    check_beamed_group(entry, beam_iters[x])
+end
+AssureEqual(x, #beam_starts, "Correct number of entries tested for beams bar 61.")

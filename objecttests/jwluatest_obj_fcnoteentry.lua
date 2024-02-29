@@ -101,5 +101,3 @@ if AssureNonNil(entry4, "FCNoteEntry_Scenario_IsOnLedgerLine entry4") then
         end
     end
 end
-
-require("objecttests/jwluatest_obj_fcnoteentry_beams")
