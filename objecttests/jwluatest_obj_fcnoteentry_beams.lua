@@ -167,3 +167,30 @@ unbeamed = {false, false, false, false, false, false, true, false, false, false,
 beam_counts = {3, 3, 3, 3, 1, 1, 0, 1, 3, 3, 3, 3, 1, 0}
 flippables = {true, false, false, false, true, false, false, true, true, false, false ,false, false, true}
 check_beams(61, 2, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, true)
+
+-- Test Voiced Part
+if not AssureNonNil(finale.FCPartStaffVoicing, "FCPartStaffVoicing beam tests skipped because this version does not support it.") then
+    return
+end
+local part = finale.FCPart(1) -- should be Voiced Part Staff 3
+AssureTrue(part:SwitchTo(), "FCPartStaffVoicing was not able to bring part 1 into edit focus for beam tests.")
+
+beam_starts = {400, 401, 401, 401, 405, 406, 407, 408, 409, 410, 411, 411}
+beam_iters = {{}, {402, 403}, {403}, {}, {}, {}, {}, {}, {}, {}, {412}, {}}
+beam_irevs = {{}, {}, {401}, {402, 401}, {}, {}, {}, {}, {}, {}, {}, {411}}
+beam_ends = {false, false, false, true, false, false, false, false, false, false, false, true}
+unbeamed = {true, false, false, false, true, true, true, true, true, true, false, false}
+beam_counts = {1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2}
+flippables = {false, true, false, false, true, false, false, false, false, false, true, false}
+check_beams(43, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, false)
+
+beam_starts = {400, 400, 400, 400, 405, 405, 405, 405, 409, 409, 409, 409}
+beam_iters = {{401, 402, 403}, {402, 403}, {403}, {}, {406, 407, 408}, {407, 408}, {408}, {}, {410, 411, 412}, {411, 412}, {412}, {}}
+beam_irevs = {{}, {400}, {401, 400}, {402, 401, 400}, {}, {405}, {406, 405}, {407, 406, 405}, {}, {409}, {410, 409}, {411, 410, 409}}
+beam_ends = {false, false, false, true, false, false, false, true, false, false, false, true}
+unbeamed = {false, false, false, false, false, false, false, false, false, false, false, false}
+beam_counts = {1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2}
+flippables = {true, false, false, false, true, false, false, false, true, false, false, false}
+check_beams(43, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, true)
+
+AssureTrue(part:SwitchBack(), "FCPartStaffVoicing was not able to switch edit focus back to Score after beam tests.")
