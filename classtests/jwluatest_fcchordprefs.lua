@@ -1,4 +1,6 @@
 function FCChordPrefs_PropertyTests(chordprefs)
+   NumberPropertyTest(chordprefs, "FCChordPrefs", "DefaultFretboardStyleID", {0, 1, 3, 14})
+   NumberPropertyTest(chordprefs, "FCChordPrefs", "DefaultFretInstrumentID", {0, 1, 3, 14})
    BoolPropertyTest(chordprefs, "FCChordPrefs", "EnableChordPlayback")
    NumberPropertyTest(chordprefs, "FCChordPrefs", "FlatBaselineAdjustment", {-260, 0, 300})
    BoolPropertyTest(chordprefs, "FCChordPrefs", "ItalicizeCapoChords")
