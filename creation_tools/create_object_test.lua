@@ -159,10 +159,15 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
+local obj = finale.FCStaffStyleAssign()
+obj:Load(3, 0)
+ProcessObject(obj, "obj")
+
+--[[
 local prefs = finale.FCMusicSpacingPrefs()
 prefs:Load(1)
 ProcessObject(prefs, "prefs")
-
+]]
 
 --[[
 local obj = finale.FCStaffStyleDef()
