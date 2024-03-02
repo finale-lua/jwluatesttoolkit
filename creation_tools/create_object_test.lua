@@ -159,8 +159,8 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCStaffStyleAssign()
-obj:Load(3, 0)
+local obj = finale.FCCustomKeyModeDef()
+obj:Load(16384)
 ProcessObject(obj, "obj")
 
 --[[
