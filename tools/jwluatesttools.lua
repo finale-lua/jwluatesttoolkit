@@ -151,8 +151,25 @@ function AssureNil(value, testtext)
     return false
 end
 
+function AssureEqualTable(table1, table2, testtext)
+    local function get_table_count(t)
+        local retval = 0
+        for _, _ in pairs(t) do
+            retval = retval + 1
+        end
+        return retval
+    end
+    if not AssureEqual(type(table1), "table", testtext .. " table1 is not a table.") then return false end
+    if not AssureEqual(type(table2), "table", testtext .. " table2 is not a table.") then return false end
+    if not AssureEqual(get_table_count(table1), get_table_count(table2), testtext .. " number of elements is not equal.") then return false end
+    for k1, v1 in pairs(table1) do
+        if not AssureEqual(v1, table2[k1], testtext .. " table values do not match.") then return false end
+    end
+    return true
+end
 
 function AssureEqual(value1, value2, testtext)
+    if type(value1) == "table" then return AssureEqualTable(value1, value2, testtext) end
     TestIncrease()
     if value1 == value2 then return true end
     TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
@@ -453,6 +470,11 @@ end
 -- Test for string properties
 function StringPropertyTest(obj, classname, propertyname, stringtable)
     return TypedPropertyTest(obj, classname, propertyname, "string", stringtable)
+end
+
+-- Test for table properties
+function TablePropertyTest(obj, classname, propertyname, tablestable)
+    return TypedPropertyTest(obj, classname, propertyname, "table", tablestable)
 end
 
 -- Test for indexed function pairs
@@ -802,7 +824,7 @@ end
 function TypedValuePropertyTest(obj, classname, propertyname, expectedtype, expectedvalue, tryvalue)    
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], expectedtype, "property " .. classname .. "." .. propertyname) then return end
-    AssureEqual(obj[propertyname], expectedvalue, "Loaded " .. expectedtype .. " value  for " .. classname .. "." .. propertyname .. " was not equal.")
+    AssureEqual(obj[propertyname], expectedvalue, "Loaded " .. expectedtype .. " value for " .. classname .. "." .. propertyname .. " was not equal.")
     if tryvalue ~= nil and obj["Set" .. propertyname] then
         obj[propertyname] = tryvalue
         AssureEqual(obj[propertyname], tryvalue, "Tried " .. expectedtype .. " value for " .. classname .. "." .. propertyname .. " was not equal.")
@@ -824,6 +846,10 @@ end
 
 function StringValuePropertyTest(obj, classname, propertyname, expectedvalue)
     TypedValuePropertyTest(obj, classname, propertyname, "string", expectedvalue)
+end
+
+function TableValuePropertyTest(obj, classname, propertyname, expectedvalue)
+    TypedValuePropertyTest(obj, classname, propertyname, "table", expectedvalue)
 end
 
 function BoolValuePropertyTest_RO(obj, classname, propertyname, expectedvalue)
