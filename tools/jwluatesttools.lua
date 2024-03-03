@@ -377,7 +377,7 @@ function StaticFunctionTest(classname, functionname)
 end
 
 -- Test for number properties
-function ValuePropertyTest(obj, classname, propertyname, expected_type, value_table, savefunction, reloadfunction, reload_replaces_obj)
+function TypedPropertyTest(obj, classname, propertyname, expected_type, value_table, savefunction, reloadfunction, reload_replaces_obj)
     if not AssureNonNil(obj, classname.."."..propertyname.. " instance.") then return obj end
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], expected_type, "property " .. classname .. "." .. propertyname) then return end
@@ -418,7 +418,7 @@ function ValuePropertyTest(obj, classname, propertyname, expected_type, value_ta
             end
         end
         if not AssureEqual(obj[propertyname], v, "Setting property " .. classname .. "." .. propertyname .. "to value.") then
-            TestError("Value test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. v .. " (received ".. obj[propertyname] .. ")" )
+            TestError("Value test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. tostring(v) .. " (received ".. tostring(obj[propertyname]) .. ")" )
         end        
     end
     -- Restore the previous value
@@ -430,7 +430,7 @@ end
 
 -- Test for boolean properties
 function BoolPropertyTest(obj, classname, propertyname)
-    return ValuePropertyTest(obj, classname, propertyname, "boolean")
+    return TypedPropertyTest(obj, classname, propertyname, "boolean")
 end
 
 -- Test for read-only boolean properties
@@ -441,13 +441,18 @@ end
 
 -- Test for number properties
 function NumberPropertyTest(obj, classname, propertyname, numbertable, savefunction, reloadfunction, reload_replaces_obj)
-    return ValuePropertyTest(obj, classname, propertyname, "number", numbertable, savefunction, reloadfunction, reload_replaces_obj)
+    return TypedPropertyTest(obj, classname, propertyname, "number", numbertable, savefunction, reloadfunction, reload_replaces_obj)
 end
 
 -- Test for number properties read-only)
 function NumberPropertyTest_RO(obj, classname, propertyname)
     PropertyTest_RO(obj, classname, propertyname)
     if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end    
+end
+
+-- Test for string properties
+function StringPropertyTest(obj, classname, propertyname, stringtable)
+    return TypedPropertyTest(obj, classname, propertyname, "string", stringtable)
 end
 
 -- Test for indexed function pairs
@@ -741,36 +746,6 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     end
 end
 
--- Test for string properties
-function StringPropertyTest(obj, classname, propertyname, stringtable)
-    PropertyTest(obj, classname, propertyname)
-    if not AssureType(obj[propertyname], "string", "property " .. classname .. "." .. propertyname) then return end
-    -- Test to set each value in the stringtable
-    if stringtable == nil then
-        TestIncrease()
-        TestError("Internal error - String test table for property " ..
-        classname .. "." .. propertyname .. " test is nil.")
-        return
-    end
-
-    local oldvalue = obj[propertyname]
-    for k, v in pairs(stringtable) do
-        obj[propertyname] = v
-        TestIncrease()
-        AssureTrue(obj:Save(), classname .. "::Save()")
-        obj[propertyname] = oldvalue
-        AssureTrue(obj:Reload(), classname .. "::Reload()")
-        if obj[propertyname] ~= v then
-            TestError("String test failure while trying to set/save " ..
-                classname .. "." .. propertyname .. " to " .. v .. " (received " .. obj[propertyname] .. ")")
-            break
-        end
-    end
-    -- Restore the previous value
-    obj[propertyname] = oldvalue
-    AssureTrue(obj:Save(), classname .. "::Save()")
-end
-
 -- Test for getter/setter pair that gets FCSring
 function FCStringGetterSetterTest(obj, classname, gettername, settername, stringtable)
     if not FunctionTest(obj, classname, gettername) then return end
@@ -824,50 +799,31 @@ function BoolString(boolval)
     return "false"
 end
 
+function TypedValuePropertyTest(obj, classname, propertyname, expectedtype, expectedvalue, tryvalue)    
+    PropertyTest(obj, classname, propertyname)
+    if not AssureType(obj[propertyname], expectedtype, "property " .. classname .. "." .. propertyname) then return end
+    AssureEqual(obj[propertyname], expectedvalue, "Loaded " .. expectedtype .. " value  for " .. classname .. "." .. propertyname .. " was not equal.")
+    if tryvalue ~= nil and obj["Set" .. propertyname] then
+        obj[propertyname] = tryvalue
+        AssureEqual(obj[propertyname], tryvalue, "Tried " .. expectedtype .. " value for " .. classname .. "." .. propertyname .. " was not equal.")
+        obj[propertyname] = expectedvalue
+    end
+end
+
 function BoolValuePropertyTest(obj, classname, propertyname, expectedvalue, read_only)
-    PropertyTest(obj, classname, propertyname)
-    if not AssureType(obj[propertyname], "boolean", "property " .. classname .. "." .. propertyname) then return end
-    TestIncrease()
-    if obj[propertyname] ~= expectedvalue then
-        TestError("Loaded boolean value for " .. classname .. "." .. propertyname .. " was " .. BoolString(obj[propertyname]) .. " instead of " .. BoolString(expectedvalue))
-    else
-        if (not read_only) and obj["Set" .. propertyname] then
-            local tryvalue = not expectedvalue
-            obj[propertyname] = tryvalue
-            if obj[propertyname] ~= tryvalue then
-                TestError("Tried boolean value for " .. classname .. "." .. propertyname .. " was " .. BoolString(obj[propertyname])  .. " instead of " .. BoolString(tryvalue))
-            end
-            obj[propertyname] = expectedvalue
-        end
+    local tryvalue
+    if not read_only then
+        tryvalue = not expectedvalue
     end
+    TypedValuePropertyTest(obj, classname, propertyname, "boolean", expectedvalue, tryvalue)
 end
 
-function NumberValuePropertyTest(obj, classname, propertyname, expectedvalue, tryvalue)    
-    PropertyTest(obj, classname, propertyname)
-    if not AssureType(obj[propertyname], "number", "property " .. classname .. "." .. propertyname) then return end
-    if obj[propertyname] ~= expectedvalue then
-        if expectedvalue == nil then        
-            TestError("Loaded number value for " .. classname .. "." .. propertyname .. " was " .. obj[propertyname] .. " instead of nil")
-        else
-            TestError("Loaded number value for " .. classname .. "." .. propertyname .. " was " .. obj[propertyname] .. " instead of " .. expectedvalue)
-        end
-    else
-        if tryvalue and obj["Set" .. propertyname] then
-            obj[propertyname] = tryvalue
-            if obj[propertyname] ~= tryvalue then
-                TestError("Tried number value for " .. classname .. "." .. propertyname .. " was " .. obj[propertyname] .. " instead of " .. tryvalue)
-            end
-            obj[propertyname] = expectedvalue
-        end
-    end
+function NumberValuePropertyTest(obj, classname, propertyname, expectedvalue, tryvalue)
+    TypedValuePropertyTest(obj, classname, propertyname, "number", expectedvalue, tryvalue)
 end
 
-function StringValuePropertyTest(obj, classname, propertyname, expectedvalue)    
-    PropertyTest(obj, classname, propertyname)
-    if not AssureType(obj[propertyname], "string", "property " .. classname .. "." .. propertyname) then return end
-    if obj[propertyname] ~= expectedvalue then
-        TestError("Loaded string value for " .. classname .. "." .. propertyname .. " was " .. obj[propertyname] .. " instead of " .. expectedvalue)
-    end
+function StringValuePropertyTest(obj, classname, propertyname, expectedvalue)
+    TypedValuePropertyTest(obj, classname, propertyname, "string", expectedvalue)
 end
 
 function BoolValuePropertyTest_RO(obj, classname, propertyname, expectedvalue)
