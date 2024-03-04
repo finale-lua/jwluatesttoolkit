@@ -159,8 +159,8 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCCustomKeyModeDef()
-obj:Load(16384)
+local obj = finale.FCChordSuffixKeyNumberOffsets()
+obj:Load(67)
 ProcessObject(obj, "obj")
 
 --[[

@@ -434,7 +434,7 @@ function TypedPropertyTest(obj, classname, propertyname, expected_type, value_ta
                 AssureTrue(reloadfunction(obj), classname .. "::Reload()")
             end
         end
-        if not AssureEqual(obj[propertyname], v, "Setting property " .. classname .. "." .. propertyname .. "to value.") then
+        if not AssureEqual(obj[propertyname], v, "Setting property " .. classname .. "." .. propertyname .. " to value.") then
             TestError("Value test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. tostring(v) .. " (received ".. tostring(obj[propertyname]) .. ")" )
         end        
     end
@@ -473,8 +473,8 @@ function StringPropertyTest(obj, classname, propertyname, stringtable)
 end
 
 -- Test for table properties
-function TablePropertyTest(obj, classname, propertyname, tablestable)
-    return TypedPropertyTest(obj, classname, propertyname, "table", tablestable)
+function TablePropertyTest(obj, classname, propertyname, tablestable, savefunction, reloadfunction)
+    return TypedPropertyTest(obj, classname, propertyname, "table", tablestable, savefunction, reloadfunction)
 end
 
 -- Test for indexed function pairs
