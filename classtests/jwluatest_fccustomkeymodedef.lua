@@ -4,6 +4,7 @@ function FCCustomKeyModeDef_PropertyTests(obj)
     NumberPropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", {0, 1, 3, 7})
     BoolPropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements")
     NumberPropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", {48, 64, 125})
+    NumberPropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", {0, 1, 3, 37})
     NumberPropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", {0, 12, 31, 96, 192})
 end
 

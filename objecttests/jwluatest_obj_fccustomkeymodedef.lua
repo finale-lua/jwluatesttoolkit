@@ -12,6 +12,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo0(obj)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", 0)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
+    NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 0)
 end
 
@@ -32,6 +33,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo1(obj)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", 0)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
+    NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 0)
 end
 
@@ -52,6 +54,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo2(obj)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", 0)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 125)
+    NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 1)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 31)
 end
 
@@ -72,6 +75,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo16384(obj)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", 0)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", true)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
+    NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 12)
 end
 

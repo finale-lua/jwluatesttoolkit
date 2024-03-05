@@ -18,6 +18,24 @@ function FindInTable(t, keyname)
     return false
 end
 
+function CreateTableValue(t)
+    local retval = "{ "
+    local function vtostr(v)
+        if type(v) ~= "string" then
+            return tostring(v)
+        end
+        return '"' .. v .. '"'
+    end    
+    for k, v in pairsbykeys(t) do
+        if #retval > 2 then
+            retval = retval .. ", "
+        end
+        retval = retval .. "[" .. vtostr(k) .. "]=" .. vtostr(v)
+    end
+    retval = retval .. " }"
+    return retval
+end
+
 function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly, obj)
     local value = obj[propertyname]
     if value == nil then
@@ -35,6 +53,9 @@ function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly
     elseif type(value) == "string" then
         prefix = "String"
         value = '"' .. value .. '"'
+    elseif type(value) == "table" then
+        prefix = "Table"
+        value = CreateTableValue(value)
     elseif type(value) == "userdata" then
         TestOutput = TestOutput .. "   ObjectPropertyTest_RO("  .. PassedArgument .. ', "' .. ClassNameToFind .. '", "' .. propertyname .. '", "' .. value:ClassName() .. '")\n' 
         TestOutputCount = TestOutputCount + 1
@@ -159,8 +180,8 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCChordSuffixKeyNumberOffsets()
-obj:Load(67)
+local obj = finale.FCCustomKeyModeSymbolList()
+obj:Load(1)
 ProcessObject(obj, "obj")
 
 --[[
