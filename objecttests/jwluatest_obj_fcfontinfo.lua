@@ -12,6 +12,7 @@ function FCFontInfo_ValueTests_ItemNoFinaleMaestro_24(obj)
    NumberValuePropertyTest(obj, "FCFontInfo", "SizeFloat", 24.0)
    BoolValuePropertyTest(obj, "FCFontInfo", "StrikeOut", false)
    BoolValuePropertyTest(obj, "FCFontInfo", "Underline", false)
+   AssureEqual(obj:CreateEnigmaString().LuaString, "^font(Finale Maestro)^size(24)^nfx(0)", "FCFontInfo.CreateEnigmaString()")
 end
 
 
@@ -35,6 +36,7 @@ function FCFontInfo_ValueTests_ItemNoTimesNewRoman_17_efx(obj)
    NumberValuePropertyTest(obj, "FCFontInfo", "SizeFloat", 17.0)
    BoolValuePropertyTest(obj, "FCFontInfo", "StrikeOut", true)
    BoolValuePropertyTest(obj, "FCFontInfo", "Underline", false)
+   AssureEqual(obj:CreateEnigmaString().LuaString, "^font(Times New Roman)^size(17)^nfx(99)", "FCFontInfo.CreateEnigmaString()")
 end
 
 
