@@ -151,6 +151,27 @@ function AssureNil(value, testtext)
     return false
 end
 
+function ValueString(value)
+    if type(value) ~= "table" then
+        return tostring(value)
+    end
+    local retval = "{"
+    local function vtostr(v)
+        if type(v) ~= "string" then
+            return tostring(v)
+        end
+        return '"' .. v .. '"'
+    end    
+    for k, v in pairsbykeys(value) do
+        if #retval > 1 then
+            retval = retval .. ", "
+        end
+        retval = retval .. "[" .. vtostr(k) .. "]=" .. vtostr(v)
+    end
+    retval = retval .. "}"
+    return retval
+end
+
 function AssureEqualTable(table1, table2, testtext)
     local function get_table_count(t)
         local retval = 0
@@ -169,10 +190,15 @@ function AssureEqualTable(table1, table2, testtext)
 end
 
 function AssureEqual(value1, value2, testtext)
-    if type(value1) == "table" then return AssureEqualTable(value1, value2, testtext) end
-    TestIncrease()
-    if value1 == value2 then return true end
-    TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
+    local retval
+    if type(value1) == "table" then
+        retval = AssureEqualTable(value1, value2, testtext)
+    else
+        TestIncrease()
+        retval =  value1 == value2
+    end
+    if retval then return true end
+    TestError(testtext .. " (value1: " .. ValueString(value1) .. ", value2: " .. ValueString(value2) ..")")
     return false
 end
 
@@ -182,7 +208,7 @@ function AssureStartsWith(value1, value2, testtext)
     end
     TestIncrease()
     if value1:sub(1, #value2) == value2 then return true end
-    TestError(testtext .. " (value1: " .. tostring(value1) .. ", value2: " .. tostring(value2) ..")")
+    TestError(testtext .. " (value1: " .. ValueString(value1) .. ", value2: " .. ValueString(value2) ..")")
     return false
 end
 
@@ -435,7 +461,7 @@ function TypedPropertyTest(obj, classname, propertyname, expected_type, value_ta
             end
         end
         if not AssureEqual(obj[propertyname], v, "Setting property " .. classname .. "." .. propertyname .. " to value.") then
-            TestError("Value test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. tostring(v) .. " (received ".. tostring(obj[propertyname]) .. ")" )
+            TestError("Value test failure while trying to set/save " .. classname .. "." .. propertyname .. " to " .. ValueString(v) .. " (received ".. ValueString(obj[propertyname]) .. ")" )
         end        
     end
     -- Restore the previous value
@@ -557,7 +583,7 @@ function BoolIndexedFunctionPairsTest(obj, classname, gettername, settername, in
             end
         end
         if obj[gettername](obj, index) ~= v then
-            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. tostring(v) .. " with index " .. tostring(index) .. " (received ".. tostring(obj[gettername](obj, index)) .. ")" )
+            TestError("Boolean test failure while trying to set/save " .. classname .. ":" .. settername .. " to " .. ValueString(v) .. " with index " .. ValueString(index) .. " (received ".. ValueString(obj[gettername](obj, index)) .. ")" )
         end        
     end
     -- Restore the previous value, if reloadfunction didn't kill it
@@ -692,9 +718,9 @@ function UnlinkableNumberPropertyTest(obj, classname, updater, loadfunction, loa
     
     local get_loadargument = function()
         if type(loadargument) == "userdata" and loadargument.NoteID then
-            return "NoteID "..tostring(loadargument.NoteID)
+            return "NoteID ".. ValueString(loadargument.NoteID)
         end
-        return tostring(loadargument)
+        return ValueString(loadargument)
     end
     
     local score_value = obj_updater()
@@ -824,7 +850,7 @@ end
 function TypedValuePropertyTest(obj, classname, propertyname, expectedtype, expectedvalue, tryvalue)    
     PropertyTest(obj, classname, propertyname)
     if not AssureType(obj[propertyname], expectedtype, "property " .. classname .. "." .. propertyname) then return end
-    AssureEqual(obj[propertyname], expectedvalue, "Loaded " .. expectedtype .. " value for " .. classname .. "." .. propertyname .. " was not equal.")
+    AssureEqual(obj[propertyname], expectedvalue, "Loaded " .. expectedtype .. " value for " .. classname .. "." .. propertyname .." was not equal. expected value")
     if tryvalue ~= nil and obj["Set" .. propertyname] then
         obj[propertyname] = tryvalue
         AssureEqual(obj[propertyname], tryvalue, "Tried " .. expectedtype .. " value for " .. classname .. "." .. propertyname .. " was not equal.")
@@ -885,7 +911,7 @@ function NumberConstantTest(constobj, constname, expectedvalue)
     -- Test expected value
     TestIncrease()
     if constobj ~= expectedvalue then
-        TestError("Constant " .. constname .. " does not have the expected value. Expected: " .. tostring(expectedvalue) .. "  Actual: " .. tostring(constobj))
+        TestError("Constant " .. constname .. " does not have the expected value. Expected: " .. ValueString(expectedvalue) .. "  Actual: " .. ValueString(constobj))
     end
 end
 
@@ -912,7 +938,7 @@ function NumberIndexValueTest(obj, classname, numberfunction, index, expectedval
     -- Test expected value
     TestIncrease()
     if val ~= expectedvalue then
-        TestError(classname .. ":" .. numberfunction .. " does not have the expected value. Expected: " .. tostring(expectedvalue) .. "  Actual: " .. tostring(val))
+        TestError(classname .. ":" .. numberfunction .. " does not have the expected value. Expected: " .. ValueString(expectedvalue) .. "  Actual: " .. ValueString(val))
     end
 end
 

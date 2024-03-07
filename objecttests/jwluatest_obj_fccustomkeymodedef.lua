@@ -14,6 +14,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo0(obj)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
+    TableValuePropertyTest(obj, "FCCustomKeyModeDef", "TonalCenters", {})
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 0)
 end
 
@@ -36,6 +37,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo1(obj)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
+    TableValuePropertyTest(obj, "FCCustomKeyModeDef", "TonalCenters", {})
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 0)
 end
 
@@ -58,6 +60,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo2(obj)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", false)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 125)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 1)
+    TableValuePropertyTest(obj, "FCCustomKeyModeDef", "TonalCenters", {})
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 31)
 end
 
@@ -80,6 +83,7 @@ function FCCustomKeyModeDef_ValueTests_ItemNo16384(obj)
     BoolValuePropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements", true)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "MiddleKeyNumber", 0)
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "SymbolListID", 0)
+    TableValuePropertyTest(obj, "FCCustomKeyModeDef", "TonalCenters", {[0]=1, [1]=4, [2]=1, [3]=5, [4]=2, [5]=6, [6]=3, [7]=0})
     NumberValuePropertyTest(obj, "FCCustomKeyModeDef", "TotalChromaticSteps", 12)
 end
 
