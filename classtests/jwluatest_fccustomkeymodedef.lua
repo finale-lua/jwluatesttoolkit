@@ -1,5 +1,5 @@
 function FCCustomKeyModeDef_PropertyTests(obj)
-    TablePropertyTest(obj, "FCCustomKeyModeDef", "DiatonicStepsMap", {{0, 2, 4, 5, 7, 9, 11}, {0, 5, 10, 13, 18, 23, 29}, {0, 2, 4, 7, 9}})
+    TablePropertyTest(obj, "FCCustomKeyModeDef", "DiatonicStepsMap", {{0, 2, 4, 5, 7, 9, 11}, {0, 5, 6, 7, 8, 10}, {0, 2, 4, 7, 9}})
     NumberPropertyTest(obj, "FCCustomKeyModeDef", "GoToKeyUnit", {1, 2, 4})
     NumberPropertyTest(obj, "FCCustomKeyModeDef", "HarmonicReference", {0, 1, 3, 7})
     BoolPropertyTest(obj, "FCCustomKeyModeDef", "HasClefAccidentalPlacements")
@@ -16,5 +16,5 @@ end
 
 -- Call:
 local obj = finale.FCCustomKeyModeDef()
-AssureTrue(obj:Load(2), "FCCustomKeyModeDef:Load()")
+AssureTrue(obj:Load(0x4000), "FCCustomKeyModeDef:Load()") -- 0x4000 because has a non-zero tonal center
 FCCustomKeyModeDef_PropertyTests(obj)
