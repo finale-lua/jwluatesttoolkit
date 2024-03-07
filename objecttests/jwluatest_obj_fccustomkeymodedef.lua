@@ -21,7 +21,7 @@ end
 
 -- Call:
 local obj = finale.FCCustomKeyModeDef()
-AssureTrue(obj:Load(0), "FCCustomKeyModeDef:Load(0)")
+AssureFalse(obj:Load(0), "FCCustomKeyModeDef:Load(0)")
 FCCustomKeyModeDef_ValueTests_ItemNo0(obj)
 
 
@@ -44,7 +44,7 @@ end
 
 -- Call:
 local obj = finale.FCCustomKeyModeDef()
-AssureTrue(obj:Load(1), "FCCustomKeyModeDef:Load(1)")
+AssureFalse(obj:Load(1), "FCCustomKeyModeDef:Load(1)")
 FCCustomKeyModeDef_ValueTests_ItemNo1(obj)
 
 
