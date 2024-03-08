@@ -157,10 +157,12 @@ function ValueString(value)
     end
     local retval = "{"
     local function vtostr(v)
-        if type(v) ~= "string" then
-            return tostring(v)
+        if type(v) == "string" then
+            return '"' .. v .. '"'
+        elseif type(v) == "table" then
+            return ValueString(v)
         end
-        return '"' .. v .. '"'
+        return tostring(v)
     end    
     for k, v in pairsbykeys(value) do
         if #retval > 1 then

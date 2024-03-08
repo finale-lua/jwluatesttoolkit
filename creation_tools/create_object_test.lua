@@ -19,20 +19,22 @@ function FindInTable(t, keyname)
 end
 
 function CreateTableValue(t)
-    local retval = "{ "
+    local retval = "{"
     local function vtostr(v)
-        if type(v) ~= "string" then
-            return tostring(v)
+        if type(v) == "string" then
+            return '"' .. v .. '"'
+        elseif type(v) == "table" then
+            return CreateTableValue(v)
         end
-        return '"' .. v .. '"'
+        return tostring(v)
     end    
     for k, v in pairsbykeys(t) do
-        if #retval > 2 then
+        if #retval > 1 then
             retval = retval .. ", "
         end
         retval = retval .. "[" .. vtostr(k) .. "]=" .. vtostr(v)
     end
-    retval = retval .. " }"
+    retval = retval .. "}"
     return retval
 end
 
@@ -180,8 +182,8 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCCustomKeyModeSymbolList()
-obj:Load(1)
+local obj = finale.FCCustomKeyModeDef()
+obj:Load(3)
 ProcessObject(obj, "obj")
 
 --[[
