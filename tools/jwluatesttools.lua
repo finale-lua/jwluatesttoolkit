@@ -445,7 +445,7 @@ function TypedPropertyTest(obj, classname, propertyname, expected_type, value_ta
     table.insert(value_table, 1, oldvalue) -- make sure we can save and reload the current value
     for k, v in pairs(value_table) do        
         local success, message = pcall(function() obj[propertyname] = v end)
-        if not AssureTrue(success, "Writing to property " .. classname .. "." .. propertyname .. ".") then
+        if not AssureTrue(success, "Writing to property " .. classname .. "." .. propertyname .. ": " .. tostring(message)) then
             return obj
         end
         TestIncrease()
