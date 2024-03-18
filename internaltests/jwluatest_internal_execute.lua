@@ -74,7 +74,7 @@ if not PropertyTest(items:GetItemAt(0), "FCLuaScriptItem", "OptionalScriptText")
 end
 
 -- Check script text
-items = finenv.CreateLuaScriptItemsFromFilePath("")
+items = finenv.CreateLuaScriptItemsFromFilePath()
 if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty string has no items") then
     local item = items:GetItemAt(0)
     item.OptionalScriptText = "local function do_it() return 'ABCDE' end return do_it()"
@@ -97,7 +97,7 @@ local function print_back(...)
         AssureEqual(v, cmp, "CreateLuaScriptItemsFromFilePath print_back_list[" .. i .. "]")
     end
 end
-items = finenv.CreateLuaScriptItemsFromFilePath("")
+items = finenv.CreateLuaScriptItemsFromFilePath()
 if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry string has no items") then
     local item = items:GetItemAt(0)
     item.OptionalScriptText = [[
@@ -111,7 +111,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for emptry stri
 end
 
 -- Check on-complete values
-items = finenv.CreateLuaScriptItemsFromFilePath("")
+items = finenv.CreateLuaScriptItemsFromFilePath()
 if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty string has no items") then
     local item = items:GetItemAt(0)
     if AssureNonNil(item.RegisterOnExecutionDidStop, "CreateLuaScriptItemsFromFilePath RegisterOnExecutionDidStop not defined (nil).") then
@@ -140,7 +140,7 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
         run_script(item, nil, false)
         expected_linenum = 4
         item.OptionalScriptText = [[
-            local items = finenv.CreateLuaScriptItemsFromFilePath("")
+            local items = finenv.CreateLuaScriptItemsFromFilePath()
             item = items:GetItemAt(0)
             item:RegisterPrintFunction(function(...)
                 asdsad(sdf) -- should cause runtime error at line 4
