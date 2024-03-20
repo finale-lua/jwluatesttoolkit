@@ -264,5 +264,13 @@ if AssureTrue(items.Count > 0, "CreateLuaScriptItemsFromFilePath for empty strin
             process.execute("cd .") -- should fail here, due to not trusted
         ]]
         run_script(item, nil, false, "current permissions environment")
+        expected_linenum = 3
+        item.OptionalScriptText = [[
+            local iter = finale.FCLuaIterator()
+            iter:ForEachInteger(1, 10, function(x)
+                error("big mistake")
+            end)
+        ]]
+        run_script(item, nil, false, "big mistake")
     end
 end
