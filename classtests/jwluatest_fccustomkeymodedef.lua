@@ -40,5 +40,10 @@ end
 
 -- Call:
 local obj = finale.FCCustomKeyModeDef()
-AssureTrue(obj:Load(0x4000), "FCCustomKeyModeDef:Load()") -- 0x4000 because has a non-zero tonal center
+AssureTrue(obj:Load(0x4000), "FCCustomKeyModeDef:Load(0x4000)") -- 0x4000 because has a non-zero tonal center
+FCCustomKeyModeDef_PropertyTests(obj)
+
+-- Call:
+local obj = finale.FCCustomKeyModeDef()
+AssureTrue(obj:Load(2), "FCCustomKeyModeDef:Load(2)") -- 2 because it is not 12-EDO
 FCCustomKeyModeDef_PropertyTests(obj)
