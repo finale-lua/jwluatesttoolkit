@@ -24,7 +24,7 @@ if not finenv.IsRGPLua then
     ClassNameToFind = returnvalues[1]
     PassedArgument = returnvalues[2]
 else
-    ClassNameToFind = "FCCustomKeyModeSymbolList"
+    ClassNameToFind = "FCClefDef"
     PassedArgument = "obj"
 end
 

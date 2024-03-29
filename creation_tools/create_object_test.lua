@@ -7,6 +7,10 @@ function plugindef()
    return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."
 end
 
+if not finenv.ConsoleIsAvailable then
+    require('mobdebug').start()
+end
+
 local TestOutput = ""
 local TestOutputCount = 0
 
@@ -182,9 +186,9 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCCustomKeyModeDef()
-obj:Load(3)
-ProcessObject(obj, "obj")
+local obj = finale.FCClefDef()
+obj:Load(finale.DEFAULTCLEFID_TAB2)
+ProcessObject(obj, "obj", false, obj.ClefIndex)
 
 --[[
 local prefs = finale.FCMusicSpacingPrefs()
