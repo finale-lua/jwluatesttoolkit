@@ -47,3 +47,10 @@ if AssureNonNil(utf8, "utf8 library not available for FCString.SetCharacterAt te
     AssureValue(str:GetLuaString(), expected_value, "Setting characters greater than 0xfeb0")
 end
 
+local testclearout = finale.FCString()
+testclearout.LuaString = "valueß"
+AssureEqual(testclearout.LuaString, "valueß", "Unable to set FCString.LuaString to valueß")
+testclearout.LuaString = ""
+AssureEqual(testclearout.LuaString, "", "Unable to clear valueß from FCString.LuaString")
+
+
