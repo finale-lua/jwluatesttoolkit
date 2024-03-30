@@ -35,7 +35,7 @@ _G.ignore_baselines_delete_version = 0x1b400000 -- Ignore default lyrics baselin
 _G.do_playback_test = finenv.RawFinaleVersion > 0x1b400000 -- playback test not fixed as of 27.4
 _G.playback_test_expected_to_succeed = finenv.UI():IsOnWindows()
 _G.interdot_spacing_unlink_check = finenv.RawFinaleVersion <= 0x1b400000 -- Finale 27.4 is the highest version we've checked.
-
+_G.set_staff_show_part_time_sigs_not_writable = finenv.RawFinaleVersion <= 0x1b400000 -- Finale 27.4 is the highest version we've checked.
 
 local NoOfTests = 0
 local NoOfTestErrors = 0

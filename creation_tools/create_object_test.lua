@@ -75,18 +75,23 @@ function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly
     TestOutputCount = TestOutputCount + 1
 end
 
-function DumpClassTable(t, ClassNameToFind, PassedArgument, obj)
+function DumpClassTable(t, ClassNameToFind, PassedArgument, obj, IncludeParents)
     if not t.__propget then return false end
     if not t.__propset then return false end
     for k, v in pairsbykeys(t.__propget) do
         local readonly = not FindInTable(t.__propset, k)
         AddToTestOutput(ClassNameToFind, PassedArgument, k, readonly, obj)
     end
+    if IncludeParents and finenv.IsRGPLua and t.__parent then
+        for k, _ in pairs(t.__parent) do
+            DumpClassTable(finale[k], ClassNameToFind, PassedArgument, obj, IncludeParents)
+        end
+    end
     return true
 end
 
 
-function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) -- id1 and id2 may be omitted
+function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2, IncludeParents) -- id1 and id2 may be omitted
     local processed = false
     
     local funcsuffix = ""
@@ -131,10 +136,11 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
         if k == ClassNameToFind then
             if not finenv.IsRGPLua then
                 if v.__class then
+                    -- JW Lua crashes on IncludeParents unless we enhance it mightily
                     if DumpClassTable(v.__class, ClassNameToFind, PassedArgument, obj) then processed = true end
                 end
             else
-                if DumpClassTable(v, ClassNameToFind, PassedArgument, obj) then processed = true end
+                if DumpClassTable(v, ClassNameToFind, PassedArgument, obj, IncludeParents) then processed = true end
             end
         end
     end
@@ -163,7 +169,11 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
 end
 
 function ProcessObject(obj, passedname, continuing, id1, id2) -- continuing, id1, and id2 may be omitted
-    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2)
+    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2, false)
+end
+
+function ProcessObjectWithParents(obj, passedname, continuing, id1, id2) -- continuing, id1, and id2 may be omitted
+    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2, true)
 end
 
 -- Tries to find a specific note entry in the file
@@ -186,10 +196,9 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCStaffStyleDef()
-obj:Load(31)
-local indfont = obj:CreateIndependentFontInfo()
-ProcessObject(indfont, "indfont", false, indfont.FontID)
+local staff = finale.FCStaffStyleDef()
+staff:Load(30)
+ProcessObjectWithParents(staff, "ssd")
 
 --[[
 local prefs = finale.FCMusicSpacingPrefs()
