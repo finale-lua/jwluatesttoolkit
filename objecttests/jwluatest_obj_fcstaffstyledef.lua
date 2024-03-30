@@ -28,6 +28,7 @@ function FCStaffStyleDef_ValueTests_ItemNo1(ssd)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "RedisplayOtherLayerAccidentals", false)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowAugmentationDots", true)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowBarlines", true)
+   BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowBeams", true)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowChords", true)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowClefs", true)
    BoolValuePropertyTest(ssd, "FCStaffStyleDef", "ShowFretboards", true)
@@ -217,4 +218,27 @@ if AssureNonNil(ssd2.GetFullNamePosition, "FCStaffStyleDef.GetFullNamePosition i
     FCStaffNamePosition_ValueTests_ItemNo31_Full(obj:GetFullNamePosition())
     FCStaffNamePosition_ValueTests_ItemNo31_Abbrv(obj:GetAbbreviatedNamePosition())
 end
+
+
+function FCFontInfo_ValueTests_ItemNo11(indfont)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Absolute", true)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Bold", false)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "EnigmaStyles", 0x44)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "FontID", 11)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Hidden", false)
+   BoolValuePropertyTest_RO(indfont, "FCFontInfo", "IsSMuFLFont", false)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Italic", false)
+   StringValuePropertyTest(indfont, "FCFontInfo", "Name", "Jazz")
+   NumberValuePropertyTest(indfont, "FCFontInfo", "Size", 25)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "SizeFloat", 25.0)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "StrikeOut", false)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Underline", true)
+end
+
+
+-- Call:
+local obj = finale.FCStaffStyleDef()
+obj:Load(31)
+local indfont = obj:CreateIndependentFontInfo()
+FCFontInfo_ValueTests_ItemNo11(indfont)
 

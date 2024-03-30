@@ -833,6 +833,56 @@ function FCStringGetterSetterTest(obj, classname, gettername, settername, string
 end
 
 
+-- Test for creator/setter pair
+function CreatorSetterTest(obj, classname, creatorname, settername, comparefunction, valuetable)
+    if not FunctionTest(obj, classname, creatorname) then return end
+    if not FunctionTest(obj, classname, settername) then return end
+    if not AssureEqual(type(comparefunction), "function", "CreatorSetterTest compare function is not a function.") then
+        return
+    end
+    -- Test to set each value in the stringtable
+    if valuetable == nil then
+        TestIncrease()
+        TestError("Internal error - Value test table for creator " ..
+            classname .. "." .. creatorname .. " test is nil.")
+        return
+    end
+
+    local oldvalue = obj[creatorname](obj)
+    table.insert(valuetable, 1, obj[creatorname](obj)) -- start with (a copy of) our current value
+    for k, newvalue in pairs(valuetable) do
+        AssureEqual(newvalue:ClassName(), oldvalue:ClassName(), "CreatorSetterTest value table item class mismatch.")
+        obj[settername](obj, newvalue)
+        TestIncrease()
+        AssureTrue(obj:Save(), classname .. "::Save()")
+        obj[settername](obj, oldvalue)
+        AssureTrue(obj:Reload(), classname .. "::Reload()")
+        local testvalue = obj[creatorname](obj)
+        if not comparefunction(testvalue, newvalue) then
+            TestError("CreatorSetterTest test failure while trying to set/save " ..
+                classname .. "." .. settername .. " to " .. tostring(newvalue) .. " (received " .. tostring(testvalue) .. ")")
+            break
+        end
+    end
+    -- Restore the previous value
+    obj[settername](obj, oldvalue)
+    AssureTrue(obj:Save(), classname .. "::Save()")
+end
+
+function FCFontInfoCompare(font1, font2)
+    if not AssureTrue(type(font1) == "userdata" and font1:ClassName() == "FCFontInfo", "FCFontInfoCompare font1 wrong type") then
+        return false
+    end
+    if not AssureTrue(type(font2) == "userdata" and font2:ClassName() == "FCFontInfo", "FCFontInfoCompare font2 wrong type") then
+        return false
+    end
+    if font1.FontID ~= font2.FontID then return false end
+    if font1.Size ~= font2.Size then return false end
+    if font1.EnigmaStyles ~= font2.EnigmaStyles then return false end
+    return true
+end
+
+
 -- Test for object read-only properties
 function ObjectPropertyTest_RO(obj, classname, propertyname, returnclass)
     PropertyTest_RO(obj, classname, propertyname)

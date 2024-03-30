@@ -194,3 +194,26 @@ flippables = {true, false, false, false, true, false, false, false, true, false,
 check_beams(43, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, true)
 
 AssureTrue(part:SwitchBack(), "FCPartStaffVoicing was not able to switch edit focus back to Score after beam tests.")
+
+-- test for beams in the midst of hidden beams and stems at the staff level:
+
+beam_starts = {413, 414, 415, 416, 417, 418}
+beam_iters = {{}, {}, {}, {}, {}, {}}
+beam_irevs = {{}, {}, {}, {}, {}, {}}
+beam_ends = {false, false, false, false, false, false}
+unbeamed = {true, true, true, true, true, true}
+beam_counts = {1, 1, 1, 1, 0, 0}
+flippables = {true, true, true, true, true, false}
+check_beams(60, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, true)
+check_beams(60, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, false)
+
+
+beam_starts = {423, 424, 421, 421, 426, 427, 428, 428}
+beam_iters = {{}, {}, {425}, {}, {}, {}, {429}, {}}
+beam_irevs = {{}, {}, {}, {421}, {}, {}, {}, {428}}
+beam_ends = {false, false, false, true, false, false, false, true}
+unbeamed = {true, true, false, false, true, true, false, false}
+beam_counts = {1, 1, 1, 1, 1, 1, 1, 1}
+flippables = {false, true, true, false, true, true, true, false}
+check_beams(61, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, true)
+check_beams(61, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, beam_counts, flippables, false)

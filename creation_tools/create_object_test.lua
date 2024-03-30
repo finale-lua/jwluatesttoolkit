@@ -186,9 +186,10 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
-local obj = finale.FCClefDef()
-obj:Load(finale.DEFAULTCLEFID_TAB2)
-ProcessObject(obj, "obj", false, obj.ClefIndex)
+local obj = finale.FCStaffStyleDef()
+obj:Load(31)
+local indfont = obj:CreateIndependentFontInfo()
+ProcessObject(indfont, "indfont", false, indfont.FontID)
 
 --[[
 local prefs = finale.FCMusicSpacingPrefs()

@@ -27,6 +27,7 @@ function FCStaff_ValueTests_ItemNo1(staff)
    BoolValuePropertyTest(staff, "FCStaff", "RedisplayOtherLayerAccidentals", false)
    BoolValuePropertyTest(staff, "FCStaff", "ShowAugmentationDots", true)
    BoolValuePropertyTest(staff, "FCStaff", "ShowBarlines", true)
+   BoolValuePropertyTest(staff, "FCStaff", "ShowBeams", true)
    BoolValuePropertyTest(staff, "FCStaff", "ShowChords", true)
    BoolValuePropertyTest(staff, "FCStaff", "ShowClefs", true)
    BoolValuePropertyTest(staff, "FCStaff", "ShowFretboards", true)
@@ -62,3 +63,26 @@ end
 local staff = finale.FCStaff()
 AssureTrue(staff:Load(1), "FCStaff:Load(1)")
 FCStaff_ValueTests_ItemNo1(staff)
+
+
+function FCFontInfo_ValueTests_ItemNo18(indfont)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Absolute", false)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Bold", false)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "EnigmaStyles", 0)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "FontID", 18)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Hidden", false)
+   BoolValuePropertyTest_RO(indfont, "FCFontInfo", "IsSMuFLFont", false)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Italic", false)
+   StringValuePropertyTest(indfont, "FCFontInfo", "Name", "Maestro Wide")
+   NumberValuePropertyTest(indfont, "FCFontInfo", "Size", 24)
+   NumberValuePropertyTest(indfont, "FCFontInfo", "SizeFloat", 24.0)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "StrikeOut", false)
+   BoolValuePropertyTest(indfont, "FCFontInfo", "Underline", false)
+end
+
+
+-- Call:
+local staff = finale.FCStaff()
+staff:Load(3)
+local indfont = staff:CreateIndependentFontInfo()
+FCFontInfo_ValueTests_ItemNo18(indfont)

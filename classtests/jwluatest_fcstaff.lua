@@ -35,6 +35,7 @@ function FCStaff_PropertyTests(staff)
    BoolPropertyTest(staff, "FCStaff", "RedisplayOtherLayerAccidentals")
    BoolPropertyTest(staff, "FCStaff", "ShowAugmentationDots")
    BoolPropertyTest(staff, "FCStaff", "ShowBarlines")
+   BoolPropertyTest(staff, "FCStaff", "ShowBeams")
    BoolPropertyTest(staff, "FCStaff", "ShowChords")
    BoolPropertyTest(staff, "FCStaff", "ShowClefs")
    BoolPropertyTest(staff, "FCStaff", "ShowFretboards")
@@ -63,6 +64,9 @@ function FCStaff_PropertyTests(staff)
    PropertyTest(staff, "FCStaff", "TransposeUseClef")
    BoolPropertyTest(staff, "FCStaff", "UseAutoNumberingStyle")
    NumberPropertyTest(staff, "FCStaff", "VerticalFretOffset", {-302, 0, 102})
+   --
+   CreatorSetterTest(staff, "FCStaff", "CreateIndependentFontInfo", "SetIndependentFontInfo", FCFontInfoCompare,
+        {finale.FCFontInfo("Jazz", 12, 0x01), finale.FCFontInfo("Arial", 17, 0x41)})
 end
 
 

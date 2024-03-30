@@ -30,6 +30,7 @@ function FCStaffStyleDef_PropertyTests(ssd)
    BoolPropertyTest(ssd, "FCStaffStyleDef", "RedisplayOtherLayerAccidentals")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowAugmentationDots")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowBarlines")
+   BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowBeams")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowChords")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowClefs")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "ShowFretboards")
@@ -97,6 +98,9 @@ function FCStaffStyleDef_PropertyTests(ssd)
    BoolPropertyTest(ssd, "FCStaffStyleDef", "UseStafflineAdjustments")
    BoolPropertyTest(ssd, "FCStaffStyleDef", "UseTransposition")
    NumberPropertyTest(ssd, "FCStaffStyleDef", "VerticalFretOffset", {-300, 0, 300})
+   --
+   CreatorSetterTest(ssd, "FCStaffStyleDef", "CreateIndependentFontInfo", "SetIndependentFontInfo", FCFontInfoCompare,
+        {finale.FCFontInfo("Maestro Wide", 17, 0x24), finale.FCFontInfo("Courier", 23, 0x83)})
 end
 
 
