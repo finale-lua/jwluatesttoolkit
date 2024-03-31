@@ -136,7 +136,7 @@ function FCStaffStyleDef_ValueTests_ItemNo1(ssd)
 end
 
 -- Call:
-local ssd1 = finale.FCStaffStyleDef()
+local ssd1 = finale.FCStaffStyleDef(not set_staff_show_part_time_sigs_not_writable)
 AssureTrue(ssd1:Load(1), "FCStaffStyleDef:Load(1)")
 FCStaffStyleDef_ValueTests_ItemNo1(ssd1)
 
@@ -298,7 +298,7 @@ end
 
 
 -- Call:
-local ssd2 = finale.FCStaffStyleDef()
+local ssd2 = finale.FCStaffStyleDef(not set_staff_show_part_time_sigs_not_writable)
 AssureTrue(ssd2:Load(30), "FCStaffStyleDef:Load(30)")
 FCStaffStyleDef_ValueTests_ItemNo30(ssd2)
 if AssureNonNil(ssd2.GetFullNamePosition, "FCStaffStyleDef.GetFullNamePosition is nil") then

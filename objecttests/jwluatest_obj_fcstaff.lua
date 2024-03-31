@@ -95,7 +95,7 @@ function FCStaff_ValueTests_ItemNo1(staff)
 end
 
 -- Call:
-local staff = finale.FCStaff()
+local staff = finale.FCStaff(not set_staff_show_part_time_sigs_not_writable)
 AssureTrue(staff:Load(1), "FCStaff:Load(1)")
 FCStaff_ValueTests_ItemNo1(staff)
 

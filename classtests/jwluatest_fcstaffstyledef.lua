@@ -137,6 +137,6 @@ end
 
 
 -- Call:
-local ssd = finale.FCStaffStyleDef()
+local ssd = finale.FCStaffStyleDef(not set_staff_show_part_time_sigs_not_writable)
 AssureTrue(ssd:Load(1), "FCStaffStyleDef:Load()")
 FCStaffStyleDef_PropertyTests(ssd)
