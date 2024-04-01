@@ -98,7 +98,7 @@ function FCStaff_PropertyTests(staff)
    NumberPropertyTest(staff, "FCStaff", "WholeRestPosition", {-12, 0, 12})
    --
    CreatorSetterTest(staff, "FCStaff", "CreateIndependentFontInfo", "SetIndependentFontInfo", FCFontInfoCompare,
-        {finale.FCFontInfo("Jazz", 12, 0x01), finale.FCFontInfo("Arial", 17, 0x41)})
+        {finale.FCFontInfo("Jazz", 12, 0x01), finale.FCFontInfo("Arial", 17, 0x41), finale.FCFontInfo("Times New Roman", 247, 0x81)})
 end
 
 

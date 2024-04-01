@@ -132,7 +132,7 @@ function FCStaffStyleDef_PropertyTests(ssd)
    NumberPropertyTest(ssd, "FCStaffStyleDef", "WholeRestPosition", {-12, 0, 12})
    --
    CreatorSetterTest(ssd, "FCStaffStyleDef", "CreateIndependentFontInfo", "SetIndependentFontInfo", FCFontInfoCompare,
-        {finale.FCFontInfo("Maestro Wide", 17, 0x24), finale.FCFontInfo("Courier", 23, 0x83)})
+        {finale.FCFontInfo("Maestro Wide", 17, 0x24), finale.FCFontInfo("Courier", 23, 0x83), finale.FCFontInfo("Times New Roman", 255, 0x41)})
 end
 
 
