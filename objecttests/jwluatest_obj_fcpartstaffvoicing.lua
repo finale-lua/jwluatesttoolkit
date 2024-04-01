@@ -1,6 +1,6 @@
 function FCPartStaffVoicing_ValueTests_ItemNo1_3(obj)
    NumberValuePropertyTest(obj, "FCPartStaffVoicing", "CountNotesRule", finale.VCOUNTNOTES_FROM_THE_BOTTOM)
-   BoolValuePropertyTest(obj, "FCPartStaffVoicing", "IncludeSingleNotePassages", true)
+   BoolValuePropertyTest(obj, "FCPartStaffVoicing", "IncludeSingleNotePassages", false)
    BoolValuePropertyTest(obj, "FCPartStaffVoicing", "IsVoicingEnabled", true)
    NumberValuePropertyTest(obj, "FCPartStaffVoicing", "MultipleLayerNumber", 3)
    NumberValuePropertyTest(obj, "FCPartStaffVoicing", "SingleLayerDisplayRule", finale.VOICINGLAYERRULE_SELECTED_NOTES)

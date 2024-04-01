@@ -7,6 +7,10 @@ function plugindef()
    return "Create Object Test", "Create Object Test", "Create a test for the properties found for a object."
 end
 
+if not finenv.ConsoleIsAvailable then
+    require('mobdebug').start()
+end
+
 local TestOutput = ""
 local TestOutputCount = 0
 
@@ -16,6 +20,26 @@ function FindInTable(t, keyname)
         if k == keyname then return true end
     end    
     return false
+end
+
+function CreateTableValue(t)
+    local retval = "{"
+    local function vtostr(v)
+        if type(v) == "string" then
+            return '"' .. v .. '"'
+        elseif type(v) == "table" then
+            return CreateTableValue(v)
+        end
+        return tostring(v)
+    end    
+    for k, v in pairsbykeys(t) do
+        if #retval > 1 then
+            retval = retval .. ", "
+        end
+        retval = retval .. "[" .. vtostr(k) .. "]=" .. vtostr(v)
+    end
+    retval = retval .. "}"
+    return retval
 end
 
 function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly, obj)
@@ -35,6 +59,9 @@ function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly
     elseif type(value) == "string" then
         prefix = "String"
         value = '"' .. value .. '"'
+    elseif type(value) == "table" then
+        prefix = "Table"
+        value = CreateTableValue(value)
     elseif type(value) == "userdata" then
         TestOutput = TestOutput .. "   ObjectPropertyTest_RO("  .. PassedArgument .. ', "' .. ClassNameToFind .. '", "' .. propertyname .. '", "' .. value:ClassName() .. '")\n' 
         TestOutputCount = TestOutputCount + 1
@@ -48,18 +75,23 @@ function AddToTestOutput(ClassNameToFind, PassedArgument, propertyname, readonly
     TestOutputCount = TestOutputCount + 1
 end
 
-function DumpClassTable(t, ClassNameToFind, PassedArgument, obj)
+function DumpClassTable(t, ClassNameToFind, PassedArgument, obj, IncludeParents)
     if not t.__propget then return false end
     if not t.__propset then return false end
     for k, v in pairsbykeys(t.__propget) do
         local readonly = not FindInTable(t.__propset, k)
         AddToTestOutput(ClassNameToFind, PassedArgument, k, readonly, obj)
     end
+    if IncludeParents and finenv.IsRGPLua and t.__parent then
+        for k, _ in pairs(t.__parent) do
+            DumpClassTable(finale[k], ClassNameToFind, PassedArgument, obj, IncludeParents)
+        end
+    end
     return true
 end
 
 
-function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) -- id1 and id2 may be omitted
+function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2, IncludeParents) -- id1 and id2 may be omitted
     local processed = false
     
     local funcsuffix = ""
@@ -104,10 +136,11 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
         if k == ClassNameToFind then
             if not finenv.IsRGPLua then
                 if v.__class then
+                    -- JW Lua crashes on IncludeParents unless we enhance it mightily
                     if DumpClassTable(v.__class, ClassNameToFind, PassedArgument, obj) then processed = true end
                 end
             else
-                if DumpClassTable(v, ClassNameToFind, PassedArgument, obj) then processed = true end
+                if DumpClassTable(v, ClassNameToFind, PassedArgument, obj, IncludeParents) then processed = true end
             end
         end
     end
@@ -136,7 +169,11 @@ function CreateCode(obj, ClassNameToFind, PassedArgument, continuing, id1, id2) 
 end
 
 function ProcessObject(obj, passedname, continuing, id1, id2) -- continuing, id1, and id2 may be omitted
-    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2)
+    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2, false)
+end
+
+function ProcessObjectWithParents(obj, passedname, continuing, id1, id2) -- continuing, id1, and id2 may be omitted
+    CreateCode(obj, obj:ClassName(), passedname, continuing, id1, id2, true)
 end
 
 -- Tries to find a specific note entry in the file
@@ -159,6 +196,17 @@ if finenv.IsRGPLua and not finenv.ConsoleIsAvailable then -- if new lua
 end
 ]]
 
+local staff = finale.FCStaffStyleDef()
+staff:Load(30)
+ProcessObjectWithParents(staff, "ssd")
+
+--[[
+local prefs = finale.FCMusicSpacingPrefs()
+prefs:Load(1)
+ProcessObject(prefs, "prefs")
+]]
+
+--[[
 local obj = finale.FCStaffStyleDef()
 obj:SetName(finale.FCString("Position Adjust Creator"))
 obj:SaveNew()
@@ -166,6 +214,7 @@ local fn = obj:GetFullNamePosition()
 local an = obj:GetAbbreviatedNamePosition()
 obj:Save()
 ProcessObject(an, "ssd_abbr")
+]]
 
 --[[
 local group_item = finale.FCFretboardGroupItem()

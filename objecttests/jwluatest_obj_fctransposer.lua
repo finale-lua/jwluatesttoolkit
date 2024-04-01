@@ -64,3 +64,41 @@ FCTransposer_ValueTests_ItemNo8_1(transposer)
 transposer:OctaveTranspose(1)
 FCTransposer_ValueTests_ItemNo15_1(transposer)
 
+
+
+-- Non-standard key-sig tests
+
+function FCTransposer_NonStandard_ItemNo2_n1(transposer)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "Displacement", 2)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "RaiseLower", -1)
+end
+
+key = finale.FCCell(21,1):GetKeySignature() -- non-standard key sig
+transposer = finale.FCTransposer(1, 0, key)
+transposer:ChromaticTranspose(1, 0)
+FCTransposer_NonStandard_ItemNo2_n1(transposer)
+
+-- A minor key-sig tests
+
+function FCTransposer_Minor_ItemNon3_0(transposer)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "Displacement", -3)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "RaiseLower", 0)
+end
+
+key = finale.FCCell(20,1):GetKeySignature() -- A minor key sig
+transposer = finale.FCTransposer(-4, 0, key)
+transposer:ChromaticTranspose(1, 0)
+FCTransposer_Minor_ItemNon3_0(transposer)
+
+
+-- A Phrygian key-sig tests (nonstandard key sig is incomplete)
+
+function FCTransposer_Phrygian_ItemNo1_1(transposer)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "Displacement", 1)
+   NumberValuePropertyTest_RO(transposer, "FCTransposer", "RaiseLower", 1)
+end
+
+key = finale.FCCell(13,1):GetKeySignature() -- A minor key sig
+transposer = finale.FCTransposer(0, 0, key)
+transposer:ChromaticTranspose(1, 0)
+FCTransposer_Phrygian_ItemNo1_1(transposer)

@@ -342,3 +342,16 @@ end
 local categorydef = finale.FCCategoryDef()
 AssureTrue(categorydef:Load(32))
 FCCategoryDef_ValueTests_ItemNo32(categorydef)
+
+--
+-- Test creation
+-- 
+local categorydef = finale.FCCategoryDef()
+AssureTrue(categorydef:Load(finale.DEFAULTCATID_DYNAMICS), "FCCategoryDef:Load(finale.DEFAULTCATID_DYNAMICS)")
+categorydef:SetName(finale.FCString("More Dynamics and More and More"))
+AssureTrue(categorydef:SaveNewWithType(finale.DEFAULTCATID_DYNAMICS), "FCCategoryDef:SaveNewWithType(finale.DEFAULTCATID_DYNAMICS)")
+AssureTrue(categorydef:Reload(), "FCCategoryDef:Reload()")
+local str = finale.FCString()
+categorydef:GetName(str)
+AssureEqual(str.LuaString, "More Dynamics and More and More", "Reteieving FCCategoryDef name")
+-- can't delete it, but no worries since this whole script it rolled back

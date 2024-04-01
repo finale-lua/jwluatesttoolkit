@@ -837,3 +837,13 @@ end
 
 -- Test the constants:
 TestConstants_STAFFAUTONUMBER_()
+
+
+function TestConstants_STAFFSTEMDIR_()
+   NumberConstantTest(finale.STAFFSTEMDIR_ALWAYS_DOWN, "STAFFSTEMDIR_ALWAYS_DOWN", 2)
+   NumberConstantTest(finale.STAFFSTEMDIR_ALWAYS_UP, "STAFFSTEMDIR_ALWAYS_UP", 1)
+   NumberConstantTest(finale.STAFFSTEMDIR_DEFAULT, "STAFFSTEMDIR_DEFAULT", 0)
+end
+
+-- Test the constants:
+TestConstants_STAFFSTEMDIR_()
