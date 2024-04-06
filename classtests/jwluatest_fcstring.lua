@@ -144,3 +144,10 @@ AssureEqual(test_format_char.LuaString, "U+FFFFFFFF", "FCString:FormatCharacterN
 success, msg = pcall(function() test_format_char:FormatCharacterNumber(-1) end)
 AssureFalse(success, "FCString:FormatCharacterNumber(-1)")
 
+local test_ischar = finale.FCString("12𝒽3𝓇𝓂")
+AssureTrue(test_ischar:IsCharacter(1, utf8.codepoint("2")), "FCString:IsCharacter(1, '2')")
+AssureFalse(test_ischar:IsCharacter(3, utf8.codepoint("2")), "FCString:IsCharacter(3, '2')")
+AssureFalse(test_ischar:IsCharacter(0, utf8.codepoint("𝒽")), "FCString:IsCharacter(0, '𝒽')")
+AssureTrue(test_ischar:IsCharacter(2, utf8.codepoint("𝒽")), "FCString:IsCharacter(2, '𝒽')")
+AssureTrue(test_ischar:IsCharacter(3, utf8.codepoint("𝒽")), "FCString:IsCharacter(3, '𝒽')")
+
