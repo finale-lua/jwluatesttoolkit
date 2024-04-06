@@ -124,3 +124,23 @@ AssureFalse(test_delete:DeleteCodePointsAt(0, 3),  "FCString:DeleteCodePointsAt 
 AssureTrue(test_delete:DeleteCodePointsAt(3, 3), "FCString:DeleteCodePointsAt 3, 3")
 AssureFalse(test_delete:DeleteCodePointsAt(1, 1), "FCString:DeleteCodePointsAt 1, 1")
 
+local test_replace = finale.FCString("12223")
+test_replace:Replace("2", "/")
+AssureEqual(test_replace.LuaString, "1///3", "FCString::Replace ('2', '/')")
+
+test_replace.LuaString = "𝒸𝒽𝒽𝒶 𝒽𝓇𝓂"
+test_replace:Replace("𝒽", "/")
+AssureEqual(test_replace.LuaString, "𝒸//𝒶 /𝓇𝓂", "FCString::Replace ('𝒽', '/')")
+
+local test_format_char = finale.FCString()
+test_format_char:FormatCharacterNumber(247)
+AssureEqual(test_format_char.LuaString, "247", "FCString:FormatCharacterNumber(247)")
+test_format_char:FormatCharacterNumber(0xef3d)
+AssureEqual(test_format_char.LuaString, "U+EF3D", "FCString:FormatCharacterNumber(0xef3d)")
+test_format_char:FormatCharacterNumber(0x1efc5)
+AssureEqual(test_format_char.LuaString, "U+1EFC5", "FCString:FormatCharacterNumber(0x1efc5)")
+test_format_char:FormatCharacterNumber(0xffffffff)
+AssureEqual(test_format_char.LuaString, "U+FFFFFFFF", "FCString:FormatCharacterNumber(0xffffffff)")
+success, msg = pcall(function() test_format_char:FormatCharacterNumber(-1) end)
+AssureFalse(success, "FCString:FormatCharacterNumber(-1)")
+
