@@ -151,3 +151,13 @@ AssureFalse(test_ischar:IsCharacter(0, utf8.codepoint("𝒽")), "FCString:IsChar
 AssureTrue(test_ischar:IsCharacter(2, utf8.codepoint("𝒽")), "FCString:IsCharacter(2, '𝒽')")
 AssureTrue(test_ischar:IsCharacter(3, utf8.codepoint("𝒽")), "FCString:IsCharacter(3, '𝒽')")
 
+local test_getinteger = finale.FCString("1𝒽123")
+AssureEqual(test_getinteger:GetInteger(), 1, "FCString:GetInteger()")
+AssureEqual(test_getinteger:GetInteger(1), 0, "FCString:GetInteger(1)")
+AssureEqual(test_getinteger:GetInteger(2), 0, "FCString:GetInteger(2)")
+AssureEqual(test_getinteger:GetInteger(3), 123, "FCString:GetInteger(3)")
+AssureEqual(test_getinteger:GetInteger(4), 23, "FCString:GetInteger(4)")
+AssureEqual(test_getinteger:GetInteger(5), 3, "FCString:GetInteger(5)")
+AssureEqual(test_getinteger:GetInteger(6), 0, "FCString:GetInteger(6)")
+AssureEqual(test_getinteger:GetInteger(-2), 0, "FCString:GetInteger(-2)")
+
