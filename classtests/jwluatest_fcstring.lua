@@ -115,14 +115,19 @@ AssureEqual(test_delete.LuaString, " 𝓇", "FCString:DeleteCodePointsAt 1, 2")
 test_delete:Clear()
 test_delete:AppendCharacter(0xdc01) -- invalid low surrogate
 test_delete:AppendCharacter(0x20) -- space
-test_delete:AppendCharacter(0xdc01) -- invalid high surrogate
+test_delete:AppendCharacter(0xd801) -- invalid high surrogate
 test_delete:AppendLuaString("1")
 test_delete:AppendCharacter(0xdc01) -- invalid low surrogate
 test_delete:AppendLuaString("23")
 
+-- should fail because 0 is unpaired low surrogate
+AssureFalse(test_delete:DeleteCodePointAt(0), "FCString:DeleteCodePointAt 0")
+-- should fail because 0 is unpaired low surrogate
 AssureFalse(test_delete:DeleteCodePointsAt(0, 3),  "FCString:DeleteCodePointsAt 0, 3")
+-- should succeed even though it contains unpaired low surrogate because start is "1" and end is "2"
 AssureTrue(test_delete:DeleteCodePointsAt(3, 3), "FCString:DeleteCodePointsAt 3, 3")
-AssureFalse(test_delete:DeleteCodePointsAt(1, 1), "FCString:DeleteCodePointsAt 1, 1")
+-- should succeed even though then next value is an unpaired high surrogate because it is " "
+AssureTrue(test_delete:DeleteCodePointsAt(1, 1), "FCString:DeleteCodePointsAt 1, 1") -- deleteing space 
 
 local test_replace = finale.FCString("12223")
 test_replace:Replace("2", "/")
