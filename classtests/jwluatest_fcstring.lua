@@ -68,6 +68,9 @@ AssureEqual(nextx, 7, "Next index retrieving codepoint 6 (' ')")
 codepoint, nextx = test_append:GetCodePointAt(8)
 AssureEqual(codepoint, utf8.codepoint("𝓇"), "Retrieving codepoint 8 (low surrogate of '𝓇')")
 AssureEqual(nextx, 9, "Next index retrieving codepoint codepoint 8 (low surrogate of '𝓇')")
+codepoint, nextx = test_append:GetCodePointAt(-1)
+AssureEqual(codepoint, utf8.codepoint("𝓂"), "Retrieving codepoint -1 (low surrogate of '𝓂')")
+AssureEqual(nextx, 11, "Next index retrieving codepoint codepoint -1 (low surrogate of '𝓂')")
 
 test_append.LuaString = "𝒸𝒽𝒶 𝓇𝓂"
 test_append:InsertString(finale.FCString("123"), 4)
@@ -165,4 +168,34 @@ AssureEqual(test_getinteger:GetInteger(4), 23, "FCString:GetInteger(4)")
 AssureEqual(test_getinteger:GetInteger(5), 3, "FCString:GetInteger(5)")
 AssureEqual(test_getinteger:GetInteger(6), 0, "FCString:GetInteger(6)")
 AssureEqual(test_getinteger:GetInteger(-2), 0, "FCString:GetInteger(-2)")
+
+local test_substring = finale.FCString("0𝒸𝒽123𝒶 𝓇𝓂")
+local substr = finale.FCString()
+AssureFalse(test_substring:MakeSubString(-1, 2, substr), "FCString:MakeSubString -2, 2")
+AssureFalse(test_substring:MakeSubString(15, 1, substr), "FCString:MakeSubString -2, 2")
+AssureTrue(test_substring:MakeSubString(0, 1, substr), "FCString:MakeSubString 0, 1")
+AssureEqual(substr.LuaString, "0",  "is equal: FCString:MakeSubString 0, 1")
+AssureTrue(test_substring:MakeSubString(0, 2, substr), "FCString:MakeSubString 0, 2")
+AssureEqual(substr.LuaString, "0𝒸",  "is equal: FCString:MakeSubString 0, 2")
+AssureTrue(test_substring:MakeSubString(2, 1, substr), "FCString:MakeSubString 1, 2")
+AssureEqual(substr.LuaString, "𝒸",  "is equal: FCString:MakeSubString 1, 2")
+AssureTrue(test_substring:MakeSubString(2, 2, substr), "FCString:MakeSubString 2, 2")
+AssureEqual(substr.LuaString, "𝒸𝒽",  "is equal: FCString:MakeSubString 2, 2")
+AssureTrue(test_substring:MakeSubString(8, 5, substr), "FCString:MakeSubString 8, 5")
+AssureEqual(substr.LuaString, "𝒶 𝓇",  "is equal: FCString:MakeSubString 8, 5")
+AssureTrue(test_substring:MakeSubString(14, 5, substr), "FCString:MakeSubString 14, 5")
+AssureEqual(substr.LuaString, "𝓂",  "is equal: FCString:MakeSubString 14, 5")
+
+test_substring:Clear()
+test_substring:AppendCharacter(0xdc01) -- invalid low surrogate
+test_substring:AppendCharacter(0x20) -- space
+test_substring:AppendCharacter(0xd801) -- invalid high surrogate
+test_substring:AppendLuaString("1")
+test_substring:AppendCharacter(0xdc01) -- invalid low surrogate
+test_substring:AppendLuaString("23")
+AssureFalse(test_substring:MakeSubString(0, 1, substr), "malformed FCString:MakeSubString 0, 1")
+AssureFalse(test_substring:MakeSubString(1, 2, substr), "malformed FCString:MakeSubString 1, 2")
+AssureTrue(test_substring:MakeSubString(3, 1, substr), "malformed FCString:MakeSubString 3, 1")
+AssureEqual(substr.LuaString, "1", "malformed FCString:MakeSubString 3, 1")
+AssureFalse(test_substring:MakeSubString(4, 1, substr), "malformed FCString:MakeSubString 4, 1")
 
