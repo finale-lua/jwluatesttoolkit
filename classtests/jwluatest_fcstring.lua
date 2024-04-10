@@ -101,6 +101,8 @@ AssureEqual(codepoint, utf8.codepoint("1"), "Retrieving codepoint 4 in malformed
 AssureEqual(nextx, 4, "Next index retrieving codepoint 4 in malformed UTF16 ('1')")
 success, msg = pcall(function() codepoint, nextx = test_append:GetCodePointAt(4) end)
 AssureFalse(success, "Error fail retrieving codepoint 5 in malformed UTF16 (stranded low surrogate)")
+success, msg = pcall(function() test_append:InsertString(finale.FCString("test"), 2) end)
+AssureFalse(success, "Error fail FCString:InsertString(finale.FCString('test'), 2) with malformed UTF16")
 
 test_delete = finale.FCString()
 test_delete.LuaString = "𝒸𝒽𝒶 𝓇𝓂1"
