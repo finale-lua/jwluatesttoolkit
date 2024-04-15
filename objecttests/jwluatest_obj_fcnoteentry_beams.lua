@@ -36,10 +36,11 @@ local function check_beamed_group(entry, expected_entrynums, expected_reverse_en
     AssureEqual(x, #expected_reverse_entrynums, "Check number of entries in reverse beamed group expected for entry " .. entry.EntryNumber .. ".")
 end
     
-local function set_extend_over_rests(state, region)        
+local function set_extend_over_rests(state, region, secondary_state)        
     local prefs = finale.FCMiscDocPrefs()
     AssureTrue(prefs:Load(1), "Loading prefs for setting beams over rests " .. tostring(state) .. ".")
     prefs.ExtendBeamsOverRests = state
+    prefs.ExtendSecondaryBeamsOverRests = secondary_state
     AssureTrue(prefs:Save(), "Saving prefs for setting beams over rests " .. tostring(state) .. ".")
     region:RebeamMusic()
 end
@@ -79,7 +80,7 @@ local function check_beams(meas, staff, beam_starts, beam_iters, beam_irevs, bea
     end
 end
 
-local function check_secondary_beams(meas, staff, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, for_extend_over_rests)
+local function check_secondary_beams(meas, staff, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, for_extend_over_rests, for_extend_over_secondaries)
     local region = finale.FCMusicRegion()
     region.StartMeasure = meas
     region.StartStaff = staff
@@ -87,8 +88,8 @@ local function check_secondary_beams(meas, staff, lowest_beam_starts, lowest_bea
     region.EndMeasure = meas
     region.EndStaff = staff
     region:SetEndMeasurePosRight()
-    if for_extend_over_rests then
-        set_extend_over_rests(true, region)
+    if for_extend_over_rests or for_extend_over_secondaries then
+        set_extend_over_rests(for_extend_over_rests, region, for_extend_over_secondaries)
     end
     local x = 0
     for entry in eachentry(region) do
@@ -97,8 +98,8 @@ local function check_secondary_beams(meas, staff, lowest_beam_starts, lowest_bea
         AssureEqual(entry:CalcLowestBeamEnd(), lowest_beam_ends[x], "Lowest beam end for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
         AssureEqual(entry:CalcLowestBeamStub(), lowest_beam_stubs[x], "Lowest beam stub for entry " .. entry.EntryNumber .. ". (x = " .. x .. ")")
     end
-    if for_extend_over_rests then
-        set_extend_over_rests(false, region)
+    if for_extend_over_rests or for_extend_over_secondaries then
+        set_extend_over_rests(false, region, false)
     end    
 end
 
@@ -247,8 +248,16 @@ check_beams(61, 3, beam_starts, beam_iters, beam_irevs, beam_ends, unbeamed, bea
 local lowest_beam_starts = {1, 1, 0, 1, 0, 0, 0, 2, 1, 0, 2, 2, 0, 0, 1, 0, 0, 0}
 local lowest_beam_ends =   {0, 0, 0, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 0, 0, 1, 0, 0}
 local lowest_beam_stubs =  {0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0}
-check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, false)
+check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, false, false)
+lowest_beam_starts = {1, 1, 0, 1, 0, 0, 0, 2, 1, 0, 0, 3, 0, 0, 1, 0, 0, 0}
+lowest_beam_ends =   {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0}
+lowest_beam_stubs =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0}
+check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, false, true)
 lowest_beam_starts = {1, 1, 0, 1, 0, 0, 0, 2, 1, 0, 2, 2, 0, 1, 2, 0, 0, 0}
 lowest_beam_ends =   {0, 0, 0, 0, 1, 2, 1, 2, 2, 0, 1, 2, 1, 0, 0, 2, 1, 0}
 lowest_beam_stubs =  {0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0}
-check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, true)
+check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, true, false)
+lowest_beam_starts = {1, 1, 0, 1, 0, 0, 0, 2, 1, 0, 0, 3, 0, 1, 0, 0, 0, 0}
+lowest_beam_ends =   {0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0}
+lowest_beam_stubs =  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+check_secondary_beams(61, 1, lowest_beam_starts, lowest_beam_ends, lowest_beam_stubs, true, true)
