@@ -90,6 +90,7 @@ require("objecttests/jwluatest_obj_fctieprefs")
 require("objecttests/jwluatest_obj_fctransposer")
 require("objecttests/jwluatest_obj_fctuplet")
 require("objecttests/jwluatest_obj_fctupletprefs")
+require("objecttests/jwluatest_obj_scenarios")
 
 -- Output the results from the tests:
 PrintTestResult()
