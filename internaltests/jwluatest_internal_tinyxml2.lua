@@ -90,6 +90,8 @@ local function TestTinyXML2_WithFile()
                 AssureEqual(err, expected_err, "TestTinyXML2_WithFile: query double for "..name.."->"..element_name.." returned "..tostring(err)..".")
                 AssureEqual(val, expected_value, "TestTinyXML2_WithFile: query double for "..name.."->"..element_name.." returned value "..tostring(val)..".")
             end
+            AssureEqual(element:ChildElementCount(), 4)
+            AssureEqual(element:ChildElementCount("calories"), 1)
             testQuery("name")
             testQuery("calories", calories)
             AssureEqual(price, getText("price"), "TestTinyXML2_WithFile: element for "..price..".")
