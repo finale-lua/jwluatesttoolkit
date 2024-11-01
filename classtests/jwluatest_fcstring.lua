@@ -8,6 +8,8 @@ local str = finale.FCString()
 FunctionTest(str, "FCString", "InsertString") 
 FunctionTest(str, "FCString", "ReplaceCategoryFonts")
 FunctionTest(str, "FCString", "EndsWith")
+FunctionTest(str, "FCString", "ExtractFileExtension")
+FunctionTest(str, "FCString", "TruncateAt")
 
 -- SetMeasurement - centimeters
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
@@ -201,3 +203,25 @@ AssureTrue(test_substring:MakeSubString(3, 1, substr), "malformed FCString:MakeS
 AssureEqual(substr.LuaString, "1", "malformed FCString:MakeSubString 3, 1")
 AssureFalse(test_substring:MakeSubString(4, 1, substr), "malformed FCString:MakeSubString 4, 1")
 
+-- extension tests
+
+local function TestExtension(str, expected_value)
+    local extension_test = finale.FCString(str)
+    extension_test:ExtractFileExtension()
+    AssureEqualStrings(extension_test.LuaString, expected_value, "FCString::ExtractFileExtension from " .. str)
+end
+
+TestExtension("path/to/file.xml", "xml")
+TestExtension("path/to/file.musicxml", "musicxml")
+TestExtension("path/to/a.dsflksdjflskdjf132", "dsflksdjflskdjf132")
+TestExtension("path/to/file.", "")
+TestExtension("path/to/.file", "file")
+
+-- truncation test
+
+local trucate_string = finale.FCString()
+trucate_string.LuaString = "test"
+AssureFalse(trucate_string:TruncateAt(trucate_string.Length), "FCString::TruncateAt(trucate_string.Length)")
+AssureFalse(trucate_string:TruncateAt(-1), "FCString::TruncateAt(-1)")
+AssureTrue(trucate_string:TruncateAt(1), "FCString::TruncateAt(1)")
+AssureEqualStrings(trucate_string.LuaString, "t", "FCString::TruncateAt")
