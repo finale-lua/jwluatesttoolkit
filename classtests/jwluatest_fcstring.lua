@@ -11,6 +11,7 @@ FunctionTest(str, "FCString", "EndsWith")
 FunctionTest(str, "FCString", "TruncateAt")
 FunctionTest(str, "FCString", "ExtractFileExtension")
 FunctionTest(str, "FCString", "SplitToPathAndFile")
+FunctionTest(str, "FCString", "SplitAt")
 
 -- SetMeasurement - centimeters
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
@@ -218,9 +219,9 @@ TestExtension("path/to/a.dsflksdjflskdjf132", "dsflksdjflskdjf132")
 TestExtension("path/to/file.", "")
 TestExtension("path/to/.file", "file")
 
--- split to file and path tests
+-- split tests
 
-local function TestSplitToFileAndPath(str, expected_path, expected_file)
+local function TestSplitToPathAndFile(str, expected_path, expected_file)
     local split_test = finale.FCString(str)
     local path = finale.FCString()
     local file = finale.FCString()
@@ -233,9 +234,29 @@ local function TestSplitToFileAndPath(str, expected_path, expected_file)
     AssureEqualStrings(file.LuaString, expected_file, "FCString::SplitToPathAndFile(nil, file)")    
 end
 
-TestSplitToFileAndPath("path/name/filename", "path/name/", "filename")
-TestSplitToFileAndPath("path/name/", "path/name/", "")
-TestSplitToFileAndPath("filename", "", "filename")
+TestSplitToPathAndFile("path/name/filename", "path/name/", "filename")
+TestSplitToPathAndFile("path/name/", "path/name/", "")
+TestSplitToPathAndFile("filename", "", "filename")
+
+local function TestSplitAt(str)
+    local split_test = finale.FCString(str)
+    local left = finale.FCString()
+    local right = finale.FCString()
+    AssureFalse(split_test:SplitAt(-2, left, right, false), "FCString::SplitAt(-2)")
+    AssureFalse(split_test:SplitAt(split_test.Length, left, right, false), "FCString::SplitAt(split_test.Length)")
+    for i = -1, split_test.Length - 1 do
+        AssureTrue(split_test:SplitAt(i, left, right, true), "FCString::SplitAt(" .. i .. ", true)")
+        print(i, true, split_test, left, right)
+        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i + 1)), "FCString::SplitAt(" .. i .. ", true)")
+        AssureEqualStrings(right.LuaString, str:sub(math.max(0, i + 1) + 1), "FCString::SplitAt(" .. i .. ", true)")
+        print(i, false, split_test, left, right)
+        AssureTrue(split_test:SplitAt(i, left, right, false), "FCString::SplitAt(" .. i .. ", false)")
+        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i + 1) - 1), "FCString::SplitAt(" .. i .. ", false)")
+        AssureEqualStrings(right.LuaString, str:sub(math.max(0, i + 1) + 1), "FCString::SplitAt(" .. i .. ", false)")
+    end
+end
+
+TestSplitAt("a-c")
 
 -- truncation test
 
