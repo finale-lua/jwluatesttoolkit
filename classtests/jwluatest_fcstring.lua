@@ -8,8 +8,9 @@ local str = finale.FCString()
 FunctionTest(str, "FCString", "InsertString") 
 FunctionTest(str, "FCString", "ReplaceCategoryFonts")
 FunctionTest(str, "FCString", "EndsWith")
-FunctionTest(str, "FCString", "ExtractFileExtension")
 FunctionTest(str, "FCString", "TruncateAt")
+FunctionTest(str, "FCString", "ExtractFileExtension")
+FunctionTest(str, "FCString", "SplitToPathAndFile")
 
 -- SetMeasurement - centimeters
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
@@ -216,6 +217,25 @@ TestExtension("path/to/file.musicxml", "musicxml")
 TestExtension("path/to/a.dsflksdjflskdjf132", "dsflksdjflskdjf132")
 TestExtension("path/to/file.", "")
 TestExtension("path/to/.file", "file")
+
+-- split to file and path tests
+
+local function TestSplitToFileAndPath(str, expected_path, expected_file)
+    local split_test = finale.FCString(str)
+    local path = finale.FCString()
+    local file = finale.FCString()
+    AssureTrue(split_test:SplitToPathAndFile(path, file), "FCString::SplitToPathAndFile(path, file)")
+    AssureEqualStrings(path.LuaString, expected_path, "FCString::SplitToPathAndFile(path, file)")
+    AssureEqualStrings(file.LuaString, expected_file, "FCString::SplitToPathAndFile(path, file)")    
+    AssureTrue(split_test:SplitToPathAndFile(path, nil), "FCString::SplitToPathAndFile(path, nil)")
+    AssureEqualStrings(path.LuaString, expected_path, "FCString::SplitToPathAndFile(path, nil)")
+    AssureTrue(split_test:SplitToPathAndFile(nil, file), "FCString::SplitToPathAndFile(nil, file)")
+    AssureEqualStrings(file.LuaString, expected_file, "FCString::SplitToPathAndFile(nil, file)")    
+end
+
+TestSplitToFileAndPath("path/name/filename", "path/name/", "filename")
+TestSplitToFileAndPath("path/name/", "path/name/", "")
+TestSplitToFileAndPath("filename", "", "filename")
 
 -- truncation test
 
