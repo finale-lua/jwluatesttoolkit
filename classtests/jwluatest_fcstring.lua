@@ -12,6 +12,9 @@ FunctionTest(str, "FCString", "TruncateAt")
 FunctionTest(str, "FCString", "ExtractFileExtension")
 FunctionTest(str, "FCString", "SplitToPathAndFile")
 FunctionTest(str, "FCString", "SplitAt")
+FunctionTest(str, "FCString", "CalcStringPos")
+FunctionTest(str, "FCString", "CalcStringPosFrom")
+FunctionTest(str, "FCString", "CalcLastStringPos")
 
 -- SetMeasurement - centimeters
 str:SetMeasurement(10000, finale.MEASUREMENTUNIT_CENTIMETERS)
@@ -246,17 +249,17 @@ local function TestSplitAt(str)
     AssureFalse(split_test:SplitAt(split_test.Length, left, right, false), "FCString::SplitAt(split_test.Length)")
     for i = -1, split_test.Length - 1 do
         AssureTrue(split_test:SplitAt(i, left, right, true), "FCString::SplitAt(" .. i .. ", true)")
-        print(i, true, split_test, left, right)
-        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i + 1)), "FCString::SplitAt(" .. i .. ", true)")
-        AssureEqualStrings(right.LuaString, str:sub(math.max(0, i + 1) + 1), "FCString::SplitAt(" .. i .. ", true)")
-        print(i, false, split_test, left, right)
+        --print(i, true, split_test, left, right)
+        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i + 1)), "FCString::SplitAt(" .. i .. ", true) left")
+        AssureEqualStrings(right.LuaString, str:sub(math.max(0, i + 1) + 1), "FCString::SplitAt(" .. i .. ", true) right")
         AssureTrue(split_test:SplitAt(i, left, right, false), "FCString::SplitAt(" .. i .. ", false)")
-        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i + 1) - 1), "FCString::SplitAt(" .. i .. ", false)")
-        AssureEqualStrings(right.LuaString, str:sub(math.max(0, i + 1) + 1), "FCString::SplitAt(" .. i .. ", false)")
+        --print(i, false, split_test, left, right, left.Length)
+        AssureEqualStrings(left.LuaString, str:sub(1, math.max(0, i)), "FCString::SplitAt(" .. i .. ", false) left")
+        AssureEqualStrings(right.LuaString, str:sub(i + 2), "FCString::SplitAt(" .. i .. ", false) right")
     end
 end
 
-TestSplitAt("a-c")
+TestSplitAt("ab-c")
 
 -- truncation test
 
@@ -266,3 +269,18 @@ AssureFalse(trucate_string:TruncateAt(trucate_string.Length), "FCString::Truncat
 AssureFalse(trucate_string:TruncateAt(-1), "FCString::TruncateAt(-1)")
 AssureTrue(trucate_string:TruncateAt(1), "FCString::TruncateAt(1)")
 AssureEqualStrings(trucate_string.LuaString, "t", "FCString::TruncateAt")
+
+-- search tests
+
+local function TestSearch(str, substr, index, expect_first_pos, expect_index_pos, expect_last_pos)
+    local search_test = finale.FCString(str)
+    local substring = finale.FCString(substr)
+    AssureEqual(search_test:CalcStringPos(substring), expect_first_pos, "FCString::CalcStringPos " .. str .. " " .. substr)
+    AssureEqual(search_test:CalcStringPosFrom(substring, index), expect_index_pos, "FCString::CalcStringPosFrom " .. str .. "[" .. index .. "] " .. substr)
+    AssureEqual(search_test:CalcLastStringPos(substring), expect_last_pos, "FCString::CalcLastStringPos " .. str .. " " .. substr)
+end
+
+TestSearch("abc/123/z", "/", 4, 3, 7, 7)
+TestSearch("abcµ123", "µ2", 4, -1, -1, -1)
+TestSearch("abcµ123", "µ1", 4, 3, -1, 3)
+TestSearch("xxx.å", ".å", -2, 3, -1, 3)
